@@ -35,6 +35,7 @@ dependencies {
 
     //Naver Mobile Dynamic Map(v3)
     implementation 'com.naver.maps:map-sdk:3.7.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 
     //TedPermission
     implementation 'gun0912.ted:tedpermission:2.2.3'

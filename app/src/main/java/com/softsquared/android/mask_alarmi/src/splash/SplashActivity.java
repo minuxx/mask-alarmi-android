@@ -6,23 +6,7 @@ import android.os.Bundle;
 import com.softsquared.android.mask_alarmi.R;
 import com.softsquared.android.mask_alarmi.src.BaseActivity;
 import com.softsquared.android.mask_alarmi.src.main.MainActivity;
-import com.softsquared.android.mask_alarmi.src.main.interfaces.MainRetrofitInterface;
-import com.softsquared.android.mask_alarmi.src.main.models.MainResponse;
 import com.softsquared.android.mask_alarmi.src.splash.interfaces.SplashActivityView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.MEDIA_TYPE_JSON;
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.RADIUS_KM;
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.getRetrofit;
 
 
 public class SplashActivity extends BaseActivity implements SplashActivityView {

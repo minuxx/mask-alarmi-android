@@ -26,7 +26,9 @@
             android:value="xl2c75n5ca" />
 
 
-        <activity android:name="com.softsquared.android.mask_alarmi.src.splash.SplashActivity">
+        <activity android:name="com.softsquared.android.mask_alarmi.src.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +36,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".src.main.MainActivity"/>
+        <activity android:name=".src.main.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
         <service android:name=".src.main.GpsTracker"/>
     </application>
