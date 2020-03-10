@@ -1,10 +1,10 @@
-package com.softsquared.android.mask_app.src;
+package com.softsquared.android.mask_alarmi.src;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.softsquared.android.mask_app.config.XAccessTokenInterceptor;
+import com.softsquared.android.mask_alarmi.config.XAccessTokenInterceptor;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

@@ -1,6 +1,6 @@
-package com.softsquared.android.mask_app.src.main.interfaces;
+package com.softsquared.android.mask_alarmi.src.main.interfaces;
 
-import com.softsquared.android.mask_app.src.main.models.DefaultResponse;
+import com.softsquared.android.mask_alarmi.src.main.models.DefaultResponse;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

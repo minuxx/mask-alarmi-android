@@ -1,4 +1,4 @@
-package com.softsquared.android.mask_app.src.splash.models;
+package com.softsquared.android.mask_alarmi.src.splash.models;
 
 import com.google.gson.annotations.SerializedName;
 

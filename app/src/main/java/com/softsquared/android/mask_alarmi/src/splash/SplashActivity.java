@@ -1,11 +1,12 @@
-package com.softsquared.android.mask_app.src.splash;
+package com.softsquared.android.mask_alarmi.src.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.softsquared.android.mask_app.R;
-import com.softsquared.android.mask_app.src.BaseActivity;
-import com.softsquared.android.mask_app.src.splash.interfaces.SplashActivityView;
+import com.softsquared.android.mask_alarmi.R;
+import com.softsquared.android.mask_alarmi.src.BaseActivity;
+import com.softsquared.android.mask_alarmi.src.main.MainActivity;
+import com.softsquared.android.mask_alarmi.src.splash.interfaces.SplashActivityView;
 
 
 public class SplashActivity extends BaseActivity implements SplashActivityView {

@@ -1,14 +1,14 @@
-package com.softsquared.android.mask_app.src.main;
+package com.softsquared.android.mask_alarmi.src.main;
 
-import com.softsquared.android.mask_app.src.main.interfaces.MainActivityView;
-import com.softsquared.android.mask_app.src.main.interfaces.MainRetrofitInterface;
-import com.softsquared.android.mask_app.src.main.models.DefaultResponse;
+import com.softsquared.android.mask_alarmi.src.main.interfaces.MainActivityView;
+import com.softsquared.android.mask_alarmi.src.main.interfaces.MainRetrofitInterface;
+import com.softsquared.android.mask_alarmi.src.main.models.DefaultResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.softsquared.android.mask_app.src.ApplicationClass.getRetrofit;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.getRetrofit;
 
 public class MainService {
     private final MainActivityView mMainActivityView;

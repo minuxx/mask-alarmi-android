@@ -1,4 +1,4 @@
-package com.softsquared.android.mask_app.config;
+package com.softsquared.android.mask_alarmi.config;
 
 import androidx.annotation.NonNull;
 
@@ -8,8 +8,8 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import static com.softsquared.android.mask_app.src.ApplicationClass.X_ACCESS_TOKEN;
-import static com.softsquared.android.mask_app.src.ApplicationClass.sSharedPreferences;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.X_ACCESS_TOKEN;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.sSharedPreferences;
 
 public class XAccessTokenInterceptor implements Interceptor{
 

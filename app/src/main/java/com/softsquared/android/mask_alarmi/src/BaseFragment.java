@@ -1,4 +1,4 @@
-package com.softsquared.android.mask_app.src;
+package com.softsquared.android.mask_alarmi.src;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.Fragment;
-import com.softsquared.android.mask_app.R;
+import com.softsquared.android.mask_alarmi.R;
 
 
 public abstract class BaseFragment extends Fragment implements View.OnClickListener{

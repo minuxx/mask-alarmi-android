@@ -1,4 +1,4 @@
-package com.softsquared.android.mask_app.src;
+package com.softsquared.android.mask_alarmi.src;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.softsquared.android.mask_app.R;
+import com.softsquared.android.mask_alarmi.R;
 
 @SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {

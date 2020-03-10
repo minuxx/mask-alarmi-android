@@ -1,6 +1,4 @@
-package com.softsquared.android.mask_app.src.splash.interfaces;
-
-import java.util.ArrayList;
+package com.softsquared.android.mask_alarmi.src.splash.interfaces;
 
 public interface SplashActivityView {
     void validateFailure(String message);

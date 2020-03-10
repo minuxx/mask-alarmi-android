@@ -1,4 +1,4 @@
-package com.softsquared.android.mask_app.src.main.interfaces;
+package com.softsquared.android.mask_alarmi.src.main.interfaces;
 
 public interface MainActivityView {
 

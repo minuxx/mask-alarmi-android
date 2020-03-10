@@ -4,6 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.softsquared.android.mask_app.src.main.MainActivity" >
+    tools:context="com.softsquared.android.mask_alarmi.src.main.MainActivity" >
 
+
+    <fragment
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.naver.maps.map.MapFragment" />
 </LinearLayout>
