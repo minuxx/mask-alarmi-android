@@ -31,9 +31,12 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.0.1")
 
     // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     //Naver Mobile Dynamic Map(v3)
     implementation 'com.naver.maps:map-sdk:3.7.0'
+
+    //TedPermission
+    implementation 'gun0912.ted:tedpermission:2.2.3'
 
 }

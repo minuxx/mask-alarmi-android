@@ -2,4 +2,8 @@
     <string name="app_name">마스크 알라미</string>
     <string name="loading">로딩중입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
+
+    <string name="main_permission_denied">퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.</string>
+    <string name="main_permission_request_app_setting">퍼미션이 거부되었습니다. 앱 설정에서 퍼미션을 허용해야 합니다.</string>
+    <string name="main_permission_request_location_auth">이 앱을 실행하려면 위치 접근 권한이 필요합니다.</string>
 </resources>
