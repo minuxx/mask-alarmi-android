@@ -4,12 +4,187 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.softsquared.android.mask_alarmi.src.main.MainActivity" >
-
+    tools:context="com.softsquared.android.mask_alarmi.src.main.MainActivity">
 
     <fragment
         android:id="@+id/main_fg_map"
+        android:name="com.naver.maps.map.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.naver.maps.map.MapFragment" />
+        android:layout_height="match_parent" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="45dp" />
+
+
+        <TextView
+            android:id="@+id/main_tv_possible_day"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/mainPossibleDayBg"
+            android:drawableEnd="@drawable/ic_etc"
+            android:elevation="3dp"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textColor="@color/mainPossibleDayText"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="오늘은 출생연도 끝자리 3 ・8년생이 살 수 있어요!" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/main_cd_ic_img_mask_amount"
+                android:src="@drawable/img_mask_amount"/>
+
+            <!--<LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="end">
+
+                <TextView
+                    android:id="@+id/main_tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/mainTimeText"
+                    android:textSize="12sp"
+                    android:layout_marginTop="10dp"
+                    tools:text="05:30"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_refresh"
+                    android:background="@android:color/transparent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/main_cd_refresh" />
+            </LinearLayout>-->
+        </FrameLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/main_ibtn_mylocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="25dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/main_cd_ic_mylocation"
+            android:src="@drawable/ic_mylocation" />
+
+        <LinearLayout
+            android:id="@+id/main_ll_storeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_top_round_box"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:weightSum="1"
+            android:elevation="3dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/main_tv_store_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:drawableEnd="@drawable/ic_bookmark_def"
+                    android:drawablePadding="10dp"
+                    android:textColor="@color/mainStoreNameText"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="싱싱약국" />
+
+                <TextView
+                    android:id="@+id/main_tv_store_addr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:ellipsize="end"
+                    android:textColor="@color/mainStoreAddrText"
+                    android:textSize="12sp"
+                    tools:text="서울 강남구 선릉로 567 대운빌딩"/>
+
+                <ImageButton
+                    android:id="@+id/main_ibtn_wayfinding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:contentDescription="@string/main_cd_ic_wayfinding"
+                    android:src="@drawable/ic_wayfinding"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/main_iv_state"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_plenty_big"
+                android:contentDescription="@string/main_cd_ic_mask_state"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/mainNoticeBar"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="15dp"
+            android:contentDescription="@string/main_cd_ic_announce"
+            android:src="@drawable/ic_announcement" />
+
+        <TextView
+            android:id="@+id/main_tv_announce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="20dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:text="@string/main_announce_mention"
+            android:textColor="@color/mainAnnounceText"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
 </FrameLayout>

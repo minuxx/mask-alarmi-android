@@ -2,6 +2,7 @@ package com.softsquared.android.mask_alarmi.src;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.softsquared.android.mask_alarmi.R;
 
 @SuppressLint("Registered")
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity implements View.OnClickListener{
     public ProgressDialog mProgressDialog;
 
     public void showCustomToast(final String message) {
@@ -36,5 +37,12 @@ public class BaseActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         hideProgressDialog();
+    }
+
+    public void initViews(){}
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

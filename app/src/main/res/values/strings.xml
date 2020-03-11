@@ -3,7 +3,38 @@
     <string name="loading">로딩중입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
 
+    <!--Main-->
     <string name="main_permission_denied">퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.</string>
     <string name="main_permission_request_app_setting">퍼미션이 거부되었습니다. 앱 설정에서 퍼미션을 허용해야 합니다.</string>
     <string name="main_permission_request_location_auth">이 앱을 실행하려면 위치 접근 권한이 필요합니다.</string>
+    <string name="main_announce_mention">3월 14일까지는 서비스의 안정적 운영을 지켜보기 위한 베타서비스 기간입니다.</string>
+    <string name="main_possible_all">주중에 구매하지 못했다면 오늘 구매할 수 있어요!</string>
+    
+    <string name="main_cd_ic_announce">ic_announce</string>
+    <string name="main_cd_ic_img_mask_amount">img_mask_amount</string>
+    <string name="main_cd_ic_mylocation">ic_mylocation</string>
+    <string name="main_cd_ic_wayfinding">ic_wayfinding</string>
+    <string name="main_cd_ic_mask_state">ic_mask_state</string>
+    <string name="main_cd_logo_w">logo_w</string>
+    <string name="main_cd_refresh">ic_refresh</string>
+
+    <!--Announce-->
+    <string name="announce_announce">공지사항</string>
+    <string name="announce_ann01">3월 14일까지는 서비스의 안정적 운영을 지켜보기 위한 베타서비스 기간입니다.</string>
+    <string name="announce_ann02">마스크 재고 현황 정보는 데이터 처리 및 전송으로 인해 실제 현황과 5 ~ 10분 정도 차이가 있습니다.</string>
+    <string name="announce_ann03">일부 약국에서 시행되는 번호표 또는 그 외 상황은 반영되지 않습니다.</string>
+    <string name="announce_ann04">마스크 현황 정보는 성인용 마스크를 대상으로 합니다.</string>
+    <string name="announce_ann05">마스크 재고 현황은 4단계 구간 정보로 제공됩니다. </string>
+    <string name="announce_ann05_plenty">충분 (100개 이상)</string>
+    <string name="announce_ann05_som">보통 (99개 ~ 30개)</string>
+    <string name="announce_ann05_few">부족 (29개 ~ 2개)</string>
+    <string name="announce_ann05_empty">없음 또는 판매전 (1개 ~ 0개))</string>
+    <string name="announce_ann06">매일 갱신되는 마스크 수량 정보는 08:00~23:00까지 운영됩니다.</string>
+    <string name="announce_ann07">데이터 출처는 심평원 ・정보화진흥원(공공데이터포털)이며, 데이터 공개 문의는 한국정보화진흥원으로 부탁드립니다.</string>
+    <string name="announce_ann08">공적마스크 관련 정책은 식약처 블로그를 참고해주세요.</string>
+    <string name="announce_ann09">어려운 환경에서도 일선에서 공헌해주시는 약사님, 우체국 종사자분, 하나로마트(예정) 분들께도 감사와 응원 말씀 드립니다.</string>
+
+
+
+
 </resources>

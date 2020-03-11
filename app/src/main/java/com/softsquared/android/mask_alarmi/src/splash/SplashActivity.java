@@ -24,7 +24,7 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
                 try {
                     synchronized (this) {
                         // Wait given period of time or exit on touch
-                        wait(1000);
+                        wait(1200);
 
                         Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                         startActivity(mainIntent);

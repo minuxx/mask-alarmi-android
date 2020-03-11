@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#4c85f7</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
     <color name="white">#f5f5f5</color>
+    <!--Splash-->
+    <color name="splashBg">#4c85f7</color>
+
+    <!--Main-->
+    <color name="mainNoticeBar">#4c85f7</color>
+    <color name="mainAnnounceText">#FFFFFF</color>
+    <color name="mainPossibleDayBg">#FFFFFF</color>
+    <color name="mainPossibleDayText">#000000</color>
+    <color name="mainPossibleYearText">#0d51d8</color>
+    <color name="mainStoreNameText">#000000</color>
+    <color name="mainStoreAddrText">#737373</color>
+    <color name="mainTimeText">#737373</color>
+    <!--Announce-->
+    <color name="announceText">#000000</color>
+    <color name="announceBackBg">#f0f0f0</color>
+    <color name="announceBg">#fff</color>
+
 </resources>
