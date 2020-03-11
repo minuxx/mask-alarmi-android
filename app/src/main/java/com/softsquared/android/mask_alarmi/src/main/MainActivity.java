@@ -2,6 +2,7 @@ package com.softsquared.android.mask_alarmi.src.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -68,24 +69,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
     private LinearLayout mLlStoreInfo;
 
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            FragmentManager fm = getSupportFragmentManager();
 
-            mFgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
-
-            if (mFgMap != null) {
-                mFgMap.getMapAsync(MainActivity.this);
-            }
-
-        }
-
-        @Override
-        public void onPermissionDenied(List<String> deniedPermissions) {
-            showCustomToast("앱 설정을 통해 권한을 허용해주세요!");
-        }
-    };
 
 
 
@@ -96,15 +80,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         setContentView(R.layout.activity_main);
         initViews();
 
-        TedPermission.with(MainActivity.this)
-                .setPermissionListener(permissionlistener)
-                .setDeniedMessage("위치 및 GPS 권한 설정을 해주세요.")
-                .setPermissions(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-                .check();
+        FragmentManager fm = getSupportFragmentManager();
 
+        mFgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
+
+        if (mFgMap != null) {
+            mFgMap.getMapAsync(MainActivity.this);
+        }
 
         mMarkers = new ArrayList<>();
         mLocationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
@@ -377,6 +359,29 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         mNaverMap = naverMap;
+        mNaverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                if(mLlStoreInfo.getVisibility() == View.VISIBLE){
+                    switch (mSelectedState) {
+                        case "plenty":
+                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
+                            break;
+                        case "som":
+                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
+                            break;
+                        case "few":
+                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
+                            break;
+                        case "empty":
+                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                            break;
+                    }
+                    mSelectedMarker = null;
+                    showStoreInfo(View.GONE);
+                }
+            }
+        });
         naverMap.setLocationSource(mLocationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
 
