@@ -9,6 +9,8 @@
     <string name="main_permission_request_location_auth">이 앱을 실행하려면 위치 접근 권한이 필요합니다.</string>
     <string name="main_announce_mention">3월 14일까지는 서비스의 안정적 운영을 지켜보기 위한 베타서비스 기간입니다.</string>
     <string name="main_possible_all">주중에 구매하지 못했다면 오늘 구매할 수 있어요!</string>
+    <string name="main_ready_bookmark">기능 준비중입니다.</string>
+    <string name="main_ready_findwaying">기능 준비중입니다.</string>
     
     <string name="main_cd_ic_announce">ic_announce</string>
     <string name="main_cd_ic_img_mask_amount">img_mask_amount</string>
@@ -33,8 +35,4 @@
     <string name="announce_ann07">데이터 출처는 심평원 ・정보화진흥원(공공데이터포털)이며, 데이터 공개 문의는 한국정보화진흥원으로 부탁드립니다.</string>
     <string name="announce_ann08">공적마스크 관련 정책은 식약처 블로그를 참고해주세요.</string>
     <string name="announce_ann09">어려운 환경에서도 일선에서 공헌해주시는 약사님, 우체국 종사자분, 하나로마트(예정) 분들께도 감사와 응원 말씀 드립니다.</string>
-
-
-
-
 </resources>

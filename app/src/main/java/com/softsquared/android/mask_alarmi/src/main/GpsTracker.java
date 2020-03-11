@@ -18,8 +18,8 @@ public class GpsTracker extends Service implements LocationListener {
 
     private final Context mContext;
     Location location;
-    double latitude =37.566240;
-    double longitude = 126.978198;
+    double latitude = 37.566364;
+    double longitude = 126.978518;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;

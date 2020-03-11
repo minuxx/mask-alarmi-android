@@ -21,7 +21,7 @@
             android:text="@string/announce_announce"
             android:textColor="@color/announceText"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/notosanskr_bold"/>
 
 
         <TextView
@@ -36,7 +36,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann01"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -50,7 +51,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann02"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -64,7 +66,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann03"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -78,7 +81,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann04"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
 
         <LinearLayout
@@ -97,7 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:text="@string/announce_ann05"
-                android:textColor="@color/announceText" />
+                android:textColor="@color/announceText"
+                android:fontFamily="@font/notosanskr_regular"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -105,7 +110,11 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/announce_ann05_plenty"
                 android:textColor="@color/announceText"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_green_dot"
+                android:drawablePadding="5dp"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/notosanskr_medium"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -113,7 +122,11 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/announce_ann05_som"
                 android:textColor="@color/announceText"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_yellow_dot"
+                android:drawablePadding="5dp"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/notosanskr_medium"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -121,7 +134,12 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/announce_ann05_few"
                 android:textColor="@color/announceText"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_red_dot"
+                android:drawablePadding="5dp"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/notosanskr_medium"/>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -129,7 +147,11 @@
                 android:layout_marginBottom="5dp"
                 android:text="@string/announce_ann05_empty"
                 android:textColor="@color/announceText"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_grey_dot"
+                android:drawablePadding="5dp"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/notosanskr_medium"/>
         </LinearLayout>
 
         <TextView
@@ -144,7 +166,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann06"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -158,7 +181,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann07"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -172,7 +196,8 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann08"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -186,6 +211,7 @@
             android:paddingBottom="10dp"
             android:text="@string/announce_ann09"
             android:textColor="@color/announceText"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:fontFamily="@font/notosanskr_regular"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

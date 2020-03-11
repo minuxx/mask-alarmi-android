@@ -20,7 +20,7 @@ public class ApplicationClass extends Application {
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
 
     //M단위
-    public final static int RADIUS = 500;
+    public final static int RADIUS = 1000;
 
     // 테스트 서버 주소
     public static String BASE_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
