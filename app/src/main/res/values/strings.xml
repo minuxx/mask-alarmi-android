@@ -2,6 +2,7 @@
     <string name="app_name">마스크 알라미</string>
     <string name="loading">로딩중입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
+    <string name="facebook_app_id">209378320171440</string> <string name="fb_login_protocol_scheme">fb209378320171440</string>
 
     <!--Main-->
     <string name="main_permission_denied">퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.</string>

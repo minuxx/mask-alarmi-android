@@ -1,6 +1,8 @@
 package com.softsquared.android.mask_alarmi.src.main;
 
-import android.Manifest;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -20,8 +22,6 @@ import androidx.annotation.UiThread;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
@@ -39,13 +39,11 @@ import com.softsquared.android.mask_alarmi.src.BaseActivity;
 import com.softsquared.android.mask_alarmi.src.announce.AnnounceActivity;
 import com.softsquared.android.mask_alarmi.src.main.interfaces.MainActivityView;
 import com.softsquared.android.mask_alarmi.src.main.models.Store;
-import com.softsquared.android.mask_alarmi.src.splash.SplashActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import static com.softsquared.android.mask_alarmi.src.ApplicationClass.RADIUS;
@@ -71,13 +69,14 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     private LinearLayout mLlStoreInfo;
 
     private FirebaseAnalytics mFirebaseAnalytics;
-
+    private AppEventsLogger mLogger;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mLogger = AppEventsLogger.newLogger(this);
 
         setContentView(R.layout.activity_main);
         initViews();
@@ -426,4 +425,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     /*---------
     API Communication End*/
 
+
+    /**
+     * This function assumes logger is an instance of AppEventsLogger and has been
+     * created using AppEventsLogger.newLogger() call.
+     */
+    public void logSentFriendRequestEvent () {
+        mLogger.logEvent("sentFriendRequest");
+    }
 }
