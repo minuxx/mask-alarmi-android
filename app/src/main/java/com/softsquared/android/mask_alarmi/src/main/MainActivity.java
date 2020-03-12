@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.naver.maps.geometry.LatLng;
@@ -69,14 +70,15 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
     private LinearLayout mLlStoreInfo;
 
-
-
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         setContentView(R.layout.activity_main);
         initViews();
 

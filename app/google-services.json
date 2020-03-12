@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1020185538781",
+    "firebase_url": "https://maskmap-cf8fa.firebaseio.com",
+    "project_id": "maskmap-cf8fa",
+    "storage_bucket": "maskmap-cf8fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020185538781:android:3fdbe1981d1d16fb31eb34",
+        "android_client_info": {
+          "package_name": "com.softsquared.android.mask_alarmi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020185538781-8dhj4mfj08ccphk1epdt5vpsrmi0bf4n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softsquared.android.mask_alarmi",
+            "certificate_hash": "f436a9839847b64523c9c8c64d1824896bdd1c34"
+          }
+        },
+        {
+          "client_id": "1020185538781-t8c5pdacad57i9chv344plmjsch3g6fm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjOFBDKHBsDAmR6enuO82owHYcnd8rPMU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020185538781-t8c5pdacad57i9chv344plmjsch3g6fm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1020185538781-0bcvlpc171kjlsos5i6lsosv57gpdtkk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.softsquared.ios.mask-alarmi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
