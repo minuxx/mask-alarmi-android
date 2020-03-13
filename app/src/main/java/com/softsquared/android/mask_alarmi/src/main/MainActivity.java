@@ -30,6 +30,7 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
@@ -60,7 +61,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
     private ArrayList<Marker> mMarkers = null;
 
-    private TextView  mTvStoreName, mTvStoreAddr, mTvTime;
+    private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvTime;
     private ImageView mIvMaskState;
 
     private Marker mSelectedMarker = null;
@@ -76,7 +77,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        mLogger = AppEventsLogger.newLogger(this);
+
+        logSentFriendRequestEvent();
 
         setContentView(R.layout.activity_main);
         initViews();
@@ -99,8 +101,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         super.initViews();
         TextView tvAnnounce = findViewById(R.id.main_tv_announce);
         tvAnnounce.setSelected(true);
-        TextView tvPossibleDay = findViewById(R.id.main_tv_possible_day);
-        setPossibleDay(tvPossibleDay);
+        mTvPossibleDay = findViewById(R.id.main_tv_possible_day);
+        setPossibleDay();
         mTvTime = findViewById(R.id.main_tv_time);
         mTvTime.setText(setTime());
         ImageButton ibtnReload = findViewById(R.id.main_ibtn_reload);
@@ -113,11 +115,17 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mLlStoreInfo = findViewById(R.id.main_ll_storeInfo);
 
         tvAnnounce.setOnClickListener(this);
-        tvPossibleDay.setOnClickListener(this);
+        mTvPossibleDay.setOnClickListener(this);
         ibtnReload.setOnClickListener(this);
         mTvStoreName.setOnClickListener(this);
         ibtnMyLocation.setOnClickListener(this);
         ibtnWayFinding.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setPossibleDay();
     }
 
     @Override
@@ -144,7 +152,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 break;
             case R.id.main_ibtn_reload:
                 removeAllMarkers();
-                showStoreInfo(View.GONE);
+                if(mLlStoreInfo.getVisibility() == View.VISIBLE) {
+                    showStoreInfo(View.GONE);
+                }
                 mTvTime.setText(setTime());
                 getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
                 break;
@@ -161,7 +171,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         return simpleDateFormat.format(mDate);
     }
 
-    private void setPossibleDay(TextView tvPossibleDay) {
+    private void setPossibleDay() {
         Calendar cal = Calendar.getInstance();
 
         int weekNum = cal.get(Calendar.DAY_OF_WEEK);
@@ -169,7 +179,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         switch (weekNum) {
             case 1: //토, 일
             case 7:
-                tvPossibleDay.setText(getString(R.string.main_possible_all));
+                mTvPossibleDay.setText(getString(R.string.main_possible_all));
                 break;
             default:
                 int first = (weekNum - 1) % 10;
@@ -180,7 +190,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 SpannableStringBuilder ssb = new SpannableStringBuilder(possibleDayStr);
                 ssb.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mainPossibleYearText)), 13, 18, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                tvPossibleDay.setText(ssb);
+                mTvPossibleDay.setText(ssb);
                 break;
         }
 
@@ -265,6 +275,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                         });
                         break;
                     case "empty":
+                    case "break":
                         marker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
                         marker.setOnClickListener(new Overlay.OnClickListener() {
                             @Override
@@ -296,9 +307,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-    private void setStoreInfo(String name, String addr, int res) {
+    private void setStoreInfo(String name, String address, int res) {
         mTvStoreName.setText(name);
-        mTvStoreAddr.setText(addr);
+        mTvStoreAddr.setText(address);
         mIvMaskState.setImageResource(res);
 
        showStoreInfo(View.VISIBLE);
@@ -317,9 +328,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mLlStoreInfo.setVisibility(visivlity);
     }
 
-    private void setStoreInfo(String state, String name, String addr, int res) {
+    private void setStoreInfo(String state, String name, String address, int res) {
         mTvStoreName.setText(name);
-        mTvStoreAddr.setText(addr);
+        mTvStoreAddr.setText(address);
         mIvMaskState.setImageResource(res);
 
         switch (mSelectedState) {
@@ -333,6 +344,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
                 break;
             case "empty":
+            case "break":
                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
                 break;
         }
@@ -340,6 +352,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
 
     private void removeAllMarkers() {
+        mSelectedMarker = null;
         for (Marker marker : mMarkers) {
             marker.setMap(null);
         }
@@ -360,6 +373,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         mNaverMap = naverMap;
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+        locationOverlay.setVisible(true);
+        locationOverlay.setIcon(OverlayImage.fromResource(R.drawable.ic_range_and_location));
+
         mNaverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
@@ -375,6 +392,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                             mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
                             break;
                         case "empty":
+                        case "break":
                             mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
                             break;
                     }
@@ -431,6 +449,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
      * created using AppEventsLogger.newLogger() call.
      */
     public void logSentFriendRequestEvent () {
+        mLogger = AppEventsLogger.newLogger(this);
         mLogger.logEvent("sentFriendRequest");
     }
 }
