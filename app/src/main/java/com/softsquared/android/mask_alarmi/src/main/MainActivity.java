@@ -2,7 +2,6 @@ package com.softsquared.android.mask_alarmi.src.main;
 
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -55,8 +54,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     private GpsTracker gpsTracker;
     private FusedLocationSource mLocationSource;
 
-    private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvTime;
-    private ImageView mIvMaskState;
+    private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvStoreStockAt ,mTvUpdateTime;
+    private ImageView mIvStoreMaskState;
 
     private Marker mSelectedMarker = null;
     private String mSelectedState = null;
@@ -68,13 +67,14 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initViews();
+
         //set firebase & facebook analytics
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         logSentFriendRequestEvent();
 
-        setContentView(R.layout.activity_main);
-        initViews();
-
+        //map
         FragmentManager fm = getSupportFragmentManager();
 
         MapFragment fgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
@@ -84,6 +84,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
 
         mMarkers = new ArrayList<>();
+
+        //location & gps
         mLocationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         gpsTracker = new GpsTracker(MainActivity.this);
     }
@@ -91,35 +93,49 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     public void initViews() {
         super.initViews();
+        //information
         TextView tvAnnounce = findViewById(R.id.main_tv_announce);
         tvAnnounce.setSelected(true);
-
         mTvPossibleDay = findViewById(R.id.main_tv_possible_day);
         setPossibleDay();
-
-        mTvTime = findViewById(R.id.main_tv_time);
-        mTvTime.setText(setTime());
-
-        ImageButton ibtnReload = findViewById(R.id.main_ibtn_reload);
+        mTvUpdateTime = findViewById(R.id.main_tv_update_at);
+        mTvUpdateTime.setText(getUpdateTime());
+        //util button
+        ImageButton ibtnRefresh = findViewById(R.id.main_ibtn_refresh);
+        ImageButton ibtnSearch = findViewById(R.id.main_ibtn_search);
+        ImageButton ibtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
+        //Store
         mTvStoreName = findViewById(R.id.main_tv_store_name);
         mTvStoreAddr = findViewById(R.id.main_tv_store_addr);
-        mIvMaskState = findViewById(R.id.main_iv_state);
-        ImageButton ibtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
-        ImageButton ibtnWayFinding = findViewById(R.id.main_ibtn_wayfinding);
+        mTvStoreStockAt = findViewById(R.id.main_tv_store_stock_at);
+        ImageButton ibtnStoreWayFinding = findViewById(R.id.main_ibtn_wayfinding);
+        ImageButton ibtnStoreShare = findViewById(R.id.main_ibtn_store_share);
+        mIvStoreMaskState = findViewById(R.id.main_iv_store_state);
         mLlStoreInfo = findViewById(R.id.main_ll_storeInfo);
 
+        //information
         tvAnnounce.setOnClickListener(this);
         mTvPossibleDay.setOnClickListener(this);
-        ibtnReload.setOnClickListener(this);
-        mTvStoreName.setOnClickListener(this);
+        //util button
+        ibtnRefresh.setOnClickListener(this);
+        ibtnSearch.setOnClickListener(this);
         ibtnMyLocation.setOnClickListener(this);
-        ibtnWayFinding.setOnClickListener(this);
+        //store
+        mTvStoreName.setOnClickListener(this);
+        ibtnStoreWayFinding.setOnClickListener(this);
+        ibtnStoreShare.setOnClickListener(this);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         setPossibleDay();
+        removeAllMarkers();
+        if(mLlStoreInfo.getVisibility() == View.VISIBLE) {
+            showStoreInfo(View.GONE);
+        }
+        mTvUpdateTime.setText(getUpdateTime());
+        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
     }
 
     @Override
@@ -137,19 +153,25 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                         .animate(CameraAnimation.Easing);
                 mNaverMap.moveCamera(cameraUpdate);
                 break;
+            case R.id.main_ibtn_search:
+                showCustomToast(getString(R.string.main_ready_bookmark));
+                break;
+            case R.id.main_ibtn_refresh:
+                removeAllMarkers();
+                if(mLlStoreInfo.getVisibility() == View.VISIBLE) {
+                    showStoreInfo(View.GONE);
+                }
+                mTvUpdateTime.setText(getUpdateTime());
+                getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
+                break;
             case R.id.main_tv_store_name:
                 showCustomToast(getString(R.string.main_ready_bookmark));
                 break;
             case R.id.main_ibtn_wayfinding:
                 showCustomToast(getString(R.string.main_ready_findwaying));
                 break;
-            case R.id.main_ibtn_reload:
-                removeAllMarkers();
-                if(mLlStoreInfo.getVisibility() == View.VISIBLE) {
-                    showStoreInfo(View.GONE);
-                }
-                mTvTime.setText(setTime());
-                getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
+            case R.id.main_ibtn_store_share:
+                showCustomToast(getString(R.string.main_ready_findwaying));
                 break;
         }
     }
@@ -157,14 +179,6 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
     /*--------------
     time, day function */
-
-    private String setTime(){
-        long now = System.currentTimeMillis();
-        Date mDate = new Date(now);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.KOREA);
-        return simpleDateFormat.format(mDate);
-    }
 
     private void setPossibleDay() {
         Calendar cal = Calendar.getInstance();
@@ -190,6 +204,19 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
+    private String getUpdateTime(){
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM.dd HH:mm", Locale.KOREA);
+        return simpleDateFormat.format(mDate);
+    }
+
+    private String getStockTime(String originFormatDate){
+//        2020/03/17 08:52:00
+//        03.15 23:59
+        return originFormatDate.substring(5, 7) + "." + originFormatDate.substring(8, 10) + " " + originFormatDate.substring(11,16);
+    }
     /*--------------
     time, day function end */
 
@@ -231,13 +258,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             @Override
             public boolean onClick(@NonNull Overlay overlay) {
                 if(mSelectedMarker == null){
-                    setStoreInfo(store.getName(), store.getAddr(), infoStateRes);
+                    setStoreInfo(store.getName(), store.getAddr(), store.getStock_at() ,infoStateRes);
                     marker.setIcon(OverlayImage.fromResource(activatedRes));
                     mSelectedMarker = marker;
                     mSelectedState = store.getRemain_stat();
                 }
                 else if(mSelectedMarker != marker){
-                    changeStoreInfo(store.getName(), store.getAddr(), infoStateRes);
+                    changeStoreInfo(store.getName(), store.getAddr(), store.getStock_at() ,infoStateRes);
                     marker.setIcon(OverlayImage.fromResource(activatedRes));
                     mSelectedMarker = marker;
                     mSelectedState = store.getRemain_stat();
@@ -267,10 +294,11 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     /*--------------
     store info */
 
-    private void setStoreInfo(String name, String address, int res) {
+    private void setStoreInfo(String name, String address, String stockAt, int res) {
         mTvStoreName.setText(name);
         mTvStoreAddr.setText(address);
-        mIvMaskState.setImageResource(res);
+        mTvStoreStockAt.setText(getStockTime(stockAt));
+        mIvStoreMaskState.setImageResource(res);
 
        showStoreInfo(View.VISIBLE);
     }
@@ -288,10 +316,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mLlStoreInfo.setVisibility(visibility);
     }
 
-    private void changeStoreInfo(String name, String address, int res) {
+    private void changeStoreInfo(String name, String address, String stockAt, int res) {
         mTvStoreName.setText(name);
         mTvStoreAddr.setText(address);
-        mIvMaskState.setImageResource(res);
+        mTvStoreStockAt.setText(getStockTime(stockAt));
+        mIvStoreMaskState.setImageResource(res);
+
 
         switch (mSelectedState) {
             case "plenty":

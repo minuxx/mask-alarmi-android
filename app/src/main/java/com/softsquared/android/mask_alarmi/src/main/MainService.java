@@ -20,7 +20,7 @@ class MainService {
     }
 
     void getStores(double lat, double lng, int m) {
-        final MainRetrofitInterface mainRetrofitInterface = getRetrofit().create(MainRetrofitInterface.class);
+        final MainRetrofitInterface mainRetrofitInterface = getRetrofit(true).create(MainRetrofitInterface.class);
 
         mainRetrofitInterface.getStores(lat, lng, m).enqueue(new Callback<MainResponse>() {
             @Override

@@ -26,6 +26,9 @@ public class ApplicationClass extends Application {
 
     // 테스트 서버 주소
     public static String BASE_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
+
+    public static String PUBLIC_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
+
 //    public static String BASE_URL = "https://adsfgdhfgjhkjk.com/";
 
     // 실서버 주소
@@ -54,7 +57,7 @@ public class ApplicationClass extends Application {
         }
     }
 
-    public static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit(boolean isPublic) {
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
                     .readTimeout(5000, TimeUnit.MILLISECONDS)
@@ -63,7 +66,7 @@ public class ApplicationClass extends Application {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(isPublic ? PUBLIC_URL : BASE_URL)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

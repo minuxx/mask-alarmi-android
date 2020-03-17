@@ -2,7 +2,8 @@
     <string name="app_name">마스크 알라미</string>
     <string name="loading">로딩중입니다.</string>
     <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
-    <string name="facebook_app_id">209378320171440</string> <string name="fb_login_protocol_scheme">fb209378320171440</string>
+    <string name="facebook_app_id">209378320171440</string>
+    <string name="fb_login_protocol_scheme">fb209378320171440</string>
 
     <!--Main-->
     <string name="main_permission_denied">퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.</string>
@@ -12,14 +13,18 @@
     <string name="main_possible_all">주중에 구매하지 못했다면 오늘 구매할 수 있어요!</string>
     <string name="main_ready_bookmark">기능 준비중입니다.</string>
     <string name="main_ready_findwaying">기능 준비중입니다.</string>
+    <string name="main_update">업데이트</string>
+    <string name="main_stock_at">입고시간</string>
     
     <string name="main_cd_ic_announce">ic_announce</string>
     <string name="main_cd_ic_img_mask_amount">img_mask_amount</string>
     <string name="main_cd_ic_mylocation">ic_mylocation</string>
+    <string name="main_cd_ic_search">ic_search</string>
+    <string name="main_cd_ic_refresh">ic_refresh</string>
     <string name="main_cd_ic_wayfinding">ic_wayfinding</string>
+    <string name="main_cd_ic_share">ic_share</string>
     <string name="main_cd_ic_mask_state">ic_mask_state</string>
     <string name="main_cd_logo_w">logo_w</string>
-    <string name="main_cd_refresh">ic_refresh</string>
 
     <!--Announce-->
     <string name="announce_announce">공지사항</string>
