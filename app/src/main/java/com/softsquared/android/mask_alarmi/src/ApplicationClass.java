@@ -18,9 +18,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApplicationClass extends Application {
     public static MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=uft-8");
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
+    //mask map
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     //M단위
-    public final static int RADIUS = 1000;
+    public final static int RADIUS = 1000; // 1M
 
     // 테스트 서버 주소
     public static String BASE_URL = "https://8oi9s0nnth.apigw.ntruss.com/";

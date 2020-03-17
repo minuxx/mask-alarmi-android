@@ -1,10 +1,8 @@
 package com.softsquared.android.mask_alarmi.src.main;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-
 import android.content.Intent;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -21,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.fragment.app.FragmentManager;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
@@ -47,19 +46,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.softsquared.android.mask_alarmi.src.ApplicationClass.RADIUS;
 
 
 public class MainActivity extends BaseActivity implements MainActivityView, OnMapReadyCallback {
-    private MapFragment mFgMap;
     private NaverMap mNaverMap;
-
     private GpsTracker gpsTracker;
-
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private FusedLocationSource mLocationSource;
-
-    private ArrayList<Marker> mMarkers = null;
 
     private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvTime;
     private ImageView mIvMaskState;
@@ -69,15 +63,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
     private LinearLayout mLlStoreInfo;
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-    private AppEventsLogger mLogger;
-
+    private ArrayList<Marker> mMarkers = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        //set firebase & facebook analytics
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         logSentFriendRequestEvent();
 
         setContentView(R.layout.activity_main);
@@ -85,10 +77,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
         FragmentManager fm = getSupportFragmentManager();
 
-        mFgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
+        MapFragment fgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
 
-        if (mFgMap != null) {
-            mFgMap.getMapAsync(MainActivity.this);
+        if (fgMap != null) {
+            fgMap.getMapAsync(MainActivity.this);
         }
 
         mMarkers = new ArrayList<>();
@@ -101,17 +93,19 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         super.initViews();
         TextView tvAnnounce = findViewById(R.id.main_tv_announce);
         tvAnnounce.setSelected(true);
+
         mTvPossibleDay = findViewById(R.id.main_tv_possible_day);
         setPossibleDay();
+
         mTvTime = findViewById(R.id.main_tv_time);
         mTvTime.setText(setTime());
+
         ImageButton ibtnReload = findViewById(R.id.main_ibtn_reload);
         mTvStoreName = findViewById(R.id.main_tv_store_name);
         mTvStoreAddr = findViewById(R.id.main_tv_store_addr);
         mIvMaskState = findViewById(R.id.main_iv_state);
         ImageButton ibtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
         ImageButton ibtnWayFinding = findViewById(R.id.main_ibtn_wayfinding);
-
         mLlStoreInfo = findViewById(R.id.main_ll_storeInfo);
 
         tvAnnounce.setOnClickListener(this);
@@ -141,7 +135,6 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             case R.id.main_ibtn_mylocation:
                 CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
                         .animate(CameraAnimation.Easing);
-                ;
                 mNaverMap.moveCamera(cameraUpdate);
                 break;
             case R.id.main_tv_store_name:
@@ -162,6 +155,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
+    /*--------------
+    time, day function */
 
     private String setTime(){
         long now = System.currentTimeMillis();
@@ -193,112 +188,35 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 mTvPossibleDay.setText(ssb);
                 break;
         }
-
     }
+
+    /*--------------
+    time, day function end */
+
+
+    /*--------------
+    marker function */
 
     private void setMarkers(ArrayList<Store> stores) {
         for (final Store store : stores) {
             if (store.getRemain_stat() != null) {
+
                 final Marker marker = new Marker();
                 marker.setPosition(new LatLng(store.getLat(), store.getLng()));
+
                 switch (store.getRemain_stat()) {
                     case "plenty":
-                        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
-                        marker.setOnClickListener(new Overlay.OnClickListener() {
-                            @Override
-                            public boolean onClick(@NonNull Overlay overlay) {
-                                if(mSelectedMarker == null){
-                                    setStoreInfo(store.getName(), store.getAddr(), R.drawable.ic_plenty_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else if(mSelectedMarker != marker){
-                                    setStoreInfo(store.getRemain_stat(), store.getName(), store.getAddr(), R.drawable.ic_plenty_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else{
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
-                                    mSelectedMarker = null;
-                                    showStoreInfo(View.GONE);
-                                }
-                                return true;
-                            }
-                        });
+                        handleClickMarker(marker, store, R.drawable.ic_plenty_small, R.drawable.ic_plenty_activate, R.drawable.ic_plenty_big);
                         break;
                     case "some":
-                        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
-                        marker.setOnClickListener(new Overlay.OnClickListener() {
-                            @Override
-                            public boolean onClick(@NonNull Overlay overlay) {
-                                if(mSelectedMarker == null){
-                                    setStoreInfo(store.getName(), store.getAddr(), R.drawable.ic_som_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else if(mSelectedMarker != marker){
-                                    setStoreInfo(store.getRemain_stat(), store.getName(), store.getAddr(), R.drawable.ic_som_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else{
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
-                                    mSelectedMarker = null;
-                                    showStoreInfo(View.GONE);
-                                }
-                                return true;
-                            }
-                        });
+                        handleClickMarker(marker, store, R.drawable.ic_som_small, R.drawable.ic_som_activate, R.drawable.ic_som_big);
                         break;
                     case "few":
-                        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
-                        marker.setOnClickListener(new Overlay.OnClickListener() {
-                            @Override
-                            public boolean onClick(@NonNull Overlay overlay) {
-                                if(mSelectedMarker == null){
-                                    setStoreInfo(store.getName(), store.getAddr(), R.drawable.ic_few_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else if(mSelectedMarker != marker){
-                                    setStoreInfo(store.getRemain_stat(), store.getName(), store.getAddr(), R.drawable.ic_few_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else{
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
-                                    mSelectedMarker = null;
-                                    showStoreInfo(View.GONE);
-                                }
-                                return true;
-                            }
-                        });
+                        handleClickMarker(marker, store, R.drawable.ic_few_small, R.drawable.ic_few_activate, R.drawable.ic_few_big);
                         break;
                     case "empty":
                     case "break":
-                        marker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
-                        marker.setOnClickListener(new Overlay.OnClickListener() {
-                            @Override
-                            public boolean onClick(@NonNull Overlay overlay) {
-                                if(mSelectedMarker == null){
-                                    setStoreInfo(store.getName(), store.getAddr(), R.drawable.ic_empty_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }
-                                else if(mSelectedMarker != marker){
-                                    setStoreInfo(store.getRemain_stat(), store.getName(), store.getAddr(), R.drawable.ic_empty_big);
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_activate));
-                                    mSelectedMarker = marker;
-                                    mSelectedState = store.getRemain_stat();
-                                }else{
-                                    marker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
-                                    mSelectedMarker = null;
-                                    showStoreInfo(View.GONE);
-                                }
-                                return true;
-                            }
-                        });
+                        handleClickMarker(marker, store, R.drawable.ic_empty_small, R.drawable.ic_empty_activate, R.drawable.ic_empty_big);
                         break;
                 }
                 marker.setMap(mNaverMap);
@@ -306,6 +224,48 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             }
         }
     }
+
+    private void handleClickMarker(final Marker marker, final Store store, final int inactivatedRes, final int activatedRes, final int infoStateRes){
+        marker.setIcon(OverlayImage.fromResource(inactivatedRes));
+        marker.setOnClickListener(new Overlay.OnClickListener() {
+            @Override
+            public boolean onClick(@NonNull Overlay overlay) {
+                if(mSelectedMarker == null){
+                    setStoreInfo(store.getName(), store.getAddr(), infoStateRes);
+                    marker.setIcon(OverlayImage.fromResource(activatedRes));
+                    mSelectedMarker = marker;
+                    mSelectedState = store.getRemain_stat();
+                }
+                else if(mSelectedMarker != marker){
+                    changeStoreInfo(store.getName(), store.getAddr(), infoStateRes);
+                    marker.setIcon(OverlayImage.fromResource(activatedRes));
+                    mSelectedMarker = marker;
+                    mSelectedState = store.getRemain_stat();
+                }else{
+                    marker.setIcon(OverlayImage.fromResource(inactivatedRes));
+                    mSelectedMarker = null;
+                    mSelectedState = null;
+                    showStoreInfo(View.GONE);
+                }
+                return true;
+            }
+        });
+    }
+
+    private void removeAllMarkers() {
+        mSelectedMarker = null;
+        for (Marker marker : mMarkers) {
+            marker.setMap(null);
+        }
+        mMarkers.clear();
+    }
+
+    /*--------------
+    marker function end */
+
+
+    /*--------------
+    store info */
 
     private void setStoreInfo(String name, String address, int res) {
         mTvStoreName.setText(name);
@@ -315,8 +275,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
        showStoreInfo(View.VISIBLE);
     }
 
-    private void showStoreInfo(int visivlity){
-        if(visivlity == View.VISIBLE) {
+    private void showStoreInfo(int visibility){
+        if(visibility == View.VISIBLE) {
             Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_up);
             mLlStoreInfo.startAnimation(slideUp);
@@ -325,10 +285,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                     R.anim.slide_down);
             mLlStoreInfo.startAnimation(slideDown);
         }
-        mLlStoreInfo.setVisibility(visivlity);
+        mLlStoreInfo.setVisibility(visibility);
     }
 
-    private void setStoreInfo(String state, String name, String address, int res) {
+    private void changeStoreInfo(String name, String address, int res) {
         mTvStoreName.setText(name);
         mTvStoreAddr.setText(address);
         mIvMaskState.setImageResource(res);
@@ -350,24 +310,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-
-    private void removeAllMarkers() {
-        mSelectedMarker = null;
-        for (Marker marker : mMarkers) {
-            marker.setMap(null);
-        }
-        mMarkers.clear();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (mLocationSource.onRequestPermissionsResult(
-                requestCode, permissions, grantResults)) {
-            return;
-        }
-        super.onRequestPermissionsResult(
-                requestCode, permissions, grantResults);
-    }
+    /*--------------
+    store info end */
 
     @UiThread
     @Override
@@ -397,6 +341,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                             break;
                     }
                     mSelectedMarker = null;
+                    mSelectedState = null;
                     showStoreInfo(View.GONE);
                 }
             }
@@ -407,13 +352,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setZoomControlEnabled(false);
 
-
         getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
     }
 
 
     /*---------
-    API Communication*/
+    api communication */
+
     private void getStores(double lat, double lng, int m) {
         showProgressDialog();
         MainService mainService = new MainService(this);
@@ -440,8 +385,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             mNaverMap.moveCamera(cameraUpdate);
         }
     }
+
     /*---------
-    API Communication End*/
+    api communication end*/
 
 
     /**
@@ -449,7 +395,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
      * created using AppEventsLogger.newLogger() call.
      */
     public void logSentFriendRequestEvent () {
-        mLogger = AppEventsLogger.newLogger(this);
-        mLogger.logEvent("sentFriendRequest");
+        AppEventsLogger logger = AppEventsLogger.newLogger(this);
+        logger.logEvent("sentFriendRequest");
     }
 }

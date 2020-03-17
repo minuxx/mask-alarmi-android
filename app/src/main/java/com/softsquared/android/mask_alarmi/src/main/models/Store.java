@@ -7,14 +7,14 @@ public class Store {
     private String addr;
     @SerializedName("code")
     private String code;
-    @SerializedName("created_at")
-    private String created_at;
     @SerializedName("lat")
     private double lat;
     @SerializedName("lng")
     private double lng;
     @SerializedName("name")
     private String name;
+    @SerializedName("created_at")
+    private String created_at;
     @SerializedName("remain_stat")
     private String remain_stat;
     @SerializedName("stock_at")
