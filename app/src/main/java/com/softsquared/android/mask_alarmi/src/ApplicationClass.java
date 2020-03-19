@@ -22,7 +22,7 @@ public class ApplicationClass extends Application {
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     //M단위
-    public final static int RADIUS = 1000; // 1M
+    public final static int INRADIUS = 1000; // 1M
 
     // 테스트 서버 주소
     public static String BASE_URL = "https://8oi9s0nnth.apigw.ntruss.com/";

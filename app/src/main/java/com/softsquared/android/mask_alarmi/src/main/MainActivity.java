@@ -1,7 +1,9 @@
 package com.softsquared.android.mask_alarmi.src.main;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -46,16 +48,19 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.softsquared.android.mask_alarmi.src.ApplicationClass.LOCATION_PERMISSION_REQUEST_CODE;
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.RADIUS;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.INRADIUS;
 
 
 public class MainActivity extends BaseActivity implements MainActivityView, OnMapReadyCallback {
+    private final static String TAG = "main act: ";
     private NaverMap mNaverMap;
+    private MapFragment mFgMap;
     private GpsTracker gpsTracker;
     private FusedLocationSource mLocationSource;
 
     private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvStoreStockAt ,mTvUpdateTime;
     private ImageView mIvStoreMaskState;
+    private ImageButton mIbtnRefresh;
 
     private Marker mSelectedMarker = null;
     private String mSelectedState = null;
@@ -77,10 +82,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         //map
         FragmentManager fm = getSupportFragmentManager();
 
-        MapFragment fgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
+        mFgMap = (MapFragment) fm.findFragmentById(R.id.main_fg_map);
 
-        if (fgMap != null) {
-            fgMap.getMapAsync(MainActivity.this);
+        if (mFgMap != null) {
+            mFgMap.getMapAsync(MainActivity.this);
         }
 
         mMarkers = new ArrayList<>();
@@ -101,7 +106,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mTvUpdateTime = findViewById(R.id.main_tv_update_at);
         mTvUpdateTime.setText(getUpdateTime());
         //util button
-        ImageButton ibtnRefresh = findViewById(R.id.main_ibtn_refresh);
+        mIbtnRefresh = findViewById(R.id.main_ibtn_refresh);
         ImageButton ibtnSearch = findViewById(R.id.main_ibtn_search);
         ImageButton ibtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
         //Store
@@ -117,13 +122,19 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         tvAnnounce.setOnClickListener(this);
         mTvPossibleDay.setOnClickListener(this);
         //util button
-        ibtnRefresh.setOnClickListener(this);
+        mIbtnRefresh.setOnClickListener(this);
         ibtnSearch.setOnClickListener(this);
         ibtnMyLocation.setOnClickListener(this);
         //store
         mTvStoreName.setOnClickListener(this);
         ibtnStoreWayFinding.setOnClickListener(this);
         ibtnStoreShare.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFgMap.onStart();
     }
 
     @Override
@@ -135,7 +146,31 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             showStoreInfo(View.GONE);
         }
         mTvUpdateTime.setText(getUpdateTime());
-        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
+        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFgMap.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mFgMap.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mFgMap.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mFgMap.onLowMemory();
     }
 
     @Override
@@ -158,17 +193,18 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 break;
             case R.id.main_ibtn_refresh:
                 removeAllMarkers();
-                if(mLlStoreInfo.getVisibility() == View.VISIBLE) {
+                startRotatationRefreshIbtn(true);
+                if (mLlStoreInfo.getVisibility() == View.VISIBLE) {
                     showStoreInfo(View.GONE);
                 }
                 mTvUpdateTime.setText(getUpdateTime());
-                getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
+                getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
                 break;
             case R.id.main_tv_store_name:
-                showCustomToast(getString(R.string.main_ready_bookmark));
+                showCustomToast(getString(R.string.main_ready_findwaying));
                 break;
             case R.id.main_ibtn_wayfinding:
-                showCustomToast(getString(R.string.main_ready_findwaying));
+                moveFindingWay();
                 break;
             case R.id.main_ibtn_store_share:
                 showCustomToast(getString(R.string.main_ready_findwaying));
@@ -176,6 +212,50 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
+    private void startRotatationRefreshIbtn(boolean startRotation){
+        if(startRotation){
+            mIbtnRefresh.setImageResource(R.drawable.ic_refresh_clicked);
+            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+//            mIbtnRefresh.setAnimation(animation);
+            mIbtnRefresh.startAnimation(animation);
+        }else{
+            mIbtnRefresh.setImageResource(R.drawable.ic_refresh);
+            mIbtnRefresh.setAnimation(null);
+        }
+    }
+
+    /*--------------
+    move find way function */
+
+    private void moveFindingWay(){
+        //nmap://route/walk?slat=37.4640070&slng=126.9522394&sname=%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90&dlat=37.4764356&dlng=126.9618302&dname=%EB%8F%99%EC%9B%90%EB%82%99%EC%84%B1%EB%8C%80%EC%95%84%ED%8C%8C%ED%8A%B8&appname=com.example.myapp
+        if(mSelectedMarker != null){
+            Store store = (Store)mSelectedMarker.getTag();
+            if(store != null){
+                String naverMapUrl = "nmap://route/walk?slat=" + gpsTracker.getLatitude() + "&slng=" + gpsTracker.getLongitude() + "&sname=" + "현재위치" +
+                        "&dlat=" + store.getLat() + "&dlng=" + store.getLng() + "&dname=" + store.getName() +
+                        "&appname=" + getPackageName();
+
+                try {
+                    Intent naverMapIntent = Intent.parseUri(naverMapUrl, Intent.URI_INTENT_SCHEME);
+                    startActivity(naverMapIntent);
+                } catch (ActivityNotFoundException e){
+                    String googleMapuri ="http://maps.google.com/maps?daddr="+store.getName();
+                    Intent googleMapIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse(googleMapuri));
+                    googleMapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    googleMapIntent.addCategory(Intent.CATEGORY_LAUNCHER );
+                    googleMapIntent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    startActivity(googleMapIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /*--------------
+    move find way function end */
 
     /*--------------
     time, day function */
@@ -261,17 +341,16 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                     setStoreInfo(store.getName(), store.getAddr(), store.getStock_at() ,infoStateRes);
                     marker.setIcon(OverlayImage.fromResource(activatedRes));
                     mSelectedMarker = marker;
-                    mSelectedState = store.getRemain_stat();
+                    mSelectedMarker.setTag(store);
                 }
                 else if(mSelectedMarker != marker){
                     changeStoreInfo(store.getName(), store.getAddr(), store.getStock_at() ,infoStateRes);
                     marker.setIcon(OverlayImage.fromResource(activatedRes));
                     mSelectedMarker = marker;
-                    mSelectedState = store.getRemain_stat();
+                    mSelectedMarker.setTag(store);
                 }else{
                     marker.setIcon(OverlayImage.fromResource(inactivatedRes));
                     mSelectedMarker = null;
-                    mSelectedState = null;
                     showStoreInfo(View.GONE);
                 }
                 return true;
@@ -322,21 +401,23 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mTvStoreStockAt.setText(getStockTime(stockAt));
         mIvStoreMaskState.setImageResource(res);
 
-
-        switch (mSelectedState) {
-            case "plenty":
-                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
-                break;
-            case "som":
-                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
-                break;
-            case "few":
-                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
-                break;
-            case "empty":
-            case "break":
-                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
-                break;
+        Store store = (Store)mSelectedMarker.getTag();
+        if(store != null) {
+            switch (store.getRemain_stat()) {
+                case "plenty":
+                    mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
+                    break;
+                case "som":
+                    mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
+                    break;
+                case "few":
+                    mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
+                    break;
+                case "empty":
+                case "break":
+                    mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                    break;
+            }
         }
     }
 
@@ -355,20 +436,23 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             @Override
             public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
                 if(mLlStoreInfo.getVisibility() == View.VISIBLE){
-                    switch (mSelectedState) {
-                        case "plenty":
-                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
-                            break;
-                        case "som":
-                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
-                            break;
-                        case "few":
-                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
-                            break;
-                        case "empty":
-                        case "break":
-                            mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
-                            break;
+                    Store store = (Store)mSelectedMarker.getTag();
+                    if(store != null) {
+                        switch (store.getRemain_stat()) {
+                            case "plenty":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
+                                break;
+                            case "som":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
+                                break;
+                            case "few":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
+                                break;
+                            case "empty":
+                            case "break":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                                break;
+                        }
                     }
                     mSelectedMarker = null;
                     mSelectedState = null;
@@ -382,7 +466,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         UiSettings uiSettings = mNaverMap.getUiSettings();
         uiSettings.setZoomControlEnabled(false);
 
-        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), RADIUS);
+        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
     }
 
 
@@ -390,29 +474,42 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     api communication */
 
     private void getStores(double lat, double lng, int m) {
-        showProgressDialog();
+        if(mIbtnRefresh.getAnimation() == null){
+            showProgressDialog();
+        }
         MainService mainService = new MainService(this);
         mainService.getStores(lat, lng, m);
     }
 
     @Override
     public void getStoresSuccess(int count, ArrayList<Store> stores) {
-        hideProgressDialog();
+
         if(mNaverMap != null){
             setMarkers(stores);
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
                     .animate(CameraAnimation.Easing);
             mNaverMap.moveCamera(cameraUpdate);
         }
+
+        if(mIbtnRefresh.getAnimation() != null){
+            startRotatationRefreshIbtn(false);
+        }else{
+            hideProgressDialog();
+        }
     }
 
     @Override
     public void getStoresFailure(String message) {
-        hideProgressDialog();
         if(mNaverMap != null) {
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
                     .animate(CameraAnimation.Easing);
             mNaverMap.moveCamera(cameraUpdate);
+        }
+
+        if(mIbtnRefresh.getAnimation() != null){
+            startRotatationRefreshIbtn(false);
+        }else{
+            hideProgressDialog();
         }
     }
 
