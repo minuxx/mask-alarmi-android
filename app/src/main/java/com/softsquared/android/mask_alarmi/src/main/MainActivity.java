@@ -193,7 +193,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 break;
             case R.id.main_ibtn_refresh:
                 removeAllMarkers();
-                startRotatationRefreshIbtn(true);
+                startRotationRefreshIbtn(true);
                 if (mLlStoreInfo.getVisibility() == View.VISIBLE) {
                     showStoreInfo(View.GONE);
                 }
@@ -212,7 +212,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-    private void startRotatationRefreshIbtn(boolean startRotation){
+
+
+    private void startRotationRefreshIbtn(boolean startRotation){
         if(startRotation){
             mIbtnRefresh.setImageResource(R.drawable.ic_refresh_clicked);
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
@@ -222,6 +224,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             mIbtnRefresh.setImageResource(R.drawable.ic_refresh);
             mIbtnRefresh.setAnimation(null);
         }
+    }
+
+    private void searchStore(){
+
     }
 
     /*--------------
@@ -258,7 +264,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     move find way function end */
 
     /*--------------
-    time, day function */
+    time, day functions */
 
     private void setPossibleDay() {
         Calendar cal = Calendar.getInstance();
@@ -298,11 +304,11 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         return originFormatDate.substring(5, 7) + "." + originFormatDate.substring(8, 10) + " " + originFormatDate.substring(11,16);
     }
     /*--------------
-    time, day function end */
+    time, day functions end */
 
 
     /*--------------
-    marker function */
+    marker functions */
 
     private void setMarkers(ArrayList<Store> stores) {
         for (final Store store : stores) {
@@ -322,8 +328,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                         handleClickMarker(marker, store, R.drawable.ic_few_small, R.drawable.ic_few_activate, R.drawable.ic_few_big);
                         break;
                     case "empty":
-                    case "break":
                         handleClickMarker(marker, store, R.drawable.ic_empty_small, R.drawable.ic_empty_activate, R.drawable.ic_empty_big);
+                        break;
+                    case "break":
+                        handleClickMarker(marker, store, R.drawable.ic_null_small, R.drawable.ic_null_activate, R.drawable.ic_null_big);
                         break;
                 }
                 marker.setMap(mNaverMap);
@@ -367,11 +375,11 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
     /*--------------
-    marker function end */
+    marker functions end */
 
 
     /*--------------
-    store info */
+    store info functions */
 
     private void setStoreInfo(String name, String address, String stockAt, int res) {
         mTvStoreName.setText(name);
@@ -407,22 +415,24 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 case "plenty":
                     mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
                     break;
-                case "som":
+                case "some":
                     mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
                     break;
                 case "few":
                     mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
                     break;
                 case "empty":
-                case "break":
                     mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                    break;
+                case "break":
+                    mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_null_small));
                     break;
             }
         }
     }
 
     /*--------------
-    store info end */
+    store info functions end */
 
     @UiThread
     @Override
@@ -442,20 +452,21 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                             case "plenty":
                                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
                                 break;
-                            case "som":
+                            case "some":
                                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
                                 break;
                             case "few":
                                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
                                 break;
                             case "empty":
-                            case "break":
                                 mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                                break;
+                            case "break":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_null_small));
                                 break;
                         }
                     }
                     mSelectedMarker = null;
-                    mSelectedState = null;
                     showStoreInfo(View.GONE);
                 }
             }
@@ -492,7 +503,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
 
         if(mIbtnRefresh.getAnimation() != null){
-            startRotatationRefreshIbtn(false);
+            startRotationRefreshIbtn(false);
         }else{
             hideProgressDialog();
         }
@@ -507,7 +518,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
 
         if(mIbtnRefresh.getAnimation() != null){
-            startRotatationRefreshIbtn(false);
+            startRotationRefreshIbtn(false);
         }else{
             hideProgressDialog();
         }
