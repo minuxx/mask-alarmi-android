@@ -16,6 +16,7 @@
     <string name="main_update">업데이트</string>
     <string name="main_stock_at">입고시간</string>
     <string name="main_search_hint">지역 ・ 약국이름 검색</string>
+    <string name="main_search_null">검색결과가 존재하지 않습니다</string>
     
     <string name="main_cd_ic_announce">ic_announce</string>
     <string name="main_cd_ic_img_mask_amount">img_mask_amount</string>

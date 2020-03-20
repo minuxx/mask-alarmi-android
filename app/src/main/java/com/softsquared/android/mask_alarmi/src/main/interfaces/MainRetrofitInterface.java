@@ -13,9 +13,12 @@ import retrofit2.http.Query;
 public interface MainRetrofitInterface {
     //    @GET("/test")
     @GET("/corona19-masks/v1/storesByGeo/json")
-    Call<MainResponse> getStores(@Query("lat") final double lat,
+    Call<MainResponse> getStoresByGeo(@Query("lat") final double lat,
                                  @Query("lng") final double lng,
                                  @Query("m") final int m);
+
+    @GET("/corona19-masks/v1/storesByAddr/json")
+    Call<MainResponse> getStoresByAddr(@Query("address") final String address);
 
 
 }

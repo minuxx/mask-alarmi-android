@@ -4,8 +4,6 @@ import com.softsquared.android.mask_alarmi.src.main.interfaces.MainActivityView;
 import com.softsquared.android.mask_alarmi.src.main.interfaces.MainRetrofitInterface;
 import com.softsquared.android.mask_alarmi.src.main.models.MainResponse;
 
-import java.util.HashMap;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,24 +17,46 @@ class MainService {
         this.mMainActivityView = mainActivityView;
     }
 
-    void getStores(double lat, double lng, int m) {
+    void getStoresByGeo(double lat, double lng, int m) {
         final MainRetrofitInterface mainRetrofitInterface = getRetrofit(true).create(MainRetrofitInterface.class);
 
-        mainRetrofitInterface.getStores(lat, lng, m).enqueue(new Callback<MainResponse>() {
+        mainRetrofitInterface.getStoresByGeo(lat, lng, m).enqueue(new Callback<MainResponse>() {
             @Override
             public void onResponse(Call<MainResponse> call, Response<MainResponse> response) {
                 final MainResponse mainResponse = response.body();
                 if (mainResponse == null) {
-                    mMainActivityView.getStoresFailure(null);
+                    mMainActivityView.getStoresByGeoFailure(null);
                     return;
                 }else{
-                    mMainActivityView.getStoresSuccess(mainResponse.getCount(), mainResponse.getStores());
+                    mMainActivityView.getStoresByGeoSuccess(mainResponse.getCount(), mainResponse.getStores());
                 }
             }
 
             @Override
             public void onFailure(Call<MainResponse> call, Throwable t) {
-                mMainActivityView.getStoresFailure("onResponse failed");
+                mMainActivityView.getStoresByGeoFailure("onResponse failed");
+            }
+        });
+    }
+
+    void getStoresByAddr(String address) {
+        final MainRetrofitInterface mainRetrofitInterface = getRetrofit(true).create(MainRetrofitInterface.class);
+
+        mainRetrofitInterface.getStoresByAddr(address).enqueue(new Callback<MainResponse>() {
+            @Override
+            public void onResponse(Call<MainResponse> call, Response<MainResponse> response) {
+                final MainResponse mainResponse = response.body();
+                if (mainResponse == null) {
+                    mMainActivityView.getStoresByAddrFailure(null);
+                    return;
+                }else{
+                    mMainActivityView.getStoresByAddrSuccess(mainResponse.getCount(), mainResponse.getStores());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MainResponse> call, Throwable t) {
+                mMainActivityView.getStoresByAddrFailure("onResponse failed");
             }
         });
     }

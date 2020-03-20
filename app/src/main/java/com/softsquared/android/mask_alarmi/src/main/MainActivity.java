@@ -1,6 +1,7 @@
 package com.softsquared.android.mask_alarmi.src.main;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.net.Uri;
@@ -8,12 +9,13 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.transition.TransitionManager;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -52,8 +54,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.LOCATION_PERMISSION_REQUEST_CODE;
 import static com.softsquared.android.mask_alarmi.src.ApplicationClass.INRADIUS;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.LOCATION_PERMISSION_REQUEST_CODE;
+import static com.softsquared.android.mask_alarmi.src.ApplicationClass.ZOOM_ON_SEARCH;
 
 
 public class MainActivity extends BaseActivity implements MainActivityView, OnMapReadyCallback {
@@ -63,18 +66,19 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     private GpsTracker gpsTracker;
     private FusedLocationSource mLocationSource;
 
-    private FrameLayout mFlParent, mFlStockGuide;
+    private FrameLayout mFlStockGuide;
     private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvStoreStockAt ,mTvUpdateTime;
     private EditText mEtSearch;
     private ImageView mIvStoreMaskState;
     private ImageButton mIbtnRefresh, mIbtnSearch, mIbtnMyLocation;
 
     private Marker mSelectedMarker = null;
-    private String mSelectedState = null;
 
     private LinearLayout mLlStoreInfo;
 
     private ArrayList<Marker> mMarkers = null;
+
+    private long mBackKeyPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +108,6 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     public void initViews() {
         super.initViews();
-        mFlParent = findViewById(R.id.main_fg_parent);
         //information
         TextView tvAnnounce = findViewById(R.id.main_tv_announce);
         tvAnnounce.setSelected(true);
@@ -139,6 +142,17 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mTvStoreName.setOnClickListener(this);
         ibtnStoreWayFinding.setOnClickListener(this);
         ibtnStoreShare.setOnClickListener(this);
+
+        mEtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH){
+                    removeAllMarkers();
+                    getStoresByAddr(mEtSearch.getText().toString());
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -156,7 +170,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             showStoreInfo(View.GONE);
         }
         mTvUpdateTime.setText(getUpdateTime());
-        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
+        getStoresByGeo(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
     }
 
     @Override
@@ -182,6 +196,56 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         super.onLowMemory();
         mFgMap.onLowMemory();
     }
+
+    @UiThread
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        mNaverMap = naverMap;
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+        locationOverlay.setVisible(true);
+        locationOverlay.setIcon(OverlayImage.fromResource(R.drawable.ic_range_and_location));
+
+        mNaverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                if(mLlStoreInfo.getVisibility() == View.VISIBLE){
+                    Store store = (Store)mSelectedMarker.getTag();
+                    if(store != null) {
+                        switch (store.getRemain_stat()) {
+                            case "plenty":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
+                                break;
+                            case "some":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
+                                break;
+                            case "few":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
+                                break;
+                            case "empty":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
+                                break;
+                            case "break":
+                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_null_small));
+                                break;
+                        }
+                    }
+                    mSelectedMarker = null;
+                    showStoreInfo(View.GONE);
+                }
+                if(mEtSearch.getVisibility() == View.VISIBLE){
+                    showSearchEt(false);
+                }
+            }
+        });
+        naverMap.setLocationSource(mLocationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
+
+        UiSettings uiSettings = mNaverMap.getUiSettings();
+        uiSettings.setZoomControlEnabled(false);
+
+        getStoresByGeo(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -210,7 +274,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                     showStoreInfo(View.GONE);
                 }
                 mTvUpdateTime.setText(getUpdateTime());
-                getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
+                getStoresByGeo(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
                 break;
             case R.id.main_tv_store_name:
                 showCustomToast(getString(R.string.main_ready_findwaying));
@@ -228,12 +292,15 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     /*--------------
     util function */
 
-
     private void showSearchEt(boolean expand){
         if(expand){
+            if(mLlStoreInfo.getVisibility() == View.VISIBLE){
+                showStoreInfo(View.GONE);
+            }
             showUtils(false); // disappear Utils > expand SearchEt
         }else{
             collapseSearchEt(); //  collapseSearchEt > show Utils
+            mEtSearch.setText(null);
         }
     }
 
@@ -315,6 +382,23 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 
         // Expansion speed of 1dp/ms
         anim.setDuration((int)(targetWidth / mEtSearch.getContext().getResources().getDisplayMetrics().density));
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mEtSearch.requestFocus();
+                showKeyboard();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         mEtSearch.startAnimation(anim);
         mEtSearch.setVisibility(View.VISIBLE);
     }
@@ -351,6 +435,19 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             @Override
             public void onAnimationEnd(Animation animation) {
                 showUtils(true);
+                hideKeyboard();
+                mFlStockGuide.requestFocus();
+
+                //검색이 켜져 있다가 마커를 클릭했을때
+                if(mEtSearch.getVisibility() == View.GONE
+                        && mLlStoreInfo.getVisibility() == View.GONE
+                        && mSelectedMarker != null){
+
+                    Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
+                            R.anim.slide_in_up);
+                    mLlStoreInfo.startAnimation(slideUp);
+                    mLlStoreInfo.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -361,18 +458,31 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mEtSearch.startAnimation(anim);
     }
 
+    private void showKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(mEtSearch, 0);
+        }
+    }
+
+    private void hideKeyboard(){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(mEtSearch.getWindowToken(), 0);
+        }
+    }
+
+
     private void startRotationRefreshIbtn(boolean startRotation){
         if(startRotation){
-            mIbtnRefresh.setImageResource(R.drawable.ic_refresh_clicked);
             Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
-//            mIbtnRefresh.setAnimation(animation);
+            mIbtnRefresh.setImageResource(R.drawable.ic_refresh_clicked);
             mIbtnRefresh.startAnimation(animation);
         }else{
             mIbtnRefresh.setImageResource(R.drawable.ic_refresh);
             mIbtnRefresh.setAnimation(null);
         }
     }
-
 
     /*--------------
     util function end */
@@ -452,12 +562,15 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
 //        03.15 23:59
         return originFormatDate.substring(5, 7) + "." + originFormatDate.substring(8, 10) + " " + originFormatDate.substring(11,16);
     }
+
+
     /*--------------
     time, day functions end */
 
 
     /*--------------
     marker functions */
+
 
     private void setMarkers(ArrayList<Store> stores) {
         for (final Store store : stores) {
@@ -523,6 +636,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mMarkers.clear();
     }
 
+
     /*--------------
     marker functions end */
 
@@ -530,29 +644,39 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     /*--------------
     store info functions */
 
+
     private void setStoreInfo(String name, String address, String stockAt, int res) {
         mTvStoreName.setText(name);
         mTvStoreAddr.setText(address);
         mTvStoreStockAt.setText(getStockTime(stockAt));
         mIvStoreMaskState.setImageResource(res);
 
-       showStoreInfo(View.VISIBLE);
+        showStoreInfo(View.VISIBLE);
     }
 
     private void showStoreInfo(int visibility){
         if(visibility == View.VISIBLE) {
-            Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_in_up);
-            mLlStoreInfo.startAnimation(slideUp);
+            if(mEtSearch.getVisibility() == View.VISIBLE){
+                showSearchEt(false);
+            }else {
+                Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_in_up);
+                mLlStoreInfo.startAnimation(slideUp);
+                mLlStoreInfo.setVisibility(visibility);
+            }
         }else{
             Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(),
                     R.anim.slide_out_down);
             mLlStoreInfo.startAnimation(slideDown);
-        }
-        mLlStoreInfo.setVisibility(visibility);
 
-        if(mEtSearch.getVisibility() == View.VISIBLE){
-            showSearchEt(false);
+            if(mSelectedMarker != null){
+                Store store = (Store)mSelectedMarker.getTag();
+                deactivateeMarker(store);
+
+                mSelectedMarker = null;
+            }
+
+            mLlStoreInfo.setVisibility(visibility);
         }
     }
 
@@ -562,7 +686,14 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mTvStoreStockAt.setText(getStockTime(stockAt));
         mIvStoreMaskState.setImageResource(res);
 
-        Store store = (Store)mSelectedMarker.getTag();
+        if(mSelectedMarker != null) {
+            Store store = (Store) mSelectedMarker.getTag();
+            deactivateeMarker(store);
+        }
+
+    }
+
+    private void deactivateeMarker(Store store){
         if(store != null) {
             switch (store.getRemain_stat()) {
                 case "plenty":
@@ -584,73 +715,51 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
+
     /*--------------
     store info functions end */
 
-    @UiThread
+
     @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        mNaverMap = naverMap;
-        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
-        locationOverlay.setVisible(true);
-        locationOverlay.setIcon(OverlayImage.fromResource(R.drawable.ic_range_and_location));
+    public void onBackPressed() {
+        if(System.currentTimeMillis() > mBackKeyPressedTime + 2000){
+            //1번째 백버튼 클릭
+            mBackKeyPressedTime = System.currentTimeMillis();
 
-        mNaverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                if(mLlStoreInfo.getVisibility() == View.VISIBLE){
-                    Store store = (Store)mSelectedMarker.getTag();
-                    if(store != null) {
-                        switch (store.getRemain_stat()) {
-                            case "plenty":
-                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_plenty_small));
-                                break;
-                            case "some":
-                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_som_small));
-                                break;
-                            case "few":
-                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_few_small));
-                                break;
-                            case "empty":
-                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_empty_small));
-                                break;
-                            case "break":
-                                mSelectedMarker.setIcon(OverlayImage.fromResource(R.drawable.ic_null_small));
-                                break;
-                        }
-                    }
-                    mSelectedMarker = null;
-                    showStoreInfo(View.GONE);
-                }
-                if(mEtSearch.getVisibility() == View.VISIBLE){
-                   showSearchEt(false);
-                }
+            if(mEtSearch.getVisibility() == View.VISIBLE){
+                showSearchEt(false);
             }
-        });
-        naverMap.setLocationSource(mLocationSource);
-        naverMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
 
-        UiSettings uiSettings = mNaverMap.getUiSettings();
-        uiSettings.setZoomControlEnabled(false);
+            if(mLlStoreInfo.getVisibility() == View.VISIBLE){
+                showStoreInfo(View.GONE);
+            }
+        }else{
+            // 2번째 백버튼 클릭
+            finishApp();
+        }
+    }
 
-        getStores(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
+    public void finishApp(){
+        finish();
+        System.exit(0);
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 
     /*---------
     api communication */
 
-    private void getStores(double lat, double lng, int m) {
+    //ByGeo
+    private void getStoresByGeo(double lat, double lng, int m) {
         if(mIbtnRefresh.getAnimation() == null){
             showProgressDialog();
         }
         MainService mainService = new MainService(this);
-        mainService.getStores(lat, lng, m);
+        mainService.getStoresByGeo(lat, lng, m);
     }
 
     @Override
-    public void getStoresSuccess(int count, ArrayList<Store> stores) {
-
+    public void getStoresByGeoSuccess(int count, ArrayList<Store> stores) {
         if(mNaverMap != null){
             setMarkers(stores);
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
@@ -666,13 +775,53 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
     @Override
-    public void getStoresFailure(String message) {
+    public void getStoresByGeoFailure(String message) {
         if(mNaverMap != null) {
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
                     .animate(CameraAnimation.Easing);
             mNaverMap.moveCamera(cameraUpdate);
         }
 
+        if(mIbtnRefresh.getAnimation() != null){
+            startRotationRefreshIbtn(false);
+        }else{
+            hideProgressDialog();
+        }
+    }
+
+    //ByAddress
+    private void getStoresByAddr(String address){
+        if(mIbtnRefresh.getAnimation() == null){
+            showProgressDialog();
+        }
+        MainService mainService = new MainService(this);
+        mainService.getStoresByAddr(address);
+    }
+
+    @Override
+    public void getStoresByAddrSuccess(int count, ArrayList<Store> stores) {
+        if(mNaverMap != null){
+            if(stores != null) {
+                if(count != 0) {
+                    setMarkers(stores);
+                    CameraUpdate cameraUpdate  = CameraUpdate.scrollTo(new LatLng(stores.get(0).getLat(), stores.get(0).getLng()))
+                            .animate(CameraAnimation.Easing);
+                    mNaverMap.moveCamera(cameraUpdate);
+                }
+            }else{
+                showCustomToast(getString(R.string.main_search_null));
+            }
+        }
+
+        if(mIbtnRefresh.getAnimation() != null){
+            startRotationRefreshIbtn(false);
+        }else{
+            hideProgressDialog();
+        }
+    }
+
+    @Override
+    public void getStoresByAddrFailure(String message) {
         if(mIbtnRefresh.getAnimation() != null){
             startRotationRefreshIbtn(false);
         }else{

@@ -20,6 +20,7 @@ public class ApplicationClass extends Application {
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
     //mask map
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+    public static final double ZOOM_ON_SEARCH = 17;
 
     //M단위
     public final static int INRADIUS = 1000; // 1M
