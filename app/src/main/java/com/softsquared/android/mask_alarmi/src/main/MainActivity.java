@@ -8,9 +8,14 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.transition.TransitionManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,9 +63,11 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     private GpsTracker gpsTracker;
     private FusedLocationSource mLocationSource;
 
+    private FrameLayout mFlParent, mFlStockGuide;
     private TextView  mTvPossibleDay, mTvStoreName, mTvStoreAddr, mTvStoreStockAt ,mTvUpdateTime;
+    private EditText mEtSearch;
     private ImageView mIvStoreMaskState;
-    private ImageButton mIbtnRefresh;
+    private ImageButton mIbtnRefresh, mIbtnSearch, mIbtnMyLocation;
 
     private Marker mSelectedMarker = null;
     private String mSelectedState = null;
@@ -74,7 +81,6 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-
         //set firebase & facebook analytics
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         logSentFriendRequestEvent();
@@ -98,17 +104,21 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     @Override
     public void initViews() {
         super.initViews();
+        mFlParent = findViewById(R.id.main_fg_parent);
         //information
         TextView tvAnnounce = findViewById(R.id.main_tv_announce);
         tvAnnounce.setSelected(true);
         mTvPossibleDay = findViewById(R.id.main_tv_possible_day);
         setPossibleDay();
+
+        mFlStockGuide = findViewById(R.id.main_fl_mask_stock_guide);
         mTvUpdateTime = findViewById(R.id.main_tv_update_at);
         mTvUpdateTime.setText(getUpdateTime());
         //util button
         mIbtnRefresh = findViewById(R.id.main_ibtn_refresh);
-        ImageButton ibtnSearch = findViewById(R.id.main_ibtn_search);
-        ImageButton ibtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
+        mIbtnSearch = findViewById(R.id.main_ibtn_search);
+        mIbtnMyLocation = findViewById(R.id.main_ibtn_mylocation);
+        mEtSearch = findViewById(R.id.main_et_search);
         //Store
         mTvStoreName = findViewById(R.id.main_tv_store_name);
         mTvStoreAddr = findViewById(R.id.main_tv_store_addr);
@@ -123,8 +133,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mTvPossibleDay.setOnClickListener(this);
         //util button
         mIbtnRefresh.setOnClickListener(this);
-        ibtnSearch.setOnClickListener(this);
-        ibtnMyLocation.setOnClickListener(this);
+        mIbtnSearch.setOnClickListener(this);
+        mIbtnMyLocation.setOnClickListener(this);
         //store
         mTvStoreName.setOnClickListener(this);
         ibtnStoreWayFinding.setOnClickListener(this);
@@ -189,7 +199,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 mNaverMap.moveCamera(cameraUpdate);
                 break;
             case R.id.main_ibtn_search:
-                showCustomToast(getString(R.string.main_ready_bookmark));
+                if(mEtSearch.getVisibility() == View.GONE){
+                    showSearchEt(true);
+                }
                 break;
             case R.id.main_ibtn_refresh:
                 removeAllMarkers();
@@ -213,6 +225,141 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
+    /*--------------
+    util function */
+
+
+    private void showSearchEt(boolean expand){
+        if(expand){
+            showUtils(false); // disappear Utils > expand SearchEt
+        }else{
+            collapseSearchEt(); //  collapseSearchEt > show Utils
+        }
+    }
+
+    private void showUtils(boolean show){
+        if(show){
+            Animation leftIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_left);
+            Animation rightIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_right);
+            Animation downIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_down);
+            Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+            mIbtnSearch.startAnimation(fadeIn);
+            mIbtnMyLocation.startAnimation(leftIn);
+            mIbtnRefresh.startAnimation(rightIn);
+            mFlStockGuide.startAnimation(downIn);
+
+            mIbtnSearch.setVisibility(View.VISIBLE);
+            mFlStockGuide.setVisibility(View.VISIBLE);
+            mIbtnMyLocation.setVisibility(View.VISIBLE);
+            mIbtnRefresh.setVisibility(View.VISIBLE);
+        }else{
+            Animation leftOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_left);
+            Animation rightOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_right);
+            Animation upOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_up);
+            Animation fadeOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mIbtnSearch.setVisibility(View.GONE);
+                    expandSearchEt();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            mIbtnSearch.startAnimation(fadeOut);
+            mIbtnMyLocation.startAnimation(leftOut);
+            mIbtnRefresh.startAnimation(rightOut);
+            mFlStockGuide.startAnimation(upOut);
+
+            mFlStockGuide.setVisibility(View.GONE);
+            mIbtnMyLocation.setVisibility(View.GONE);
+            mIbtnRefresh.setVisibility(View.GONE);
+        }
+    }
+
+    public void expandSearchEt() {
+        int matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(((View) mEtSearch.getParent()).getWidth(), View.MeasureSpec.EXACTLY);
+        int wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        mEtSearch.measure(matchParentMeasureSpec, wrapContentMeasureSpec);
+        final int targetWidth = mEtSearch.getMeasuredWidth();
+
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+
+        mEtSearch.getLayoutParams().width = 1;
+
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                mEtSearch.getLayoutParams().width = interpolatedTime == 1 ?
+                        LinearLayout.LayoutParams.MATCH_PARENT : (int)(targetWidth * interpolatedTime);
+                mEtSearch.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // Expansion speed of 1dp/ms
+        anim.setDuration((int)(targetWidth / mEtSearch.getContext().getResources().getDisplayMetrics().density));
+        mEtSearch.startAnimation(anim);
+        mEtSearch.setVisibility(View.VISIBLE);
+    }
+
+    public void collapseSearchEt() {
+        final int initialWidth = mEtSearch.getMeasuredWidth();
+
+        Animation anim = new Animation()
+        {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime == 1){
+                    mEtSearch.setVisibility(View.GONE);
+                }else{
+                    mEtSearch.getLayoutParams().width = initialWidth - (int)(initialWidth * interpolatedTime);
+                    mEtSearch.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        // Collapse speed of 1dp/ms
+        anim.setDuration((int)(initialWidth / mEtSearch.getContext().getResources().getDisplayMetrics().density));
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                showUtils(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mEtSearch.startAnimation(anim);
+    }
 
     private void startRotationRefreshIbtn(boolean startRotation){
         if(startRotation){
@@ -226,9 +373,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-    private void searchStore(){
 
-    }
+    /*--------------
+    util function end */
+
 
     /*--------------
     move find way function */
@@ -263,6 +411,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     /*--------------
     move find way function end */
 
+
     /*--------------
     time, day functions */
 
@@ -280,10 +429,10 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                 int first = (weekNum - 1) % 10;
                 int second = (first + 5) % 10;
 
-                String possibleDayStr = "오늘은 출생연도 끝자리 " + first + "・" + second + "년생이 살 수 있어요!";
+                String possibleDayStr = "출생연도 끝자리 " + first + "・" + second + "년생이 살 수 있는 날";
 
                 SpannableStringBuilder ssb = new SpannableStringBuilder(possibleDayStr);
-                ssb.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mainPossibleYearText)), 13, 18, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.mainPossibleYearText)), 9, 14, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 mTvPossibleDay.setText(ssb);
                 break;
@@ -393,14 +542,18 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     private void showStoreInfo(int visibility){
         if(visibility == View.VISIBLE) {
             Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_up);
+                    R.anim.slide_in_up);
             mLlStoreInfo.startAnimation(slideUp);
         }else{
             Animation slideDown = AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_down);
+                    R.anim.slide_out_down);
             mLlStoreInfo.startAnimation(slideDown);
         }
         mLlStoreInfo.setVisibility(visibility);
+
+        if(mEtSearch.getVisibility() == View.VISIBLE){
+            showSearchEt(false);
+        }
     }
 
     private void changeStoreInfo(String name, String address, String stockAt, int res) {
@@ -468,6 +621,9 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
                     }
                     mSelectedMarker = null;
                     showStoreInfo(View.GONE);
+                }
+                if(mEtSearch.getVisibility() == View.VISIBLE){
+                   showSearchEt(false);
                 }
             }
         });

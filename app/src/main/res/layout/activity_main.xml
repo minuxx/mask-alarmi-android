@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_fg_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -30,6 +31,7 @@
             android:layout_height="45dp"
             android:layout_marginBottom="5dp"
             android:background="@color/mainPossibleDayBg"
+            android:drawableEnd="@drawable/ic_etc"
             android:elevation="3dp"
             android:fontFamily="@font/notosanskr_regular"
             android:gravity="center"
@@ -38,8 +40,7 @@
             android:textColor="@color/mainPossibleDayText"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:drawableEnd="@drawable/ic_etc"
-            tools:text="오늘은 출생연도 끝자리 3 ・8년생이 살 수 있어요!"/>
+            tools:text="오늘은 출생연도 끝자리 3 ・8년생이 살 수 있어요!" />
 
 
         <FrameLayout
@@ -53,34 +54,34 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:contentDescription="@string/main_cd_ic_img_mask_amount"
-                android:src="@drawable/img_mask_amount"/>
+                android:src="@drawable/img_mask_amount" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:orientation="horizontal"
                 android:layout_gravity="end"
                 android:layout_marginTop="12dp"
-                android:layout_marginEnd="30dp">
+                android:layout_marginEnd="30dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="5dp"
                     android:text="@string/main_update"
                     android:textColor="@color/mainUpdateAt"
-                    android:textSize="12sp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="5dp"/>
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/main_tv_update_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/mainTimeText"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:textSize="12sp"
                     android:layout_marginEnd="5dp"
+                    android:gravity="center"
+                    android:textColor="@color/mainTimeText"
+                    android:textSize="12sp"
                     tools:text="05:30" />
             </LinearLayout>
         </FrameLayout>
@@ -100,38 +101,50 @@
             android:layout_marginBottom="10dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/main_cd_ic_mylocation"
-            android:src="@drawable/ic_mylocation"/>
+            android:src="@drawable/ic_mylocation" />
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_height="55dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="25dp">
+            android:layout_marginBottom="25dp"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/main_ibtn_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="bottom"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/main_cd_ic_search"
-                android:src="@drawable/ic_search" />
+                android:src="@drawable/ic_search"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <ImageButton
-                android:id="@+id/main_ibtn_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/main_cd_ic_refresh"
-                android:src="@drawable/ic_refresh"/>
+            <EditText
+                android:id="@+id/main_et_search"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:autofillHints="@string/main_search_hint"
+                android:background="@drawable/search_white_round_box"
+                android:drawableEnd="@drawable/ic_search_clicked"
+                android:fontFamily="@font/notosanskr_medium"
+                android:hint="@string/main_search_hint"
+                android:imeOptions="actionSearch"
+                android:inputType="textVisiblePassword|textNoSuggestions"
+                android:maxLength="15"
+                android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
+                android:textColor="@color/mainSearchText"
+                android:textColorHint="@color/mainSearchHint"
+                android:textCursorDrawable="@drawable/search_cursor"
+                android:textSize="14sp"
+                android:visibility="gone"
+                android:elevation="1dp"
+                tools:text="@string/main_search_hint" />
         </LinearLayout>
 
         <LinearLayout
@@ -139,14 +152,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/white_top_round_box"
+            android:elevation="4dp"
             android:orientation="horizontal"
             android:paddingStart="20dp"
-            android:paddingEnd="20dp"
             android:paddingTop="15dp"
+            android:paddingEnd="20dp"
             android:paddingBottom="15dp"
-            android:weightSum="1"
-            android:elevation="4dp"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:weightSum="1">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -158,38 +171,38 @@
                     android:id="@+id/main_tv_store_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/ic_bookmark_def"
                     android:layout_marginBottom="6dp"
+                    android:drawableEnd="@drawable/ic_bookmark_def"
                     android:drawablePadding="10dp"
+                    android:gravity="center"
                     android:textColor="@color/mainStoreNameText"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:text="싱싱약국"
-                    android:gravity="center" />
+                    tools:text="싱싱약국" />
 
                 <TextView
                     android:id="@+id/main_tv_store_addr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
                     android:ellipsize="end"
                     android:textColor="@color/mainStoreAddrText"
                     android:textSize="12sp"
-                    android:layout_marginBottom="6dp"
-                    tools:text="서울 강남구 선릉로 567 대운빌딩"/>
+                    tools:text="서울 강남구 선릉로 567 대운빌딩" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
+                        android:text="@string/main_stock_at"
                         android:textColor="@color/mainStockAt"
-                        android:textSize="12sp"
-                        android:text="@string/main_stock_at" />
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/main_tv_store_stock_at"
@@ -197,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/mainStockAtTime"
                         android:textSize="12sp"
-                        tools:text="03.15 23:59"/>
+                        tools:text="03.15 23:59" />
                 </LinearLayout>
 
 
@@ -214,7 +227,7 @@
                         android:background="@color/white"
                         android:contentDescription="@string/main_cd_ic_wayfinding"
                         android:src="@drawable/ic_wayfinding"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
 
                     <ImageButton
                         android:id="@+id/main_ibtn_store_share"
@@ -223,7 +236,7 @@
                         android:background="@color/white"
                         android:contentDescription="@string/main_cd_ic_share"
                         android:src="@drawable/ic_share"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -231,8 +244,8 @@
                 android:id="@+id/main_iv_store_state"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_plenty_big"
-                android:contentDescription="@string/main_cd_ic_mask_state"/>
+                android:contentDescription="@string/main_cd_ic_mask_state"
+                android:src="@drawable/ic_plenty_big" />
         </LinearLayout>
     </LinearLayout>
 
@@ -258,11 +271,23 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="20dp"
             android:ellipsize="marquee"
+            android:fontFamily="@font/notosanskr_regular"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:text="@string/main_announce_mention"
             android:textColor="@color/mainAnnounceText"
-            android:textSize="14sp"
-            android:fontFamily="@font/notosanskr_regular"/>
+            android:textSize="14sp" />
     </LinearLayout>
+
+
+    <ImageButton
+        android:id="@+id/main_ibtn_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/main_cd_ic_refresh"
+        android:src="@drawable/ic_refresh" />
 </FrameLayout>

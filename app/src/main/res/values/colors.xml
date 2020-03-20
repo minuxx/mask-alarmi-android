@@ -20,6 +20,9 @@
     <color name="mainTimeText">#000000</color>
     <color name="mainStockAt">#acacac</color>
     <color name="mainStockAtTime">#000000</color>
+    <color name="mainSearchHint">#acacac</color>
+    <color name="mainSearchText">#000000</color>
+    <color name="mainSearchBg">#FFF</color>
     <!--Announce-->
     <color name="announceText">#000000</color>
     <color name="announceBackBg">#f0f0f0</color>

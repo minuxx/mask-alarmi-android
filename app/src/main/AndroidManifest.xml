@@ -43,7 +43,8 @@
         <activity
             android:name=".src.main.MainActivity"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".src.announce.AnnounceActivity"
