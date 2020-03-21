@@ -68,33 +68,29 @@ class MainService {
     }
 
 
-    void forceUpdate() {
+    void getVersion() {
         final MainRetrofitInterface mainRetrofitInterface = getRetrofit().create(MainRetrofitInterface.class);
 
-        mainRetrofitInterface.forceUpdate().enqueue(new Callback<ManagementResponse>() {
+        mainRetrofitInterface.getVersion().enqueue(new Callback<ManagementResponse>() {
             @Override
             public void onResponse(Call<ManagementResponse> call, Response<ManagementResponse> response) {
                 final ManagementResponse managementResponse = response.body();
                 if (managementResponse == null) {
-                    mMainActivityView.forceUpdateFailure(null);
+                    mMainActivityView.getVersionFailure(null);
                     return;
-                }else if(managementResponse.getCode() == 100){
-                    mMainActivityView.forceUpdateSuccess(managementResponse.getManagement());
+                }else if(managementResponse.getCode() == 200){
+                    mMainActivityView.getVersionSuccess(managementResponse.getManagement());
+                }else{
+                    mMainActivityView.getVersionFailure(managementResponse.getMessage());
                 }
             }
 
             @Override
             public void onFailure(Call<ManagementResponse> call, Throwable t) {
-                mMainActivityView.forceUpdateFailure("onResponse failed");
+                mMainActivityView.getVersionFailure("onResponse failed");
             }
         });
     }
-
-    /*@Query("confmKey") final String confmKey,
-                                         @Query("currentPage") final int currentPage,
-                                         @Query("countPerPage") final int countPerPage,
-                                         @Query("keyword") final String keyword,
-                                         @Query("resultType") final String resultType*/
 
     void convertAddress(String keyword) {
         final MainRetrofitInterface mainRetrofitInterface = getPublicJusoRetrofit().create(MainRetrofitInterface.class);
@@ -117,7 +113,7 @@ class MainService {
 
             @Override
             public void onFailure(Call<AddressResponse> call, Throwable t) {
-                mMainActivityView.forceUpdateFailure("onResponse failed");
+                mMainActivityView.convertAddressFailure("onResponse failed");
             }
         });
     }

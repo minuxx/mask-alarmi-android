@@ -3,8 +3,8 @@ package com.softsquared.android.mask_alarmi.src.main.models;
 import com.google.gson.annotations.SerializedName;
 
 public class Management {
-    @SerializedName("versionName")
-    private String versionName;
+    @SerializedName("version")
+    private String version;
     @SerializedName("isForce")
     private String isForce;
     @SerializedName("status")
@@ -12,8 +12,8 @@ public class Management {
     @SerializedName("contents")
     private String contents;
 
-    public String getVersionName() {
-        return versionName;
+    public String getVersion() {
+        return version;
     }
 
     public String getIsForce() {

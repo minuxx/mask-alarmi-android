@@ -17,9 +17,9 @@ public interface MainActivityView {
 
     void getStoresByAddrFailure(String message);
 
-    void forceUpdateSuccess(Management management);
+    void getVersionSuccess(Management management);
 
-    void forceUpdateFailure(String message);
+    void getVersionFailure(String message);
 
     void convertAddressSuccess(ArrayList<Juso> jusos);
 

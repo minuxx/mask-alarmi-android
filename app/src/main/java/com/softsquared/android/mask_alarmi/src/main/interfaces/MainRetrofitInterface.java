@@ -18,8 +18,8 @@ public interface MainRetrofitInterface {
     @GET("/corona19-masks/v1/storesByAddr/json")
     Call<MainResponse> getStoresByAddr(@Query("address") final String address);
 
-    @GET("/force-update")
-    Call<ManagementResponse> forceUpdate();
+    @GET("/version")
+    Call<ManagementResponse> getVersion();
 
     @GET("/addrlink/addrLinkApi.do")
     Call<AddressResponse> convertAddress(@Query("confmKey") final String confmKey,

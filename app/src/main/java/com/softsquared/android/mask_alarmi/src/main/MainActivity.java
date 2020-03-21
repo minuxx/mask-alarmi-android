@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         mLocationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         gpsTracker = new GpsTracker(MainActivity.this);
 
-//        forceUpdate();
+        getVersion();
     }
 
     @Override
@@ -264,6 +264,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             case R.id.main_tv_possible_day:
                 break;
             case R.id.main_ibtn_mylocation:
+                removeAllMarkers();
+                getStoresByGeo(gpsTracker.getLatitude(), gpsTracker.getLongitude(), INRADIUS);
                 CameraUpdate cameraUpdate = CameraUpdate.scrollTo(new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude()))
                         .animate(CameraAnimation.Easing);
                 mNaverMap.moveCamera(cameraUpdate);
@@ -305,7 +307,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             }
             showUtils(false); // disappear Utils > expand SearchEt
         } else {
-            collapseSearchEt(); //  collapseSearchEt > show Utils
+            collapseSearchEt(); //  collapse SearchEt > show Utils
             mEtSearch.setText(null);
         }
     }
@@ -846,13 +848,13 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
     //fore update
-    private void forceUpdate() {
+    private void getVersion() {
         MainService mainService = new MainService(this);
-        mainService.forceUpdate();
+        mainService.getVersion();
     }
 
     @Override
-    public void forceUpdateSuccess(Management management) {
+    public void getVersionSuccess(Management management) {
         String versionName = null;
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -861,9 +863,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
             e.printStackTrace();
         }
 
-//        Log.i(TAG, "version code: " + version);
         if (versionName != null) {
-            if (!management.getVersionName().equals(versionName)) {
+            if (!management.getVersion().equals(versionName)) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
                         ("market://details?id=com.softsquared.android.mask_alarmi")));
             }
@@ -871,9 +872,7 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
     @Override
-    public void forceUpdateFailure(String message) {
-        showCustomToast(message);
-    }
+    public void getVersionFailure(String message) { }
 
 
     /*---------

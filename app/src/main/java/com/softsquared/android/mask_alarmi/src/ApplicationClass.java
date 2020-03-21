@@ -26,7 +26,7 @@ public class ApplicationClass extends Application {
     public final static int INRADIUS = 1000; // 1M
 
     // 테스트 서버 주소
-    public static String BASE_URL = "http://apis.maskalarmi.com/";
+    public static String BASE_URL = "http://api.maskalarmi.com/";
 
     public static String PUBLIC_MASK_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
 
