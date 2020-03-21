@@ -20,15 +20,17 @@ public class ApplicationClass extends Application {
     public static MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
     //mask map
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
-    public static final double ZOOM_ON_SEARCH = 17;
+    public static final String SEARCH_CONFIRM_KEY = "U01TX0FVVEgyMDIwMDMyMTEyNDExOTEwOTU2NjA="; //address search public api access key for convert address
 
     //M단위
     public final static int INRADIUS = 1000; // 1M
 
     // 테스트 서버 주소
-    public static String BASE_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
+    public static String BASE_URL = "http://apis.maskalarmi.com/";
 
-    public static String PUBLIC_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
+    public static String PUBLIC_MASK_URL = "https://8oi9s0nnth.apigw.ntruss.com/";
+
+    public static String PUBLIC_JUSO_URL = "http://www.juso.go.kr/";
 
 //    public static String BASE_URL = "https://adsfgdhfgjhkjk.com/";
 
@@ -49,6 +51,11 @@ public class ApplicationClass extends Application {
     // Retrofit 인스턴스
     public static Retrofit retrofit;
 
+    public static Retrofit publicMaskRetrofit;
+
+    public static Retrofit publicJusoRetrofit;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -58,7 +65,7 @@ public class ApplicationClass extends Application {
         }
     }
 
-    public static Retrofit getRetrofit(boolean isPublic) {
+    public static Retrofit getRetrofit() {
         if (retrofit == null) {
             OkHttpClient client = new OkHttpClient.Builder()
                     .readTimeout(5000, TimeUnit.MILLISECONDS)
@@ -67,12 +74,50 @@ public class ApplicationClass extends Application {
                     .build();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(isPublic ? PUBLIC_URL : BASE_URL)
+                    .baseUrl(BASE_URL)
                     .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
 
         return retrofit;
+    }
+
+
+    public static Retrofit getPublicMaskRetrofit() {
+        if (publicMaskRetrofit == null) {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .readTimeout(5000, TimeUnit.MILLISECONDS)
+                    .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                    .addNetworkInterceptor(new XAccessTokenInterceptor()) // JWT 자동 헤더 전송
+                    .build();
+
+            publicMaskRetrofit = new Retrofit.Builder()
+                    .baseUrl(PUBLIC_MASK_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        return publicMaskRetrofit;
+    }
+
+
+    public static Retrofit getPublicJusoRetrofit() {
+        if (publicJusoRetrofit == null) {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .readTimeout(5000, TimeUnit.MILLISECONDS)
+                    .connectTimeout(5000, TimeUnit.MILLISECONDS)
+                    .addNetworkInterceptor(new XAccessTokenInterceptor()) // JWT 자동 헤더 전송
+                    .build();
+
+            publicJusoRetrofit = new Retrofit.Builder()
+                    .baseUrl(PUBLIC_JUSO_URL)
+                    .client(client)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+
+        return publicJusoRetrofit;
     }
 }

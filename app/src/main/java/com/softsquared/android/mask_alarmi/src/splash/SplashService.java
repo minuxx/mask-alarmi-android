@@ -19,7 +19,7 @@ class SplashService {
     }
 
     void autoLogin() {
-        final SplashRetrofitInterface splashRetrofitInterface = getRetrofit(true).create(SplashRetrofitInterface.class);
+        final SplashRetrofitInterface splashRetrofitInterface = getRetrofit().create(SplashRetrofitInterface.class);
         splashRetrofitInterface.autoLogin().enqueue(new Callback<SplashResponse>() {
             @Override
             public void onResponse(Call<SplashResponse> call, Response<SplashResponse> response) {
