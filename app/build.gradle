@@ -9,7 +9,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.softsquared.android.mask_alarmi"
+        applicationId "com.minux.mask_alarmi"
         minSdk 21
         targetSdk 30
         versionCode 6

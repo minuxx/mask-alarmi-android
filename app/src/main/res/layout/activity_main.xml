@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.softsquared.android.mask_alarmi.src.main.MainActivity">
+    tools:context="com.minux.mask_alarmi.src.main.MainActivity">
 
     <fragment
         android:id="@+id/main_fg_map"
