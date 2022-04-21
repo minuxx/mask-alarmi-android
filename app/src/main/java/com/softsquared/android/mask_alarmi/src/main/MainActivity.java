@@ -1,70 +1,10 @@
 package com.softsquared.android.mask_alarmi.src.main;
 
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.PointF;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Transformation;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
-import androidx.fragment.app.FragmentManager;
-
-import com.facebook.appevents.AppEventsLogger;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraAnimation;
-import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.LocationTrackingMode;
-import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.LocationOverlay;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.Overlay;
-import com.naver.maps.map.overlay.OverlayImage;
-import com.naver.maps.map.util.FusedLocationSource;
-import com.softsquared.android.mask_alarmi.R;
 import com.softsquared.android.mask_alarmi.src.BaseActivity;
-import com.softsquared.android.mask_alarmi.src.announce.AnnounceActivity;
-import com.softsquared.android.mask_alarmi.src.main.interfaces.MainActivityView;
-import com.softsquared.android.mask_alarmi.src.main.models.Juso;
-import com.softsquared.android.mask_alarmi.src.main.models.Management;
-import com.softsquared.android.mask_alarmi.src.main.models.Store;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.INRADIUS;
-import static com.softsquared.android.mask_alarmi.src.ApplicationClass.LOCATION_PERMISSION_REQUEST_CODE;
 
 
-public class MainActivity extends BaseActivity implements MainActivityView, OnMapReadyCallback {
-    private final static String TAG = "main act: ";
+public class MainActivity extends BaseActivity {
+    /*private final static String TAG = "main act: ";
     private NaverMap mNaverMap;
     private MapFragment mFgMap;
     private GpsTracker gpsTracker;
@@ -297,8 +237,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
-    /*--------------
-    util function */
+    *//*--------------
+    util function *//*
 
     private void showSearchEt(boolean expand) {
         if (expand) {
@@ -490,12 +430,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-    /*--------------
-    util function end */
+    *//*--------------
+    util function end *//*
 
 
-    /*--------------
-    move find way function */
+    *//*--------------
+    move find way function *//*
 
     private void moveFindingWay() {
         //nmap://route/walk?slat=37.4640070&slng=126.9522394&sname=%EC%84%9C%EC%9A%B8%EB%8C%80%ED%95%99%EA%B5%90&dlat=37.4764356&dlng=126.9618302&dname=%EB%8F%99%EC%9B%90%EB%82%99%EC%84%B1%EB%8C%80%EC%95%84%ED%8C%8C%ED%8A%B8&appname=com.example.myapp
@@ -524,12 +464,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
         }
     }
 
-    /*--------------
-    move find way function end */
+    *//*--------------
+    move find way function end *//*
 
 
-    /*--------------
-    time, day functions */
+    *//*--------------
+    time, day functions *//*
 
     private void setPossibleDay() {
         Calendar cal = Calendar.getInstance();
@@ -570,12 +510,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
-    /*--------------
-    time, day functions end */
+    *//*--------------
+    time, day functions end *//*
 
 
-    /*--------------
-    marker functions */
+    *//*--------------
+    marker functions *//*
 
 
     private void setMarkers(ArrayList<Store> stores) {
@@ -642,12 +582,12 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
-    /*--------------
-    marker functions end */
+    *//*--------------
+    marker functions end *//*
 
 
-    /*--------------
-    store info functions */
+    *//*--------------
+    store info functions *//*
 
 
     private void setStoreInfo(String name, String address, String stockAt, int res) {
@@ -720,8 +660,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
-    /*--------------
-    store info functions end */
+    *//*--------------
+    store info functions end *//*
 
 
     @Override
@@ -750,8 +690,8 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     }
 
 
-    /*---------
-    api communication */
+    *//*---------
+    api communication *//*
 
     //ByGeo
     private void getStoresByGeo(double lat, double lng, int m) {
@@ -875,16 +815,16 @@ public class MainActivity extends BaseActivity implements MainActivityView, OnMa
     public void getVersionFailure(String message) { }
 
 
-    /*---------
-    api communication end*/
+    *//*---------
+    api communication end*//*
 
 
-    /**
+    *//**
      * This function assumes logger is an instance of AppEventsLogger and has been
      * created using AppEventsLogger.newLogger() call.
-     */
+     *//*
     public void logSentFriendRequestEvent() {
         AppEventsLogger logger = AppEventsLogger.newLogger(this);
         logger.logEvent("sentFriendRequest");
-    }
+    }*/
 }

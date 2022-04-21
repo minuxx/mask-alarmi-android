@@ -1,24 +1,11 @@
 package com.softsquared.android.mask_alarmi.src.splash;
 
-import android.Manifest;
-import android.content.Intent;
-import android.os.Bundle;
-
-import androidx.fragment.app.FragmentManager;
-
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
-import com.naver.maps.map.MapFragment;
-import com.softsquared.android.mask_alarmi.R;
 import com.softsquared.android.mask_alarmi.src.BaseActivity;
-import com.softsquared.android.mask_alarmi.src.main.MainActivity;
 import com.softsquared.android.mask_alarmi.src.splash.interfaces.SplashActivityView;
 
-import java.util.List;
 
-
-public class SplashActivity extends BaseActivity implements SplashActivityView {
-    private static final String TAG = "SPLASH ACT://";
+public class SplashActivity extends BaseActivity {
+   /* private static final String TAG = "SPLASH ACT://";
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
@@ -77,5 +64,5 @@ public class SplashActivity extends BaseActivity implements SplashActivityView {
     @Override
     public void validateSuccess(String message) {
 
-    }
+    }*/
 }
