@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".MaskAlarmiApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.main.MainActivity" android:exported="false"/>
+        <activity android:name=".presentation.main.MainActivity"/>
 
 <!--        <service android:name=".src.main.GpsTracker" />-->
 
