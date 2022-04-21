@@ -1,66 +1,102 @@
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+}
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdk 31
+
     defaultConfig {
-        applicationId "com.softsquared.android.mask_alarmi"
-        minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 5
-        versionName "1.0.4"
+        applicationId "com.minux.mask_alarmi"
+        minSdk 21
+        targetSdk 30
+        versionCode 6
+        versionName "1.0.5"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-
-        checkReleaseBuilds false
-
-        // Or, if you prefer, you can continue to check for errors in release builds,
-
-        // but continue the build even when errors are found:
-
-        abortOnError false
-
+    buildFeatures {
+        viewBinding true
     }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
 
+
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    // Core
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
-    // https://github.com/square/retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    // Test
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    // https://github.com/square/okhttp
-    implementation("com.squareup.okhttp3:okhttp:4.0.1")
+    // UI
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 
-    // https://github.com/square/retrofit/tree/master/retrofit-converters/gson
-    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.4.2"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
 
-    //naver Mobile Dynamic Map(v3)
-    implementation 'com.naver.maps:map-sdk:3.7.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
 
-    //tedPermission
-    implementation 'gun0912.ted:tedpermission:2.2.3'
+    // Lifecycle Components
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
 
-    //구글 애널리틱스
-    implementation 'com.google.firebase:firebase-analytics:17.2.3'
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-android-compiler:2.37"
 
-    //fireBase 크래시틱스
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
 
-    //facebook 애널리시스
-    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    // Room
+    implementation "androidx.room:room-runtime:2.4.2"
+    kapt "androidx.room:room-compiler:2.4.2"
+    implementation "androidx.room:room-ktx:2.4.2"
 
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // OkHttp
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
+
+    // Gson
+    implementation "com.google.code.gson:gson:2.9.0"
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // Analytics, Crashlytics, Naver Map API, Location API
 }
