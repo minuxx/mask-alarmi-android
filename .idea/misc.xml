@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/layout/activity_splash.xml" value="0.3619791666666667" />
+        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/drawable/splash.xml" value="0.204" />
+        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/layout/activity_splash.xml" value="0.22" />
+        <entry key="..\:/Users/minux/AndroidStudioProjects/MaskAlarmi/app/src/main/res/layout/activity_test.xml" value="0.18489583333333334" />
       </map>
     </option>
   </component>

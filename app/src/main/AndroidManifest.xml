@@ -5,14 +5,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.minux.mask_alarmi.src.ApplicationClass"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/NoActionBar">
 
-        <activity android:name="com.minux.mask_alarmi.src.splash.SplashActivity">
+        <activity
+            android:name=".presentation.splash.SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.minux.mask_alarmi.src.main.MainActivity" />
-
-        <activity
-            android:name="com.minux.mask_alarmi.src.announce.AnnounceActivity" />
+        <activity android:name=".presentation.main.MainActivity" android:exported="false"/>
 
 <!--        <service android:name=".src.main.GpsTracker" />-->
 

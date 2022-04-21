@@ -10,10 +10,10 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<B: ViewDataBinding>(@LayoutRes val layoutRes: Int): Fragment() {
-    private lateinit var binding: B
+    lateinit var binding: B
 
-    protected abstract fun initDataBinding()
-    protected abstract fun initAfterBinding()
+    abstract fun initDataBinding()
+    abstract fun initAfterBinding()
 
     override fun onCreateView(
         inflater: LayoutInflater,

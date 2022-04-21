@@ -1,15 +1,18 @@
 package com.minux.mask_alarmi.presentation.splash
 
-import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.core.BaseActivity
-import com.minux.mask_alarmi.databinding.ActivitySplashBinding
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.minux.mask_alarmi.presentation.main.MainActivity
 
-class SplashActivity(): BaseActivity<ActivitySplashBinding>(R.layout.activity_splash) {
-    override fun initDataBinding() {
+class SplashActivity: AppCompatActivity(){
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    }
-
-    override fun initAfterBinding() {
-
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 }

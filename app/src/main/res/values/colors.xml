@@ -6,7 +6,7 @@
 
     <color name="white">#f5f5f5</color>
     <!--Splash-->
-    <color name="splashBg">#4c85f7</color>
+    <color name="splashBackground">#4c85f7</color>
 
     <!--Main-->
     <color name="mainNoticeBar">#4c85f7</color>
