@@ -5,6 +5,10 @@ plugins {
 //    id 'dagger.hilt.android.plugin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def naver_map_sdk_client_id = properties.getProperty("NAVER_MAP_SDK_CLIENT_ID")
+
 android {
     compileSdk 33
 
@@ -16,6 +20,7 @@ android {
         versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [NAVER_MAP_SDK_CLIENT_ID: naver_map_sdk_client_id]
     }
 
     buildTypes {

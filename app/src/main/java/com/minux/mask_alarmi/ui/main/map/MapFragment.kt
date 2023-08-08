@@ -7,8 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.minux.mask_alarmi.R
+import com.naver.maps.map.NaverMap
+import com.naver.maps.map.NaverMapOptions
+import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.util.MapConstants
 
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), OnMapReadyCallback {
+    private lateinit var naverMap: NaverMap
 
     companion object {
         fun newInstance() = MapFragment()
@@ -26,6 +31,26 @@ class MapFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        val view = inflater.inflate(R.layout.fragment_map, container, false)
+        initMap()
+
+        return view
+    }
+
+    private fun initMap() {
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
+            ?: com.naver.maps.map.MapFragment.newInstance(
+                NaverMapOptions().extent(MapConstants.EXTENT_KOREA)
+        ).also {
+            this.childFragmentManager
+                .beginTransaction()
+                .add(R.id.map_container, it)
+                .commit()
+        }
+        mapFragment.getMapAsync(this@MapFragment)
+    }
+
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
     }
 }
