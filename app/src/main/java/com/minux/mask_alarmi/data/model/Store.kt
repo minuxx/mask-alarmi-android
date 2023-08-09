@@ -11,7 +11,7 @@ data class Store (
     val addr: String,
     val name: String,
     val type: String,
-    val remain_stat: String,
-    val stock_at: String,
-    val created_at: String,
+    val remain_stat: String?,
+    val stock_at: String?,
+    val created_at: String?,
 )
