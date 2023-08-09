@@ -1,7 +1,11 @@
 package com.minux.mask_alarmi.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Store (
-    val code: String,
+    @PrimaryKey val code: String,
     val lat: Long,
     val lng: Long,
     val addr: String,
