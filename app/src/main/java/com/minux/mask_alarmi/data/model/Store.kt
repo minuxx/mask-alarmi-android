@@ -1,4 +1,4 @@
-package com.minux.mask_alarmi.data
+package com.minux.mask_alarmi.data.model
 
 data class Store (
     val addr: String,
