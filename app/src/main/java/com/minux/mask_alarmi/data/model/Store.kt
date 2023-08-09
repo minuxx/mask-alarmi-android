@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class Store (
     @PrimaryKey val code: String,
-    val lat: Long,
-    val lng: Long,
+    val lat: Double,
+    val lng: Double,
     val addr: String,
     val name: String,
     val type: String,
