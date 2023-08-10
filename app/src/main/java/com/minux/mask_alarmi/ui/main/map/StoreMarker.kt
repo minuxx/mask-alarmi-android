@@ -1,35 +1,41 @@
 package com.minux.mask_alarmi.ui.main.map
 
+import android.util.Log
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.RemainState
+import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 
+private const val TAG = "StoreMarker"
 
 class StoreMarker(
-    private val storeCode: Long,
+    val storeCode: Long,
     private val remainState: RemainState,
     private val coordinate: LatLng,
     val onMarkerClicked: (storeCode: Long, isClicked: Boolean) -> Unit
 ) {
-    private val marker = Marker()
-    private var isClicked = false
+    val marker = Marker()
+    var isClicked = false
+        set(value) {
+            field = value
+            marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState, field))
+        }
 
-    fun build(): Marker {
+    fun build(): StoreMarker {
         marker.position = coordinate
-        marker.icon = OverlayImage.fromResource(getMarkerDrawableIcon(remainState))
+        marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState))
         marker.setOnClickListener {
             isClicked = !isClicked
-            marker.icon = OverlayImage.fromResource(getMarkerDrawableIcon(remainState, isClicked))
             onMarkerClicked(storeCode, isClicked)
             true
         }
-        return marker
+        return this
     }
 
-    private fun getMarkerDrawableIcon(remainState: RemainState, isClicked: Boolean = false): Int {
+    private fun getMarkerIconRes(remainState: RemainState, isClicked: Boolean = false): Int {
         return when(remainState) {
             RemainState.EMPTY -> if (isClicked) R.drawable.ic_empty_activate else R.drawable.ic_empty_small
             RemainState.FEW -> if (isClicked) R.drawable.ic_few_activate else R.drawable.ic_few_small

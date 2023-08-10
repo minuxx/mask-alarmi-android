@@ -22,8 +22,9 @@ private const val TAG = "MapFragment"
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
     private lateinit var naverMap: NaverMap
-    private var storeMarkers: List<Marker> = emptyList()
+    private var storeMarkers: List<StoreMarker> = emptyList()
     private var isMapReady = false
+    private var preClickedStoreCode: Long? = null
 
     companion object {
         fun newInstance() = MapFragment()
@@ -33,6 +34,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MapViewModel::class.java]
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,23 +44,22 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         return view
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.storeListLiveData.observe(
             viewLifecycleOwner
         ) { stores ->
-            stores?.let {
-                Log.i(TAG, "Got stores ${stores.size}")
+            Log.i(TAG, "Got stores ${stores.size}")
+            storeMarkers = stores?.let { makeStoreMarkers(it) } ?: emptyList()
 
-                storeMarkers = makeStoreMarkers(it)
-
-                if (isMapReady) {
-                    storeMarkers.forEach { marker -> marker.map = this.naverMap }
-                }
+            if (isMapReady) {
+                storeMarkers.forEach { it.marker.map = this.naverMap }
             }
         }
     }
-    private fun makeStoreMarkers(stores: List<Store>): List<Marker> {
+
+    private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
         return stores.map { store ->
             StoreMarker(
                 store.code,
@@ -69,9 +70,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }.build()
         }
     }
-    private fun onStoreMarkerClicked(storeCode: Long, isClicked: Boolean) {
-        Log.i(TAG, "Click Marker ${storeCode}, $isClicked")
+
+    private fun onStoreMarkerClicked(clickedStoreCode: Long, isClicked: Boolean) {
+        if (clickedStoreCode != preClickedStoreCode) {
+            storeMarkers.firstOrNull { it.storeCode == preClickedStoreCode }?.isClicked = false
+            preClickedStoreCode = clickedStoreCode
+        } else if (isClicked) {
+            preClickedStoreCode = null
+        }
+
+        Log.i(TAG, "${clickedStoreCode}, isClicked: $isClicked")
     }
+
 
     private fun initMap() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
@@ -89,6 +99,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         isMapReady = true
-        storeMarkers.forEach { marker -> marker.map = this.naverMap }
+        storeMarkers.forEach { it.marker.map = this.naverMap }
     }
 }
