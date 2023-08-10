@@ -5,20 +5,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.minux.mask_alarmi.data.model.Store
+import com.minux.mask_alarmi.data.entity.StoreEntity
+
+// 라디안 각도로 변환하는 함수
+
 
 @Dao
 interface StoreDao {
-//    @Query("SELECT * FROM store " +
-//            "WHERE (6371 * " +
-//            "acos(cos(radians(:lat)) * cos(radians(lat)) * " +
-//            "cos(radians(lng) - radians(:lng)) + " +
-//            "sin(radians(:lat)) * sin(radians(lat)))) <= :m")
-//    fun getStoresByGeo(lat: Double, lng: Double, m: Int): LiveData<List<Store>>
+    @Query("SELECT * FROM stores")
+    fun getStoresByGeo(): LiveData<List<StoreEntity>>
 
-    @Query("SELECT * FROM store")
-    fun getStoresByGeo(): LiveData<List<Store>>
-
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertStores(pharmacies: List<Store>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertStores(storeEntities: List<StoreEntity>)
 }

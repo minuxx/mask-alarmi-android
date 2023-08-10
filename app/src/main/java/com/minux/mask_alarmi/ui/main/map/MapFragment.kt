@@ -47,6 +47,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Observer { stores ->
                 stores?.let {
                     Log.i(TAG, "Got stores ${stores.size}")
+                    Log.i(TAG, "${stores}")
                 }
             }
         )
