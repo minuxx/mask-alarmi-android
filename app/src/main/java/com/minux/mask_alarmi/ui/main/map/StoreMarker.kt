@@ -1,12 +1,9 @@
 package com.minux.mask_alarmi.ui.main.map
 
-import android.util.Log
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.RemainState
-import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 
 private const val TAG = "StoreMarker"
@@ -24,7 +21,7 @@ class StoreMarker(
             marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState, field))
         }
 
-    fun build(): StoreMarker {
+    fun newInstance(): StoreMarker {
         marker.position = coordinate
         marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState))
         marker.setOnClickListener {

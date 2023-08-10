@@ -65,7 +65,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 coordinate = LatLng(store.lat, store.lng),
             ) { storeCode, isClicked ->
                 onStoreMarkerClicked(storeCode, isClicked)
-            }.build()
+            }.newInstance()
         }
     }
 
@@ -74,9 +74,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         if (newStoreCode != curStoreCode) {
             storeMarkers.firstOrNull { it.storeCode == curStoreCode }?.isClicked = false
             curStoreCode = newStoreCode
+            viewModel.getStoreByCode(newStoreCode)?.let { openStoreBottomDialog(it) }
         } else if (!isClicked) {
             curStoreCode = null
         }
+    }
+
+    private fun openStoreBottomDialog(store: Store) {
+        val storeBottomDialog = StoreBottomDialog(
+            store
+        ){
+
+        }
+
+        storeBottomDialog.show(childFragmentManager, TAG)
     }
 
     private fun initMap() {
