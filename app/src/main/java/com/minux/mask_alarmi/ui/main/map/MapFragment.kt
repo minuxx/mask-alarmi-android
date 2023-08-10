@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.minux.mask_alarmi.R
+import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.MapConstants
 
 private const val TAG = "MapFragment"
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+    private lateinit var viewModel: MapViewModel
     private lateinit var naverMap: NaverMap
     private var storeMarkers: List<Marker> = emptyList()
     private var isMapReady = false
@@ -26,13 +29,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         fun newInstance() = MapFragment()
     }
 
-    private lateinit var viewModel: MapViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MapViewModel::class.java]
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +42,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         return view
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.storeListLiveData.observe(
@@ -50,15 +49,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ) { stores ->
             stores?.let {
                 Log.i(TAG, "Got stores ${stores.size}")
-                storeMarkers = it.map { store ->
-                    StoreMarker.newMarker(LatLng(store.lat, store.lng),  store.remainState)
-                }
+
+                storeMarkers = makeStoreMarkers(it)
 
                 if (isMapReady) {
                     storeMarkers.forEach { marker -> marker.map = this.naverMap }
                 }
             }
         }
+    }
+    private fun makeStoreMarkers(stores: List<Store>): List<Marker> {
+        return stores.map { store ->
+            StoreMarker(
+                store.code,
+                store.remainState,
+                coordinate = LatLng(store.lat, store.lng),
+            ) { clickedStoreCode ->
+                onStoreMarkerClicked(clickedStoreCode)
+            }.newMarker()
+        }
+    }
+    private fun onStoreMarkerClicked(storeCode: Long) {
+        Log.i(TAG, "Click Marker ${storeCode}")
     }
 
     private fun initMap() {
