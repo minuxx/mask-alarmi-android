@@ -1,10 +1,9 @@
 package com.minux.mask_alarmi.ui.main.map
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
-import android.text.TextUtils.substring
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -49,5 +48,10 @@ class StoreBottomDialog(
         store.stockAt?.let {
             view.findViewById<TextView>(R.id.tv_stock_at).text = "${it.substring(5, 7)}.${it.substring(8, 10)}.${it.substring(11, 16)}"
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismiss()
     }
 }

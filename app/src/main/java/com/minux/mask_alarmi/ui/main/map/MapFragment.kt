@@ -37,10 +37,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_map, container, false)
         initMap()
-
-        return view
+        return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,13 +79,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun openStoreBottomDialog(store: Store) {
-        val storeBottomDialog = StoreBottomDialog(
-            store
-        ){
-
-        }
-
-        storeBottomDialog.show(childFragmentManager, TAG)
+        StoreBottomDialog(store, onDismiss = {
+            storeMarkers.firstOrNull { it.storeCode == store.code }?.isClicked = false
+            curStoreCode = null
+        }).show(childFragmentManager, TAG)
     }
 
     private fun initMap() {
