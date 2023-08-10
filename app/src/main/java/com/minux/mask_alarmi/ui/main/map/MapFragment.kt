@@ -64,13 +64,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 store.code,
                 store.remainState,
                 coordinate = LatLng(store.lat, store.lng),
-            ) { clickedStoreCode ->
-                onStoreMarkerClicked(clickedStoreCode)
-            }.newMarker()
+            ) { clickedStoreCode, isClicked ->
+                onStoreMarkerClicked(clickedStoreCode, isClicked)
+            }.build()
         }
     }
-    private fun onStoreMarkerClicked(storeCode: Long) {
-        Log.i(TAG, "Click Marker ${storeCode}")
+    private fun onStoreMarkerClicked(storeCode: Long, isClicked: Boolean) {
+        Log.i(TAG, "Click Marker ${storeCode}, $isClicked")
     }
 
     private fun initMap() {

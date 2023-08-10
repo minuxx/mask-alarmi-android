@@ -12,31 +12,29 @@ class StoreMarker(
     private val storeCode: Long,
     private val remainState: RemainState,
     private val coordinate: LatLng,
-    val onMarkerClicked: (storeCode: Long) -> Unit
+    val onMarkerClicked: (storeCode: Long, isClicked: Boolean) -> Unit
 ) {
     private val marker = Marker()
+    private var isClicked = false
 
-    fun newMarker(): Marker {
+    fun build(): Marker {
         marker.position = coordinate
-        marker.icon = OverlayImage.fromResource(when(remainState) {
-            RemainState.EMPTY -> R.drawable.ic_empty_small
-            RemainState.FEW -> R.drawable.ic_few_small
-            RemainState.SOME -> R.drawable.ic_some_small
-            RemainState.PLENTY -> R.drawable.ic_plenty_small
-        })
-
+        marker.icon = OverlayImage.fromResource(getMarkerDrawableIcon(remainState))
         marker.setOnClickListener {
-            marker.icon = OverlayImage.fromResource(when(remainState) {
-                RemainState.EMPTY -> R.drawable.ic_empty_activate
-                RemainState.FEW -> R.drawable.ic_few_activate
-                RemainState.SOME -> R.drawable.ic_some_activate
-                RemainState.PLENTY -> R.drawable.ic_plenty_activate
-            })
-
-            onMarkerClicked(storeCode)
+            isClicked = !isClicked
+            marker.icon = OverlayImage.fromResource(getMarkerDrawableIcon(remainState, isClicked))
+            onMarkerClicked(storeCode, isClicked)
             true
         }
-
         return marker
+    }
+
+    private fun getMarkerDrawableIcon(remainState: RemainState, isClicked: Boolean = false): Int {
+        return when(remainState) {
+            RemainState.EMPTY -> if (isClicked) R.drawable.ic_empty_activate else R.drawable.ic_empty_small
+            RemainState.FEW -> if (isClicked) R.drawable.ic_few_activate else R.drawable.ic_few_small
+            RemainState.SOME -> if (isClicked) R.drawable.ic_some_activate else R.drawable.ic_some_small
+            RemainState.PLENTY -> if (isClicked) R.drawable.ic_plenty_activate else R.drawable.ic_plenty_small
+        }
     }
 }
