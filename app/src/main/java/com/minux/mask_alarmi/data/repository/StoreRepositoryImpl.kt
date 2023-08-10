@@ -8,6 +8,7 @@ import com.minux.mask_alarmi.data.local.MASK_ALARMI_DB_NAME
 import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.domain.repository.StoreRepository
+import com.minux.mask_alarmi.util.GeoUtil
 
 
 class StoreRepositoryImpl private constructor(val context: Context) : StoreRepository {
@@ -23,12 +24,15 @@ class StoreRepositoryImpl private constructor(val context: Context) : StoreRepos
     * 1. 반경 1km 이내의 stores
     * 2. 필요한 데이터만을, 그리고 변수명 변경
     */
-    override fun getStoresByGeo(): LiveData<List<Store>> {
+    override fun getStoresByGeo(lat: Double, lng: Double, m: Int): LiveData<List<Store>> {
         val stores = storeDao.getStoresByGeo()
         val storeListLiveData = MediatorLiveData<List<Store>>()
 
         storeListLiveData.addSource(stores) { stores ->
-            storeListLiveData.value = stores.map { it.toModel() }
+            val storeListInRadius = stores.filter { store ->
+                GeoUtil.calculateHaversine(lat, lng, store.lat, store.lng) <= m.toDouble()
+            }
+            storeListLiveData.value = storeListInRadius.map { it.toModel() }
         }
 
         return storeListLiveData

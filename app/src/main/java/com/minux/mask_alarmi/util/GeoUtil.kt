@@ -19,6 +19,6 @@ object GeoUtil {
                 sin(lngDiff / 2) * sin(lngDiff / 2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-        return R * c
+        return R * c * 1000 // m 단위 변환
     }
 }

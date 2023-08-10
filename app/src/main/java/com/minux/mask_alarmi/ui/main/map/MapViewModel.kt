@@ -6,13 +6,14 @@ import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
 import kotlinx.coroutines.launch
 
 //37.4708038, 126.9174509, 5000
+
 class MapViewModel : ViewModel() {
     private val storeRepository = StoreRepositoryImpl.get()
-    val storeListLiveData = storeRepository.getStoresByGeo()
+    val storeListLiveData = storeRepository.getStoresByGeo(37.6470525, 127.0333818, 1000)
 
-    init {
-        viewModelScope.launch {
-            storeRepository.insertStoresFromJson()
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            storeRepository.insertStoresFromJson()
+//        }
+//    }
 }
