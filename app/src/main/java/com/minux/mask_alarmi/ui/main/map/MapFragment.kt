@@ -13,8 +13,6 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.util.MapConstants
 
 private const val TAG = "MapFragment"
@@ -24,7 +22,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private var storeMarkers: List<StoreMarker> = emptyList()
     private var isMapReady = false
-    private var preClickedStoreCode: Long? = null
+    private var curStoreCode: Long? = null
 
     companion object {
         fun newInstance() = MapFragment()
@@ -65,23 +63,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 store.code,
                 store.remainState,
                 coordinate = LatLng(store.lat, store.lng),
-            ) { clickedStoreCode, isClicked ->
-                onStoreMarkerClicked(clickedStoreCode, isClicked)
+            ) { storeCode, isClicked ->
+                onStoreMarkerClicked(storeCode, isClicked)
             }.build()
         }
     }
 
-    private fun onStoreMarkerClicked(clickedStoreCode: Long, isClicked: Boolean) {
-        if (clickedStoreCode != preClickedStoreCode) {
-            storeMarkers.firstOrNull { it.storeCode == preClickedStoreCode }?.isClicked = false
-            preClickedStoreCode = clickedStoreCode
-        } else if (isClicked) {
-            preClickedStoreCode = null
+    private fun onStoreMarkerClicked(newStoreCode: Long, isClicked: Boolean) {
+        Log.i(TAG, "curStoreCode: ${curStoreCode}, newStoreCode: ${newStoreCode}, isClicked: $isClicked")
+        if (newStoreCode != curStoreCode) {
+            storeMarkers.firstOrNull { it.storeCode == curStoreCode }?.isClicked = false
+            curStoreCode = newStoreCode
+        } else if (!isClicked) {
+            curStoreCode = null
         }
-
-        Log.i(TAG, "${clickedStoreCode}, isClicked: $isClicked")
     }
-
 
     private fun initMap() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
