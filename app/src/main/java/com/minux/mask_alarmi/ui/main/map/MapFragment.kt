@@ -6,18 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.minux.mask_alarmi.R
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.MapConstants
 
 private const val TAG = "MapFragment"
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
+    private var storeMarkers: List<Marker> = emptyList()
+    private var isMapReady = false
 
     companion object {
         fun newInstance() = MapFragment()
@@ -43,14 +46,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.storeListLiveData.observe(
-            viewLifecycleOwner,
-            Observer { stores ->
-                stores?.let {
-                    Log.i(TAG, "Got stores ${stores.size}")
-                    Log.i(TAG, "${stores}")
+            viewLifecycleOwner
+        ) { stores ->
+            stores?.let {
+                Log.i(TAG, "Got stores ${stores.size}")
+                storeMarkers = it.map { store ->
+                    StoreMarker.newMarker(LatLng(store.lat, store.lng),  store.remainState)
+                }
+
+                if (isMapReady) {
+                    storeMarkers.forEach { marker -> marker.map = this.naverMap }
                 }
             }
-        )
+        }
     }
 
     private fun initMap() {
@@ -68,5 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+        isMapReady = true
+        storeMarkers.forEach { marker -> marker.map = this.naverMap }
     }
 }
