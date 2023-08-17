@@ -1,8 +1,11 @@
 package com.minux.mask_alarmi
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
 
-@HiltAndroidApp
-class MaskAlarmiApplication: Application() {
+class MaskAlarmiApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        StoreRepositoryImpl.initialize(this)
+    }
 }

@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.minux.mask_alarmi">
-
-    <uses-permission android:name="android.permission.INTERNET" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <application
         android:name=".MaskAlarmiApplication"
-        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/NoActionBar">
+        android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="${NAVER_MAP_SDK_CLIENT_ID}" />
 
         <activity
-            android:name=".presentation.splash.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:exported="true">
-
+            android:name=".ui.main.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".presentation.main.MainActivity"/>
-
-<!--        <service android:name=".src.main.GpsTracker" />-->
-
     </application>
+
 </manifest>
