@@ -13,6 +13,7 @@
     <string name="main_permission_request_location_auth">이 앱을 실행하려면 위치 접근 권한이 필요합니다.</string>
     <string name="main_announce_mention">3월 14일까지는 서비스의 안정적 운영을 지켜보기 위한 베타서비스 기간입니다.</string>
     <string name="main_possible_all">주중에 구매하지 못했다면 오늘 구매하세요!</string>
+    <string name="main_possible_day">출생연도 끝자리 %1$d・%2$d년생이 살 수 있는 날</string>
     <string name="main_ready_bookmark">기능 준비중입니다.</string>
     <string name="main_ready_findwaying">기능 준비중입니다.</string>
     <string name="main_update">업데이트</string>

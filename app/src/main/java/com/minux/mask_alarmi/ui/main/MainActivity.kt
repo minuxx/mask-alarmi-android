@@ -1,12 +1,22 @@
 package com.minux.mask_alarmi.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.ui.main.map.MapFragment
+import org.w3c.dom.Text
+import java.util.Calendar
+
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var tvAnnounce: TextView
+    private lateinit var tvPossibleDay: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,7 +29,29 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
-        val tvAnnounce = findViewById<TextView>(R.id.main_tv_announce)
+        tvAnnounce = findViewById(R.id.main_tv_announce)
+        tvPossibleDay = findViewById(R.id.main_tv_possible_day)
         tvAnnounce.isSelected = true
+        setPossibleDay()
+    }
+
+    private fun setPossibleDay() {
+        val cal: Calendar = Calendar.getInstance()
+        when (val weekNum: Int = cal.get(Calendar.DAY_OF_WEEK)) {
+            1, 7 -> tvPossibleDay.text = getString(R.string.main_possible_all)
+            else -> {
+                val first = (weekNum - 1) % 10
+                val second = (first + 5) % 10
+                val possibleDayStr = getString(R.string.main_possible_day, first, second)
+                tvPossibleDay.text = SpannableStringBuilder(possibleDayStr).apply {
+                    setSpan(
+                        ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.mainPossibleYearText)),
+                        9,
+                        14,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+        }
     }
 }
