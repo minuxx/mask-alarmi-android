@@ -2,6 +2,7 @@ package com.minux.mask_alarmi.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.TextView
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.ui.main.map.MapFragment
 
@@ -17,5 +18,8 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.main_fragment_container, MapFragment.newInstance())
                 .commit()
         }
+
+        val tvAnnounce = findViewById<TextView>(R.id.main_tv_announce)
+        tvAnnounce.isSelected = true
     }
 }
