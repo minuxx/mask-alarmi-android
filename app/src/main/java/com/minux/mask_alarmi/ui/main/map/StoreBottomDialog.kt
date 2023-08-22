@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.RemainState
 import com.minux.mask_alarmi.domain.model.Store
+import com.google.android.material.R.id.design_bottom_sheet
 
 class StoreBottomDialog(
     private val store: Store,
@@ -26,7 +27,7 @@ class StoreBottomDialog(
         dialog.setContentView(view)
         dialog.setOnShowListener {
             val bottomSheetDialog = dialog as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
+            val bottomSheet = bottomSheetDialog.findViewById<View>(design_bottom_sheet) as FrameLayout?
             bottomSheet?.let {
                 it.setBackgroundColor(Color.TRANSPARENT)
                 BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
@@ -46,12 +47,12 @@ class StoreBottomDialog(
             RemainState.PLENTY -> R.drawable.ic_plenty_big
         })
         store.stockAt?.let {
-            view.findViewById<TextView>(R.id.tv_stock_at).text = "${it.substring(5, 7)}.${it.substring(8, 10)}.${it.substring(11, 16)}"
+            view.findViewById<TextView>(R.id.tv_stock_at).text = "${it.substring(5, 7)}.${it.substring(8, 10)} ${it.substring(11, 16)}"
         }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        onDismiss()
+        this.onDismiss()
     }
 }
