@@ -1,12 +1,24 @@
 package com.minux.mask_alarmi.ui.main.map
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context.LOCATION_SERVICE
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
@@ -16,6 +28,7 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.util.MapConstants
 
 private const val TAG = "MapFragment"
+private const val LOCATION_PERMISSION_REQUEST_CODE = 123
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
@@ -23,6 +36,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var storeMarkers: List<StoreMarker> = emptyList()
     private var isMapReady = false
     private var curStoreCode: Long? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationManager: LocationManager
+    private lateinit var locationListener: LocationListener
 
     companion object {
         fun newInstance() = MapFragment()
@@ -52,6 +68,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (isMapReady) {
                 storeMarkers.forEach { it.marker.map = this.naverMap }
             }
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            checkLocationPermission()
         }
     }
 
@@ -102,5 +121,49 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         this.naverMap = naverMap
         isMapReady = true
         storeMarkers.forEach { it.marker.map = this.naverMap }
+    }
+
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.i(TAG, "Location Permission Granted")
+//            fusedLocationClient.lastLocation
+//                .addOnSuccessListener { location: Location? ->
+//                    location?.let {
+//                        val latitude = it.latitude
+//                        val longitude = it.longitude
+//                        Log.i(TAG, "latitude: $latitude, longitude: $longitude")
+//                    }
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.e(TAG, "$e")
+//                }
+            requestLocationUpdates()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestLocationUpdates() {
+        locationListener = LocationListener { location ->
+            val latitude = location.latitude
+            val longitude = location.longitude
+            Log.d(TAG, "latitude : $latitude, longitude : $longitude")
+        }
+        locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
+        locationManager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            1000L,
+            10.0F,
+            locationListener
+        )
     }
 }
