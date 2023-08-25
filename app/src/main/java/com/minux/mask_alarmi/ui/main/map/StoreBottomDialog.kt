@@ -20,6 +20,7 @@ class StoreBottomDialog(
     private val store: Store,
     private val onDismiss: () -> Unit
 ) : BottomSheetDialogFragment() {
+    private var isDialogOpened = false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -51,8 +52,9 @@ class StoreBottomDialog(
         }
     }
 
+
     override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
         this.onDismiss()
+        super.onDismiss(dialog)
     }
 }

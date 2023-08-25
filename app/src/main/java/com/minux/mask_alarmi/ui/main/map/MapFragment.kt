@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
@@ -12,15 +11,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.marginEnd
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.util.AnimUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
@@ -40,6 +43,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationManager: LocationManager
     private lateinit var locationListener: LocationListener
 
+    private lateinit var ivMaskAmount: ImageView
+    private lateinit var ibtnMyLocation: ImageButton
+    private lateinit var    ibtnRefresh: ImageButton
+    private lateinit var ibtnSearch: ImageButton
+
     companion object {
         fun newInstance() = MapFragment()
     }
@@ -53,8 +61,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val view = inflater.inflate(R.layout.fragment_map, container, false)
         initMap()
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
+        ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
+        ibtnMyLocation.setOnClickListener {
+            slideOutViews()
+        }
+        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
+        ibtnRefresh.setOnClickListener {
+            slideInViews()
+        }
+        ibtnSearch = view.findViewById(R.id.main_ibtn_search)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,9 +117,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun openStoreBottomDialog(store: Store) {
+        slideOutViews()
         StoreBottomDialog(store, onDismiss = {
             storeMarkers.firstOrNull { it.storeCode == store.code }?.isClicked = false
             curStoreCode = null
+            slideInViews()
         }).show(childFragmentManager, TAG)
     }
 
@@ -165,5 +186,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             10.0F,
             locationListener
         )
+    }
+
+
+    private fun slideOutViews() {
+        AnimUtil.startSlideOutAnim(ivMaskAmount, "translationY", -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()))
+        AnimUtil.startSlideOutAnim(ibtnMyLocation, "translationX", ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat())
+        AnimUtil.startSlideOutAnim(ibtnRefresh, "translationX", ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
+        AnimUtil.startSlideOutAnim(ibtnSearch, "translationX", -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()))
+    }
+
+    private fun slideInViews() {
+        AnimUtil.startSlideInAnim(ivMaskAmount, "translationY", 0f)
+        AnimUtil.startSlideInAnim(ibtnMyLocation, "translationX", 0f)
+        AnimUtil.startSlideInAnim(ibtnRefresh, "translationX", 0f)
+        AnimUtil.startSlideInAnim(ibtnSearch, "translationX", 0f)
     }
 }
