@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
@@ -32,6 +33,7 @@ import com.google.android.gms.location.Priority
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.util.AnimUtil
+import com.minux.mask_alarmi.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
@@ -44,7 +46,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment"
-private const val LOCATION_PERMISSION_REQUEST_CODE = 123
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
@@ -52,9 +53,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var storeMarkers: List<StoreMarker> = emptyList()
     private var isMapReady = false
     private var curStoreCode: Long? = null
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+
+    private lateinit var locationUtil: LocationUtil
 
     private lateinit var ivMaskAmount: ImageView
     private lateinit var ibtnMyLocation: ImageButton
@@ -68,7 +68,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MapViewModel::class.java]
-        initLocationSettings()
+        locationUtil = LocationUtil(requireActivity() as AppCompatActivity)
+        locationUtil.initLocationSettings()
     }
 
     override fun onCreateView(
@@ -80,10 +81,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
         ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
         ibtnMyLocation.setOnClickListener {
-            if (checkLocationPermission()) {
-                fusedLocationClient.lastLocation.addOnSuccessListener {
-                    Log.i(TAG, "latitude: ${it.latitude}, longitude: ${it.longitude}")
-                }
+            locationUtil.getLastLocation {
+                Log.i(TAG, "lastLocation: $it")
             }
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
@@ -107,12 +106,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        if (checkLocationPermission()) startLocationUpdates()
+        locationUtil.startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
-        stopLocationUpdates()
+        locationUtil.stopLocationUpdates()
     }
 
     private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
@@ -183,61 +182,5 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //        this.naverMap.uiSettings.isZoomControlEnabled = false
         isMapReady = true
         storeMarkers.forEach { it.marker.map = this.naverMap }
-    }
-
-    private fun checkLocationPermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.i(TAG, "Location Permission Granted")
-            return true
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            Log.i(TAG, "Location Permission Denied")
-            return false
-        }
-    }
-
-    private fun initLocationSettings() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).apply {
-            setMinUpdateDistanceMeters(3.0F)
-            setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
-            setWaitForAccurateLocation(true)
-        }.build()
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                for (location in locationResult.locations){
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    Log.i(TAG, "latitude: $latitude, longitude: $longitude")
-                }
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback,
-            Looper.getMainLooper())
-    }
-
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
