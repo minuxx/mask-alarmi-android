@@ -26,6 +26,10 @@ class LocationUtil(private val activity: AppCompatActivity) {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    init {
+        initLocationSettings()
+    }
+
     private fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 activity,
@@ -52,7 +56,7 @@ class LocationUtil(private val activity: AppCompatActivity) {
         }
     }
 
-    fun initLocationSettings() {
+    private fun initLocationSettings() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
         locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS).apply {
             setMinUpdateDistanceMeters(MIN_DISTANCE_METER)
