@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1057240969250",
+    "project_id": "mask-alarmi",
+    "storage_bucket": "mask-alarmi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1057240969250:android:cc9b6ee69671f96042da7b",
+        "android_client_info": {
+          "package_name": "com.minux.mask_alarmi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1057240969250-sq5kocrrltoa7nemmslj8psnvlkvbfol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.minux.mask_alarmi",
+            "certificate_hash": "b97cbdfa57730572dc67a3f618b3cc926a9c8722"
+          }
+        },
+        {
+          "client_id": "1057240969250-qjr516aeqdvtq5fs11usaqihunm8pslb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQKQk7ssnXWvvJMo9vVOFPTpbP4egCoQY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1057240969250-qjr516aeqdvtq5fs11usaqihunm8pslb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

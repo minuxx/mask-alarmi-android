@@ -4,15 +4,18 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context.LOCATION_SERVICE
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginEnd
@@ -20,7 +23,12 @@ import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Granularity
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.util.AnimUtil
@@ -28,6 +36,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.UiSettings
 import com.naver.maps.map.util.MapConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,12 +53,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var isMapReady = false
     private var curStoreCode: Long? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationManager: LocationManager
-    private lateinit var locationListener: LocationListener
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
     private lateinit var ivMaskAmount: ImageView
     private lateinit var ibtnMyLocation: ImageButton
-    private lateinit var    ibtnRefresh: ImageButton
+    private lateinit var ibtnRefresh: ImageButton
     private lateinit var ibtnSearch: ImageButton
 
     companion object {
@@ -59,6 +68,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MapViewModel::class.java]
+        initLocationSettings()
     }
 
     override fun onCreateView(
@@ -70,12 +80,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
         ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
         ibtnMyLocation.setOnClickListener {
-            slideOutViews()
+            if (checkLocationPermission()) {
+                fusedLocationClient.lastLocation.addOnSuccessListener {
+                    Log.i(TAG, "latitude: ${it.latitude}, longitude: ${it.longitude}")
+                }
+            }
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
-        ibtnRefresh.setOnClickListener {
-            slideInViews()
-        }
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
         return view
     }
@@ -91,10 +102,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (isMapReady) {
                 storeMarkers.forEach { it.marker.map = this.naverMap }
             }
-
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-            checkLocationPermission()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (checkLocationPermission()) startLocationUpdates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
     }
 
     private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
@@ -133,6 +151,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }).show(childFragmentManager, TAG)
     }
 
+    private fun slideOutViews() {
+        AnimUtil.startSlideOutAnim(ivMaskAmount, "translationY", -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()))
+        AnimUtil.startSlideOutAnim(ibtnMyLocation, "translationX", ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat())
+        AnimUtil.startSlideOutAnim(ibtnRefresh, "translationX", ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
+        AnimUtil.startSlideOutAnim(ibtnSearch, "translationX", -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()))
+    }
+
+    private fun slideInViews() {
+        AnimUtil.startSlideInAnim(ivMaskAmount, "translationY", 0f)
+        AnimUtil.startSlideInAnim(ibtnMyLocation, "translationX", 0f)
+        AnimUtil.startSlideInAnim(ibtnRefresh, "translationX", 0f)
+        AnimUtil.startSlideInAnim(ibtnSearch, "translationX", 0f)
+    }
+
     private fun initMap() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
             ?: com.naver.maps.map.MapFragment.newInstance(
@@ -148,66 +180,64 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
+//        this.naverMap.uiSettings.isZoomControlEnabled = false
         isMapReady = true
         storeMarkers.forEach { it.marker.map = this.naverMap }
     }
 
-    private fun checkLocationPermission() {
+    private fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(TAG, "Location Permission Granted")
-//            fusedLocationClient.lastLocation
-//                .addOnSuccessListener { location: Location? ->
-//                    location?.let {
-//                        val latitude = it.latitude
-//                        val longitude = it.longitude
-//                        Log.i(TAG, "latitude: $latitude, longitude: $longitude")
-//                    }
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.e(TAG, "$e")
-//                }
-            requestLocationUpdates()
+            return true
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
+            Log.i(TAG, "Location Permission Denied")
+            return false
+        }
+    }
+
+    private fun initLocationSettings() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).apply {
+            setMinUpdateDistanceMeters(3.0F)
+            setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            setWaitForAccurateLocation(true)
+        }.build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations){
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    Log.i(TAG, "latitude: $latitude, longitude: $longitude")
+                }
+            }
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun requestLocationUpdates() {
-        locationListener = LocationListener { location ->
-            val latitude = location.latitude
-            val longitude = location.longitude
-            Log.d(TAG, "latitude : $latitude, longitude : $longitude")
-        }
-        locationManager = requireActivity().getSystemService(LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            1000L,
-            10.0F,
-            locationListener
-        )
+    private fun startLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(locationRequest,
+            locationCallback,
+            Looper.getMainLooper())
     }
 
-
-    private fun slideOutViews() {
-        AnimUtil.startSlideOutAnim(ivMaskAmount, "translationY", -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()))
-        AnimUtil.startSlideOutAnim(ibtnMyLocation, "translationX", ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat())
-        AnimUtil.startSlideOutAnim(ibtnRefresh, "translationX", ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
-        AnimUtil.startSlideOutAnim(ibtnSearch, "translationX", -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()))
-    }
-
-    private fun slideInViews() {
-        AnimUtil.startSlideInAnim(ivMaskAmount, "translationY", 0f)
-        AnimUtil.startSlideInAnim(ibtnMyLocation, "translationX", 0f)
-        AnimUtil.startSlideInAnim(ibtnRefresh, "translationX", 0f)
-        AnimUtil.startSlideInAnim(ibtnSearch, "translationX", 0f)
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
