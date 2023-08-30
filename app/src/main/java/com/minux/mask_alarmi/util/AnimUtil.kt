@@ -8,8 +8,8 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 
 object AnimUtil {
-    fun startSlideOutAnim(view: View, propertyName: String, translation: Float) {
-        val animator = ObjectAnimator.ofFloat(view, propertyName, translation)
+    fun startSlideOutAnim(view: View, translation: Float, isHorizontal: Boolean = true,) {
+        val animator = ObjectAnimator.ofFloat(view, if (isHorizontal) "translationX" else "translationY", translation)
         animator.interpolator = AccelerateInterpolator()
 
         animator.addListener(object : AnimatorListenerAdapter() {
@@ -23,8 +23,8 @@ object AnimUtil {
         animator.start()
     }
 
-    fun startSlideInAnim(view: View, propertyName: String, translation: Float) {
-        val animator = ObjectAnimator.ofFloat(view, propertyName, translation)
+    fun startSlideInAnim(view: View, translation: Float, isHorizontal: Boolean = true,) {
+        val animator = ObjectAnimator.ofFloat(view, if (isHorizontal) "translationX" else "translationY", translation)
         animator.interpolator = DecelerateInterpolator()
 
         animator.addListener(object : AnimatorListenerAdapter() {

@@ -107,7 +107,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun onStoreMarkerClicked(newStoreCode: Long, isClicked: Boolean) {
-        Log.i(TAG, "curStoreCode: ${curStoreCode}, newStoreCode: ${newStoreCode}, isClicked: $isClicked")
+        Log.i(
+            TAG,
+            "curStoreCode: ${curStoreCode}, newStoreCode: ${newStoreCode}, isClicked: $isClicked"
+        )
         if (newStoreCode != curStoreCode) {
             storeMarkers.firstOrNull { it.storeCode == curStoreCode }?.isClicked = false
             curStoreCode = newStoreCode
@@ -131,29 +134,43 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun slideOutViews() {
-        AnimUtil.startSlideOutAnim(ivMaskAmount, "translationY", -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()))
-        AnimUtil.startSlideOutAnim(ibtnMyLocation, "translationX", ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat())
-        AnimUtil.startSlideOutAnim(ibtnRefresh, "translationX", ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
-        AnimUtil.startSlideOutAnim(ibtnSearch, "translationX", -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()))
+        AnimUtil.startSlideOutAnim(
+            ivMaskAmount,
+            -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()),
+            false
+        )
+        AnimUtil.startSlideOutAnim(
+            ibtnMyLocation,
+            ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat()
+        )
+        AnimUtil.startSlideOutAnim(
+            ibtnRefresh,
+            ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
+        )
+        AnimUtil.startSlideOutAnim(
+            ibtnSearch,
+            -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
+        )
     }
 
     private fun slideInViews() {
-        AnimUtil.startSlideInAnim(ivMaskAmount, "translationY", 0f)
-        AnimUtil.startSlideInAnim(ibtnMyLocation, "translationX", 0f)
-        AnimUtil.startSlideInAnim(ibtnRefresh, "translationX", 0f)
-        AnimUtil.startSlideInAnim(ibtnSearch, "translationX", 0f)
+        AnimUtil.startSlideInAnim(ivMaskAmount, 0f, false)
+        AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
+        AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
+        AnimUtil.startSlideInAnim(ibtnSearch, 0f)
     }
 
     private fun initMap() {
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
-            ?: com.naver.maps.map.MapFragment.newInstance(
-                NaverMapOptions().extent(MapConstants.EXTENT_KOREA)
-        ).also {
-            this.childFragmentManager
-                .beginTransaction()
-                .add(R.id.map_container, it)
-                .commit()
-        }
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
+                ?: com.naver.maps.map.MapFragment.newInstance(
+                    NaverMapOptions().extent(MapConstants.EXTENT_KOREA)
+                ).also {
+                    this.childFragmentManager
+                        .beginTransaction()
+                        .add(R.id.map_container, it)
+                        .commit()
+                }
         mapFragment.getMapAsync(this@MapFragment)
     }
 
