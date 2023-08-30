@@ -29,6 +29,10 @@ import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.util.MapConstants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment"
 private const val LOCATION_PERMISSION_REQUEST_CODE = 123
@@ -121,7 +125,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         StoreBottomDialog(store, onDismiss = {
             storeMarkers.firstOrNull { it.storeCode == store.code }?.isClicked = false
             curStoreCode = null
-            slideInViews()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(500)
+                slideInViews()
+            }
         }).show(childFragmentManager, TAG)
     }
 
