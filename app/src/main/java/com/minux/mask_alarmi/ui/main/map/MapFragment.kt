@@ -17,6 +17,8 @@ import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.util.AnimUtil
 import com.minux.mask_alarmi.util.LocationUtil
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.NaverMapOptions
 import com.naver.maps.map.OnMapReadyCallback
@@ -27,6 +29,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment"
+private const val CAMERA_MIN_ZOOM = 8.0
+private const val CAMERA_MAX_ZOOM = 16.0
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
@@ -61,8 +65,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
         ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
         ibtnMyLocation.setOnClickListener {
-            locationUtil?.getLastLocation {
-                Log.i(TAG, "lastLocation: $it")
+            locationUtil?.getLastLocation { latlng ->
+                Log.i(TAG, "lastLocation: $latlng")
+                latlng?.let {
+                    val cameraUpdate = CameraUpdate
+                        .scrollAndZoomTo(LatLng(it.latitude, it.longitude), CAMERA_MAX_ZOOM)
+                        .animate(CameraAnimation.Easing)
+                    naverMap.moveCamera(cameraUpdate)
+                }
             }
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
@@ -180,7 +190,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap
+        this.naverMap = naverMap.apply {
+            minZoom = CAMERA_MIN_ZOOM
+            maxZoom = CAMERA_MAX_ZOOM
+        }
 //        this.naverMap.uiSettings.isZoomControlEnabled = false
         isMapReady = true
         storeMarkers.forEach { it.marker.map = this.naverMap }
