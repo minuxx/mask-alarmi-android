@@ -72,6 +72,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         .scrollAndZoomTo(LatLng(it.latitude, it.longitude), CAMERA_MAX_ZOOM)
                         .animate(CameraAnimation.Easing)
                     naverMap.moveCamera(cameraUpdate)
+                    viewModel.getStoresByGeo(latlng)
                 }
             }
         }
@@ -82,7 +83,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.storeListLiveData.observe(
+        viewModel.stores.observe(
             viewLifecycleOwner
         ) { stores ->
             Log.i(TAG, "Got stores ${stores.size}")
