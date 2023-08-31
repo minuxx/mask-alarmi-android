@@ -11,8 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-//37.4708038, 126.9174509, 5000
-
 class MapViewModel : ViewModel() {
     private val storeRepository = StoreRepositoryImpl.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
@@ -31,9 +29,10 @@ class MapViewModel : ViewModel() {
     fun getStoreByCode(storeCode: Long): Store? {
         return stores.value?.firstOrNull { it.code == storeCode }
     }
+}
+
 //    init {
 //        viewModelScope.launch {
-//            storeRepository.insertStoresFromJson()
+//            storeRepository.inse가rtStoresFromJson()
 //        }
 //    }
-}

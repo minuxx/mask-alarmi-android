@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "MapFragment"
 private const val CAMERA_MIN_ZOOM = 8.0
-private const val CAMERA_MAX_ZOOM = 16.0
+private const val CAMERA_MAX_ZOOM = 14.0
 
 class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
@@ -62,37 +62,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ): View {
         val view = inflater.inflate(R.layout.fragment_map, container, false)
         initMap()
-        ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
-        ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
-        ibtnMyLocation.setOnClickListener {
-            locationUtil?.getLastLocation { latlng ->
-                Log.i(TAG, "lastLocation: $latlng")
-                latlng?.let {
-                    val cameraUpdate = CameraUpdate
-                        .scrollAndZoomTo(LatLng(it.latitude, it.longitude), CAMERA_MAX_ZOOM)
-                        .animate(CameraAnimation.Easing)
-                    naverMap.moveCamera(cameraUpdate)
-                    viewModel.getStoresByGeo(latlng)
-                }
-            }
-        }
-        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
-        ibtnSearch = view.findViewById(R.id.main_ibtn_search)
+        initViews(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.stores.observe(
-            viewLifecycleOwner
-        ) { stores ->
-            Log.i(TAG, "Got stores ${stores.size}")
-            storeMarkers = stores?.let { makeStoreMarkers(it) } ?: emptyList()
-
-            if (isMapReady) {
-                storeMarkers.forEach { it.marker.map = this.naverMap }
-            }
-        }
+        observeStores()
     }
 
     override fun onResume() {
@@ -110,6 +86,67 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         locationUtil = null
     }
 
+    private fun initViews(view: View) {
+        ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
+        ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
+        ibtnMyLocation.setOnClickListener {
+            removeCurStoreMarkers()
+            moveLastLocation()
+        }
+        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
+        ibtnSearch = view.findViewById(R.id.main_ibtn_search)
+    }
+
+    private fun observeStores() {
+        viewModel.stores.observe(
+            viewLifecycleOwner
+        ) { stores ->
+            Log.i(TAG, "Got stores ${stores.size}")
+            storeMarkers = stores?.let { makeStoreMarkers(it) } ?: emptyList()
+
+            if (isMapReady) {
+                storeMarkers.forEach { it.marker.map = this.naverMap }
+            }
+        }
+    }
+
+    private fun initMap() {
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
+                ?: com.naver.maps.map.MapFragment.newInstance(
+                    NaverMapOptions().extent(MapConstants.EXTENT_KOREA)
+                ).also {
+                    this.childFragmentManager
+                        .beginTransaction()
+                        .add(R.id.map_container, it)
+                        .commit()
+                }
+        mapFragment.getMapAsync(this@MapFragment)
+    }
+
+    override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap.apply {
+            minZoom = CAMERA_MIN_ZOOM
+            maxZoom = CAMERA_MAX_ZOOM
+        }
+//        this.naverMap.uiSettings.isZoomControlEnabled = false
+        isMapReady = true
+        moveLastLocation()
+    }
+
+    private fun moveLastLocation() {
+        locationUtil?.getLastLocation { latlng ->
+            Log.i(TAG, "lastLocation: $latlng")
+            latlng?.let {
+                viewModel.getStoresByGeo(latlng)
+                val cameraUpdate = CameraUpdate
+                    .scrollAndZoomTo(LatLng(it.latitude, it.longitude), CAMERA_MAX_ZOOM)
+                    .animate(CameraAnimation.Easing)
+                naverMap.moveCamera(cameraUpdate)
+            }
+        }
+    }
+
     private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
         return stores.map { store ->
             StoreMarker(
@@ -120,6 +157,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 onStoreMarkerClicked(storeCode, isClicked)
             }.newInstance()
         }
+    }
+
+    private fun removeCurStoreMarkers() {
+        storeMarkers.forEach { it.marker.map = null }
     }
 
     private fun onStoreMarkerClicked(newStoreCode: Long, isClicked: Boolean) {
@@ -174,29 +215,5 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
         AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
         AnimUtil.startSlideInAnim(ibtnSearch, 0f)
-    }
-
-    private fun initMap() {
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
-                ?: com.naver.maps.map.MapFragment.newInstance(
-                    NaverMapOptions().extent(MapConstants.EXTENT_KOREA)
-                ).also {
-                    this.childFragmentManager
-                        .beginTransaction()
-                        .add(R.id.map_container, it)
-                        .commit()
-                }
-        mapFragment.getMapAsync(this@MapFragment)
-    }
-
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap.apply {
-            minZoom = CAMERA_MIN_ZOOM
-            maxZoom = CAMERA_MAX_ZOOM
-        }
-//        this.naverMap.uiSettings.isZoomControlEnabled = false
-        isMapReady = true
-        storeMarkers.forEach { it.marker.map = this.naverMap }
     }
 }
