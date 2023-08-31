@@ -35,7 +35,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var isMapReady = false
     private var curStoreCode: Long? = null
 
-    private lateinit var locationUtil: LocationUtil
+    private var locationUtil: LocationUtil? = null
 
     private lateinit var ivMaskAmount: ImageView
     private lateinit var ibtnMyLocation: ImageButton
@@ -61,7 +61,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
         ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
         ibtnMyLocation.setOnClickListener {
-            locationUtil.getLastLocation {
+            locationUtil?.getLastLocation {
                 Log.i(TAG, "lastLocation: $it")
             }
         }
@@ -86,12 +86,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        locationUtil.startLocationUpdates()
+        locationUtil?.startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
-        locationUtil.stopLocationUpdates()
+        locationUtil?.stopLocationUpdates()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        locationUtil = null
     }
 
     private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
