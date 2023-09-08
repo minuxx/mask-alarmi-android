@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val RADIUS_METER = 1000
+
 class MapViewModel : ViewModel() {
     private val storeRepository = StoreRepositoryImpl.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
@@ -20,7 +22,7 @@ class MapViewModel : ViewModel() {
     fun getStoresByGeo(latLng: LatLng) {
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
-                storeRepository.getStoresByGeo(latLng.latitude, latLng.longitude, 1000)
+                storeRepository.getStoresByGeo(latLng.latitude, latLng.longitude, RADIUS_METER)
             }
             _stores.postValue(result)
         }
@@ -29,10 +31,10 @@ class MapViewModel : ViewModel() {
     fun getStoreByCode(storeCode: Long): Store? {
         return stores.value?.firstOrNull { it.code == storeCode }
     }
-}
 
-//    init {
-//        viewModelScope.launch {
-//            storeRepository.inse가rtStoresFromJson()
-//        }
-//    }
+        init {
+        viewModelScope.launch {
+            storeRepository.insertStoresFromJson()
+        }
+    }
+}

@@ -5,13 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.internal.ViewUtils.showKeyboard
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.util.AnimUtil
@@ -27,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "MapFragment"
 private const val CAMERA_MIN_ZOOM = 8.0
@@ -45,6 +50,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var ibtnMyLocation: ImageButton
     private lateinit var ibtnRefresh: ImageButton
     private lateinit var ibtnSearch: ImageButton
+    private lateinit var etSearch: EditText
 
     companion object {
         fun newInstance() = MapFragment()
@@ -95,6 +101,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
+        etSearch = view.findViewById(R.id.main_et_search)
     }
 
     private fun observeStores() {

@@ -5,8 +5,8 @@
     android:id="@+id/map_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.map.MapFragment"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    tools:context=".ui.main.map.MapFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_container"
@@ -22,17 +22,17 @@
         android:id="@+id/main_iv_mask_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/main_cd_ic_img_mask_amount"
-        android:src="@drawable/img_mask_amount" />
+        android:src="@drawable/img_mask_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/main_ibtn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
@@ -43,8 +43,8 @@
 
     <ImageButton
         android:id="@+id/main_ibtn_my_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
@@ -55,13 +55,41 @@
 
     <ImageButton
         android:id="@+id/main_ibtn_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/main_cd_ic_refresh"
+        android:src="@drawable/ic_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_refresh" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <EditText
+        android:id="@+id/main_et_search"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="25dp"
+        android:layout_gravity="center_vertical"
+        android:autofillHints="@string/main_search_hint"
+        android:background="@drawable/search_white_round_box"
+        android:drawableEnd="@drawable/ic_search_clicked"
+        android:elevation="1dp"
+        android:fontFamily="@font/notosanskr_medium"
+        android:hint="@string/main_search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="textVisiblePassword|textNoSuggestions"
+        android:maxLines="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/mainSearchText"
+        android:textColorHint="@color/mainSearchHint"
+        android:textCursorDrawable="@drawable/search_cursor"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="@string/main_search_hint" />
 </androidx.constraintlayout.widget.ConstraintLayout>
