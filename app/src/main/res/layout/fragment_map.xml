@@ -65,31 +65,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-    <EditText
-        android:id="@+id/main_et_search"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="25dp"
-        android:layout_gravity="center_vertical"
-        android:autofillHints="@string/main_search_hint"
-        android:background="@drawable/search_white_round_box"
-        android:drawableEnd="@drawable/ic_search_clicked"
-        android:elevation="1dp"
-        android:fontFamily="@font/notosanskr_medium"
-        android:hint="@string/main_search_hint"
-        android:imeOptions="actionSearch"
-        android:inputType="textVisiblePassword|textNoSuggestions"
-        android:maxLines="1"
-        android:paddingStart="16dp"
-        android:paddingEnd="12dp"
-        android:textColor="@color/mainSearchText"
-        android:textColorHint="@color/mainSearchHint"
-        android:textCursorDrawable="@drawable/search_cursor"
-        android:textSize="14sp"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/main_search_hint" />
+        android:paddingBottom="25dp">
+
+        <EditText
+            android:id="@+id/main_et_search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_gravity="center_vertical"
+            android:autofillHints="@string/main_search_hint"
+            android:background="@drawable/search_white_round_box"
+            android:drawableEnd="@drawable/ic_search_clicked"
+            android:elevation="1dp"
+            android:fontFamily="@font/notosanskr_medium"
+            android:hint="@string/main_search_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textVisiblePassword|textNoSuggestions"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/mainSearchText"
+            android:textColorHint="@color/mainSearchHint"
+            android:textCursorDrawable="@drawable/search_cursor"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="@string/main_search_hint" />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

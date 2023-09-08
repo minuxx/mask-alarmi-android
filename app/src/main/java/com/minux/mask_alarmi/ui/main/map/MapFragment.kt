@@ -7,21 +7,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.internal.ViewUtils.showKeyboard
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.util.AnimUtil
+import com.minux.mask_alarmi.util.InputUtil
 import com.minux.mask_alarmi.util.LocationUtil
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraAnimation
@@ -48,6 +45,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var curStoreCode: Long? = null
 
     private var locationUtil: LocationUtil? = null
+    private var inputUtil: InputUtil? = null
 
     private lateinit var ivMaskAmount: ImageView
     private lateinit var ibtnMyLocation: ImageButton
@@ -63,6 +61,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MapViewModel::class.java]
         locationUtil = LocationUtil(requireActivity() as AppCompatActivity)
+        inputUtil = InputUtil(requireActivity() as AppCompatActivity)
     }
 
     override fun onCreateView(
@@ -93,6 +92,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         locationUtil = null
+        inputUtil = null
     }
 
     private fun initViews(view: View) {
@@ -105,7 +105,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
         ibtnSearch.setOnClickListener {
-            expandSearchBar(etSearch)
+            expandSearchBar()
         }
         etSearch = view.findViewById(R.id.main_et_search)
     }
@@ -230,11 +230,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         AnimUtil.startSlideInAnim(ibtnSearch, 0f)
     }
 
-    private fun expandSearchBar(etSearch: EditText) {
+    private fun expandSearchBar() {
         val targetWidth = etSearch.resources.displayMetrics.widthPixels - etSearch.marginEnd * 2
-
         val animator = ValueAnimator.ofInt(1, targetWidth)
-        animator.duration = 1200
+        animator.duration = 1000
 
         animator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
@@ -248,8 +247,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 etSearch.visibility = View.VISIBLE
             }
             override fun onAnimationEnd(animation: Animator) {
-                etSearch.requestFocus()
-                // 키보드 표시 코드 추가
+                inputUtil?.showSoftInput(etSearch)
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
