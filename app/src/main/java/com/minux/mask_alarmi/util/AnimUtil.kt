@@ -2,6 +2,7 @@ package com.minux.mask_alarmi.util
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -35,6 +36,20 @@ object AnimUtil {
         })
 
         animator.duration = 500
+        animator.start()
+    }
+
+    fun expandAnim(view: View) {
+        val animator = ObjectAnimator.ofFloat(view, "translationX", -view.width.toFloat(), 0f)
+        animator.duration = 35000
+
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator) {
+                super.onAnimationStart(animation)
+                view.visibility = View.VISIBLE
+            }
+        })
+
         animator.start()
     }
 }

@@ -1,11 +1,14 @@
 package com.minux.mask_alarmi.ui.main.map
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -101,6 +104,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
+        ibtnSearch.setOnClickListener {
+            expandSearchBar(etSearch)
+        }
         etSearch = view.findViewById(R.id.main_et_search)
     }
 
@@ -222,5 +228,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
         AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
         AnimUtil.startSlideInAnim(ibtnSearch, 0f)
+    }
+
+    private fun expandSearchBar(etSearch: EditText) {
+        val targetWidth = etSearch.resources.displayMetrics.widthPixels - etSearch.marginEnd * 2
+
+        val animator = ValueAnimator.ofInt(1, targetWidth)
+        animator.duration = 1200
+
+        animator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = etSearch.layoutParams
+            layoutParams.width = value
+            etSearch.layoutParams = layoutParams
+        }
+
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                etSearch.visibility = View.VISIBLE
+            }
+            override fun onAnimationEnd(animation: Animator) {
+                etSearch.requestFocus()
+                // 키보드 표시 코드 추가
+            }
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+
+        animator.start()
     }
 }
