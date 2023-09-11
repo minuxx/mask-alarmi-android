@@ -165,7 +165,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         moveLastLocation()
 
         naverMap.setOnMapClickListener { _, _ ->
-            collapseSearchBar()
+            if (etSearch.isFocusable) {
+                collapseSearchBar()
+            }
         }
     }
 
@@ -296,7 +298,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 slideInViews()
-                etSearch.hint = null
             }
         })
         animator.start()

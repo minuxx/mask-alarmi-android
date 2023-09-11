@@ -1,14 +1,13 @@
 package com.minux.mask_alarmi.data.repository
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.minux.mask_alarmi.data.entity.StoreEntity
 import com.minux.mask_alarmi.data.local.MASK_ALARMI_DB_NAME
 import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
+import com.minux.mask_alarmi.data.remote.AddressRemoteDataSource
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.domain.repository.StoreRepository
 import com.minux.mask_alarmi.util.GeoUtil
@@ -18,15 +17,15 @@ import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
 
-
-class StoreRepositoryImpl private constructor(val context: Context) : StoreRepository {
+class StoreRepositoryImpl private constructor(private val context: Context) : StoreRepository {
     private val maskAlarmiDB: MaskAlarmiDataBase = Room.databaseBuilder(
         context.applicationContext,
         MaskAlarmiDataBase::class.java,
         MASK_ALARMI_DB_NAME,
     ).build()
-
     private val storeDao = maskAlarmiDB.storeDao()
+
+    private val addressRemoteDataSource = AddressRemoteDataSource(context)
 
     /*
     * 1. 반경 1km 이내의 stores
@@ -39,6 +38,10 @@ class StoreRepositoryImpl private constructor(val context: Context) : StoreRepos
         }.map { it.toModel() }
 
         return storesInRadius
+    }
+
+    override fun searchAddress() {
+        TODO("Not yet implemented")
     }
 
     suspend fun insertStoresFromJson() {
