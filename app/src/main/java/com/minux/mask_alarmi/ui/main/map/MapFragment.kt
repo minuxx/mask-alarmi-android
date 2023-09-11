@@ -88,6 +88,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         etSearch.setOnEditorActionListener { v, actionId, event ->
             when (actionId ) {
                 EditorInfo.IME_ACTION_SEARCH -> {
+                    val address = v.text.toString()
+                    if (address.isNotEmpty()) {
+                        locationUtil?.getLastLocation { latlng ->
+                            latlng?.let {
+                                viewModel.searchAddress(address, it.latitude, it.longitude)
+                            }
+                        }
+                    }
                     collapseSearchBar()
                     true
                 }

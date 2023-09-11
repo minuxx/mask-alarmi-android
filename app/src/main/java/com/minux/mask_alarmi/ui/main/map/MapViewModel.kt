@@ -1,5 +1,6 @@
 package com.minux.mask_alarmi.ui.main.map
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val TAG = "MapViewModel"
 private const val RADIUS_METER = 1000
 
 class MapViewModel : ViewModel() {
@@ -34,11 +36,8 @@ class MapViewModel : ViewModel() {
     }
 
     fun searchAddress(address: String, lat: Double, lng: Double) {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                storeRepository.searchAddress(address, lat, lng)
-            }
-            // getStoresByGeo
+        storeRepository.searchAddress(address, lat, lng) {
+            Log.i(TAG, "$it")
         }
     }
 

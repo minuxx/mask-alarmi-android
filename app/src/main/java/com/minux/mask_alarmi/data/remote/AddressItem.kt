@@ -1,5 +1,8 @@
 package com.minux.mask_alarmi.data.remote
 
+import com.minux.mask_alarmi.domain.model.Address
+import com.minux.mask_alarmi.domain.model.Store
+
 data class AddressItem(
     val addressElements: List<AddressElement>,
     val distance: Double,
@@ -8,7 +11,12 @@ data class AddressItem(
     val roadAddress: String,
     val x: String,
     val y: String
-)
+) {
+    fun toModel(): Address = Address(
+        latitude = y.toDouble(),
+        longitude = x.toDouble()
+    )
+}
 
 data class AddressElement(
     val code: String,

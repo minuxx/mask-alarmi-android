@@ -9,6 +9,7 @@ import com.minux.mask_alarmi.data.entity.StoreEntity
 import com.minux.mask_alarmi.data.local.MASK_ALARMI_DB_NAME
 import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
 import com.minux.mask_alarmi.data.remote.AddressRemoteDataSource
+import com.minux.mask_alarmi.domain.model.Address
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.domain.repository.StoreRepository
 import com.minux.mask_alarmi.util.GeoUtil
@@ -43,12 +44,15 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         return storesInRadius
     }
 
-    override fun searchAddress(address: String, lat: Double, lng: Double): String {
-        val addresses = addressRemoteDataSource.getAddresses(address, "$lng,$lng")
-
-        Log.d(TAG, "$addresses")
-
-        return ""
+    override fun searchAddress(
+        searchAddr: String,
+        lat: Double,
+        lng: Double,
+        onResponse: (Address?) -> Unit
+    ){
+        addressRemoteDataSource.getAddresses(searchAddr, "$lng,$lat") { addrressItems ->
+            onResponse(addrressItems.minByOrNull { it.distance }?.toModel())
+        }
     }
 
     suspend fun insertStoresFromJson() {

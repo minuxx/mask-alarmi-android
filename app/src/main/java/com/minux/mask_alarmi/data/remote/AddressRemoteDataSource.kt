@@ -13,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 private const val TAG = "MaskAlarmiRemoteDataSource"
-private const val NAVER_GEOCODE_BASE_URL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode/"
+private const val NAVER_GEOCODE_BASE_URL = "https://naveropenapi.apigw.ntruss.com/"
 private const val NAVER_API_KEY_ID = "X-NCP-APIGW-API-KEY-ID"
 private const val NAVER_API_KEY = "X-NCP-APIGW-API-KEY"
 
@@ -39,7 +39,7 @@ class AddressRemoteDataSource(private val context: Context) {
             val requestBuilder = original.newBuilder()
                 .header(NAVER_API_KEY_ID, context.getString(R.string.naver_client_id))
                 .header(NAVER_API_KEY, context.getString(R.string.naver_client_secret))
-                .header("Accept", "Accept: application/json")
+                .header("Accept", "application/json")
             val request = requestBuilder.build()
             chain.proceed(request)
         }
@@ -50,30 +50,45 @@ class AddressRemoteDataSource(private val context: Context) {
             .build()
     }
 
-    fun getAddresses(query: String, coordinate: String): List<AddressItem> {
-        val addresses = mutableListOf<AddressItem>()
-        val getAddressesRequest: Call<getAddressesResponse> = addressApi.getAddresses(
+    fun getAddresses(
+        query: String,
+        coordinate: String,
+        onResponse: (List<AddressItem>) -> Unit,
+    ) {
+        val getAddressesRequest: Call<GetAddressesResponse> = addressApi.getAddresses(
             query,
             coordinate
         )
 
-        getAddressesRequest.enqueue(object : Callback<getAddressesResponse> {
-            override fun onFailure(call: Call<getAddressesResponse>, t: Throwable) {
+        getAddressesRequest.enqueue(object : Callback<GetAddressesResponse> {
+            override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch addresses", t)
             }
 
             override fun onResponse(
-                call: Call<getAddressesResponse>,
-                response: Response<getAddressesResponse>
+                call: Call<GetAddressesResponse>,
+                response: Response<GetAddressesResponse>
             ) {
                 Log.d(TAG, "Response received")
-                val getAddressesResponse: getAddressesResponse? = response.body()
+                val getAddressesResponse: GetAddressesResponse? = response.body()
                 val addressItems: List<AddressItem> = getAddressesResponse?.addresses
                     ?: mutableListOf()
-                addresses.addAll(addressItems)
+                onResponse(addressItems)
             }
         })
-
-        return addresses
     }
+
+//    suspend fun getAddresses(query: String, coordinate: String): List<AddressItem> {
+//        return try {
+//            val response = addressApi.getAddresses(query, coordinate)
+//            if (response.isSuccessful) {
+//                response.body()?.addresses ?: emptyList()
+//            } else {
+//                emptyList()
+//            }
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Failed to fetch addresses", e)
+//            emptyList()
+//        }
+//    }
 }
