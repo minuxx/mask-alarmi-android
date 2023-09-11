@@ -51,6 +51,7 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         onResponse: (Address?) -> Unit
     ){
         addressRemoteDataSource.getAddresses(searchAddr, "$lng,$lat") { addrressItems ->
+            Log.i(TAG, "$addrressItems")
             onResponse(addrressItems.minByOrNull { it.distance }?.toModel())
         }
     }

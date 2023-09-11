@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat.animate
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.core.view.marginTop
@@ -81,6 +82,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeStores()
+        observeSearchedLatLng()
     }
 
     override fun onStart() {
@@ -125,7 +127,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
         ibtnMyLocation.setOnClickListener {
             removeCurStoreMarkers()
-            moveLastLocation()
+            locationUtil?.getLastLocation { latlng ->
+                latlng?.let { getStoresAndMoveCamera(it) }
+            }
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
@@ -149,6 +153,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun observeSearchedLatLng() {
+        viewModel.searchedLatLng.observe(
+            viewLifecycleOwner
+        ) { latlng ->
+            removeCurStoreMarkers()
+            getStoresAndMoveCamera(latlng)
+        }
+    }
+
     private fun initMap() {
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_container) as com.naver.maps.map.MapFragment?
@@ -167,11 +180,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         naverMap = map.apply {
             minZoom = CAMERA_MIN_ZOOM
             maxZoom = CAMERA_MAX_ZOOM
+            uiSettings.isZoomControlEnabled = false
         }
-//        this.naverMap.uiSettings.isZoomControlEnabled = false
-        isMapReady = true
-        moveLastLocation()
 
+        isMapReady = true
+        locationUtil?.getLastLocation { latlng ->
+            latlng?.let { getStoresAndMoveCamera(it) }
+        }
         naverMap.setOnMapClickListener { _, _ ->
             if (etSearch.isFocusable) {
                 collapseSearchBar()
@@ -179,17 +194,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun moveLastLocation() {
-        locationUtil?.getLastLocation { latlng ->
-            Log.i(TAG, "lastLocation: $latlng")
-            latlng?.let {
-                viewModel.getStoresByGeo(latlng)
-                val cameraUpdate = CameraUpdate
-                    .scrollAndZoomTo(LatLng(it.latitude, it.longitude), CAMERA_MAX_ZOOM)
-                    .animate(CameraAnimation.Easing)
-                naverMap.moveCamera(cameraUpdate)
-            }
-        }
+    private fun getStoresAndMoveCamera(latlng: LatLng) {
+        viewModel.getStoresByGeo(latlng)
+        val cameraUpdate = CameraUpdate
+            .scrollAndZoomTo(latlng, CAMERA_MAX_ZOOM)
+            .animate(CameraAnimation.Easing)
+        naverMap.moveCamera(cameraUpdate)
     }
 
     private fun makeStoreMarkers(stores: List<Store>): List<StoreMarker> {
@@ -223,19 +233,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun openStoreBottomDialog(store: Store) {
-        slideOutViews()
+        slideOutViews(true)
         StoreBottomDialog(store, onDismiss = {
             storeMarkers.firstOrNull { it.storeCode == store.code }?.isClicked = false
             curStoreCode = null
 
             CoroutineScope(Dispatchers.Main).launch {
                 delay(500)
-                slideInViews()
+                slideInViews(true)
             }
         }).show(childFragmentManager, TAG)
     }
 
-    private fun slideOutViews() {
+    private fun slideOutViews(isOpenStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideOutAnim(
             ivMaskAmount,
             -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()),
@@ -249,12 +259,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ibtnRefresh,
             ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
         )
+        if (isOpenStoreBottomDialog) {
+            AnimUtil.startSlideOutAnim(
+                etSearch,
+                -(etSearch.width.toFloat() + etSearch.marginStart.toFloat())
+            )
+        }
     }
 
-    private fun slideInViews() {
+    private fun slideInViews(isCloseStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideInAnim(ivMaskAmount, 0f, false)
         AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
         AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
+        if (isCloseStoreBottomDialog) {
+            AnimUtil.startSlideInAnim(etSearch, 0f)
+        }
     }
 
     private fun setFocusSearchBar(isFocusable: Boolean) {
@@ -306,6 +325,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 slideInViews()
+                etSearch.hint = null
+                etSearch.text = null
             }
         })
         animator.start()

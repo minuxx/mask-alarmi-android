@@ -77,18 +77,4 @@ class AddressRemoteDataSource(private val context: Context) {
             }
         })
     }
-
-//    suspend fun getAddresses(query: String, coordinate: String): List<AddressItem> {
-//        return try {
-//            val response = addressApi.getAddresses(query, coordinate)
-//            if (response.isSuccessful) {
-//                response.body()?.addresses ?: emptyList()
-//            } else {
-//                emptyList()
-//            }
-//        } catch (e: Exception) {
-//            Log.e(TAG, "Failed to fetch addresses", e)
-//            emptyList()
-//        }
-//    }
 }
