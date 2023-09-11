@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide.init
 import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
 import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
@@ -30,6 +31,15 @@ class MapViewModel : ViewModel() {
 
     fun getStoreByCode(storeCode: Long): Store? {
         return stores.value?.firstOrNull { it.code == storeCode }
+    }
+
+    fun searchAddress(address: String, lat: Double, lng: Double) {
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                storeRepository.searchAddress(address, lat, lng)
+            }
+            // getStoresByGeo
+        }
     }
 
     init {

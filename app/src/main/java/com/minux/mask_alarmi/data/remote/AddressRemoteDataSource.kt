@@ -39,6 +39,7 @@ class AddressRemoteDataSource(private val context: Context) {
             val requestBuilder = original.newBuilder()
                 .header(NAVER_API_KEY_ID, context.getString(R.string.naver_client_id))
                 .header(NAVER_API_KEY, context.getString(R.string.naver_client_secret))
+                .header("Accept", "Accept: application/json")
             val request = requestBuilder.build()
             chain.proceed(request)
         }
@@ -49,22 +50,25 @@ class AddressRemoteDataSource(private val context: Context) {
             .build()
     }
 
-    fun searchAddress(query: String, coordinate: String): List<AddressItem> {
+    fun getAddresses(query: String, coordinate: String): List<AddressItem> {
         val addresses = mutableListOf<AddressItem>()
-        val searchAddressRequest: Call<SearchAddressResponse> = addressApi.searchAddress()
+        val getAddressesRequest: Call<getAddressesResponse> = addressApi.getAddresses(
+            query,
+            coordinate
+        )
 
-        searchAddressRequest.enqueue(object : Callback<SearchAddressResponse> {
-            override fun onFailure(call: Call<SearchAddressResponse>, t: Throwable) {
+        getAddressesRequest.enqueue(object : Callback<getAddressesResponse> {
+            override fun onFailure(call: Call<getAddressesResponse>, t: Throwable) {
                 Log.e(TAG, "Failed to fetch addresses", t)
             }
 
             override fun onResponse(
-                call: Call<SearchAddressResponse>,
-                response: Response<SearchAddressResponse>
+                call: Call<getAddressesResponse>,
+                response: Response<getAddressesResponse>
             ) {
                 Log.d(TAG, "Response received")
-                val searchAddressResponse: SearchAddressResponse? = response.body()
-                val addressItems: List<AddressItem> = searchAddressResponse?.addresses
+                val getAddressesResponse: getAddressesResponse? = response.body()
+                val addressItems: List<AddressItem> = getAddressesResponse?.addresses
                     ?: mutableListOf()
                 addresses.addAll(addressItems)
             }

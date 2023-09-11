@@ -1,6 +1,7 @@
 package com.minux.mask_alarmi.data.repository
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -16,6 +17,8 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
+
+private const val TAG = "StoreRepositoryImpl"
 
 class StoreRepositoryImpl private constructor(private val context: Context) : StoreRepository {
     private val maskAlarmiDB: MaskAlarmiDataBase = Room.databaseBuilder(
@@ -40,8 +43,12 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         return storesInRadius
     }
 
-    override fun searchAddress() {
-        TODO("Not yet implemented")
+    override fun searchAddress(address: String, lat: Double, lng: Double): String {
+        val addresses = addressRemoteDataSource.getAddresses(address, "$lng,$lng")
+
+        Log.d(TAG, "$addresses")
+
+        return ""
     }
 
     suspend fun insertStoresFromJson() {

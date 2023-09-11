@@ -6,5 +6,5 @@ import com.minux.mask_alarmi.domain.model.Store
 
 interface StoreRepository {
     fun getStoresByGeo(lat: Double, lng: Double, m: Int): List<Store>
-    fun searchAddress()
+    fun searchAddress(address: String, lat: Double, lng: Double): String
 }

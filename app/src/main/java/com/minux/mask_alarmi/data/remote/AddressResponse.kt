@@ -1,6 +1,6 @@
 package com.minux.mask_alarmi.data.remote
 
-data class SearchAddressResponse(
+data class getAddressesResponse(
     val addresses: List<AddressItem>,
     val errorMessage: String,
     val meta: Meta,
