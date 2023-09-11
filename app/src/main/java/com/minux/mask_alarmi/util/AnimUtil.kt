@@ -52,4 +52,30 @@ object AnimUtil {
 
         animator.start()
     }
+
+    fun startFadeInAnim(view: View) {
+        val animator = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f)
+        animator.duration = 1000
+
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                view.visibility = View.VISIBLE
+            }
+        })
+
+        animator.start()
+    }
+
+    fun startFadeOutAnim(view: View) {
+        val animator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
+        animator.duration = 1000
+
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+
+            }
+        })
+
+        animator.start()
+    }
 }

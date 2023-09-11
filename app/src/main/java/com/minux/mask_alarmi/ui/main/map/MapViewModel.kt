@@ -32,7 +32,7 @@ class MapViewModel : ViewModel() {
         return stores.value?.firstOrNull { it.code == storeCode }
     }
 
-        init {
+    init {
         viewModelScope.launch {
             storeRepository.insertStoresFromJson()
         }

@@ -1,17 +1,21 @@
 package com.minux.mask_alarmi.ui.main.map
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
+import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -79,6 +83,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         observeStores()
     }
 
+    override fun onStart() {
+        super.onStart()
+        etSearch.setOnEditorActionListener { v, actionId, event ->
+            when (actionId ) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    collapseSearchBar()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         locationUtil?.startLocationUpdates()
@@ -104,10 +121,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
         ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
-        ibtnSearch.setOnClickListener {
+        etSearch = view.findViewById(R.id.main_et_search)
+        etSearch.setOnClickListener {
             expandSearchBar()
         }
-        etSearch = view.findViewById(R.id.main_et_search)
+        setFocusSearchBar(false)
     }
 
     private fun observeStores() {
@@ -137,14 +155,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this@MapFragment)
     }
 
-    override fun onMapReady(naverMap: NaverMap) {
-        this.naverMap = naverMap.apply {
+    override fun onMapReady(map: NaverMap) {
+        naverMap = map.apply {
             minZoom = CAMERA_MIN_ZOOM
             maxZoom = CAMERA_MAX_ZOOM
         }
 //        this.naverMap.uiSettings.isZoomControlEnabled = false
         isMapReady = true
         moveLastLocation()
+
+        naverMap.setOnMapClickListener { _, _ ->
+            collapseSearchBar()
+        }
     }
 
     private fun moveLastLocation() {
@@ -217,42 +239,66 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ibtnRefresh,
             ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
         )
-        AnimUtil.startSlideOutAnim(
-            ibtnSearch,
-            -(ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat())
-        )
     }
 
     private fun slideInViews() {
         AnimUtil.startSlideInAnim(ivMaskAmount, 0f, false)
         AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
         AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
-        AnimUtil.startSlideInAnim(ibtnSearch, 0f)
+    }
+
+    private fun setFocusSearchBar(isFocusable: Boolean) {
+        etSearch.isFocusable = isFocusable
+        etSearch.isFocusableInTouchMode = isFocusable
     }
 
     private fun expandSearchBar() {
-        val targetWidth = etSearch.resources.displayMetrics.widthPixels - etSearch.marginEnd * 2
-        val animator = ValueAnimator.ofInt(1, targetWidth)
+        val targetWidth = etSearch.resources.displayMetrics.widthPixels - etSearch.marginStart * 2
+        val animator = ValueAnimator.ofInt(etSearch.width, targetWidth)
+        Log.d(TAG, "${etSearch.width} -> $targetWidth")
         animator.duration = 1000
 
         animator.addUpdateListener { animation ->
-            val value = animation.animatedValue as Int
             val layoutParams = etSearch.layoutParams
-            layoutParams.width = value
+            layoutParams.width = animation.animatedValue as Int
             etSearch.layoutParams = layoutParams
         }
 
-        animator.addListener(object : Animator.AnimatorListener {
+        animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {
-                etSearch.visibility = View.VISIBLE
+                slideOutViews()
+                etSearch.hint = getString(R.string.main_search_hint)
             }
             override fun onAnimationEnd(animation: Animator) {
+                setFocusSearchBar(true)
                 inputUtil?.showSoftInput(etSearch)
             }
-            override fun onAnimationCancel(animation: Animator) {}
-            override fun onAnimationRepeat(animation: Animator) {}
         })
+        animator.start()
+    }
 
+    private fun collapseSearchBar() {
+        val animator = ObjectAnimator.ofInt(etSearch.width, ibtnMyLocation.width)
+        animator.duration = 1000
+
+        animator.addUpdateListener { animation ->
+            val layoutParams = etSearch.layoutParams
+            layoutParams.width = animation.animatedValue as Int
+            etSearch.layoutParams = layoutParams
+        }
+
+        animator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationStart(animation: Animator) {
+                super.onAnimationStart(animation)
+                inputUtil?.hideSoftInput()
+                setFocusSearchBar(false)
+            }
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                slideInViews()
+                etSearch.hint = null
+            }
+        })
         animator.start()
     }
 }
