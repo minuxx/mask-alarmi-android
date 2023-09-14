@@ -106,6 +106,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+
     override fun onResume() {
         super.onResume()
         locationUtil?.startLocationUpdates()
