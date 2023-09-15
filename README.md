@@ -12,8 +12,7 @@
 <br/>
 
 ## 스크린샷
-
-
+<img src="https://github.com/minuxx/mask-alarmi/assets/20331640/5969583f-1ca4-4092-b196-5ab65ce74d23" width="25%"/>
 
 <br/>
 
