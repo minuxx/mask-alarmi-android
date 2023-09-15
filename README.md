@@ -12,6 +12,9 @@
 <br/>
 
 ## 스크린샷
+![ezgif com-optimize](https://github.com/minuxx/mask-alarmi/assets/20331640/7983201c-3f6f-4656-8164-505087ab5d3b){: width="20%" }
+
+
 
 <br/>
 
