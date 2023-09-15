@@ -15,6 +15,7 @@
 <img src="https://github.com/minuxx/mask-alarmi/assets/20331640/5969583f-1ca4-4092-b196-5ab65ce74d23" width="25%"/>
 
 <br/>
+<br/>
 
 ## 주요 기능
 1. 사용자는 지도 화면에서 중심 좌표 기준 반경 1km 내의 상점 마커들을 볼 수 있다.
