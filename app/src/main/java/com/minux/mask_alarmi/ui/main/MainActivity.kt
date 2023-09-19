@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.ui.main.map.MapFragment
-import org.w3c.dom.Text
 import java.util.Calendar
 
 
@@ -38,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private fun setPossibleDay() {
         val cal: Calendar = Calendar.getInstance()
         when (val weekNum: Int = cal.get(Calendar.DAY_OF_WEEK)) {
-            1, 7 -> tvPossibleDay.text = getString(R.string.main_possible_all)
+            1, 7 -> tvPossibleDay.text = getString(R.string.main_possible_weekend)
             else -> {
                 val first = (weekNum - 1) % 10
                 val second = (first + 5) % 10

@@ -302,7 +302,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {
                 slideOutViews()
-                etSearch.hint = getString(R.string.main_search_hint)
+                etSearch.hint = getString(R.string.map_search_address_hint)
             }
             override fun onAnimationEnd(animation: Animator) {
                 setFocusSearchBar(true)

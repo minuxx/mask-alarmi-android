@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/main_stock_at"
+                    android:text="@string/dialog_bottom_store_stock_time"
                     android:textColor="@color/mainStockAt"
                     android:textSize="12sp" />
 
@@ -60,7 +60,7 @@
                     android:id="@+id/tv_stock_at"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/store_ready_stock"
+                    android:text="@string/dialog_bottom_store_ready_stock"
                     android:textColor="@color/mainStockAtTime"
                     android:textSize="12sp"
                     tools:text="03.15 23:59" />
@@ -71,7 +71,7 @@
             android:id="@+id/iv_remain_state"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:contentDescription="@string/main_cd_ic_mask_state"
+            android:contentDescription="@string/cd_ic_mask_state"
             android:src="@drawable/ic_plenty_big"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/wrap_info"
