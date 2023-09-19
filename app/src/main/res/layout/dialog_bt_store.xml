@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:drawablePadding="10dp"
-                android:textColor="@color/mainStoreNameText"
+                android:textColor="@color/color_black"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:drawableEndCompat="@drawable/ic_bookmark"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
                 android:ellipsize="end"
-                android:textColor="@color/mainStoreAddrText"
+                android:textColor="@color/color_gray800"
                 android:textSize="12sp"
                 tools:text="서울 강남구 선릉로 567 대운빌딩" />
 
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="@string/store_bt_dialog_stock_time"
-                    android:textColor="@color/mainStockAt"
+                    android:textColor="@color/color_gray500"
                     android:textSize="12sp" />
 
                 <TextView
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/store_bt_dialog_ready_stock"
-                    android:textColor="@color/mainStockAtTime"
+                    android:textColor="@color/color_black"
                     android:textSize="12sp"
                     tools:text="03.15 23:59" />
             </LinearLayout>

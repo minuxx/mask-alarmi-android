@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 val possibleDayStr = getString(R.string.main_possible_day, first, second)
                 possibleDayTv.text = SpannableStringBuilder(possibleDayStr).apply {
                     setSpan(
-                        ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.mainPossibleYearText)),
+                        ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.color_blue800)),
                         9,
                         14,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

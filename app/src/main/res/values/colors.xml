@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4c85f7</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#4c85f7</color>
-    <color name="white">#f5f5f5</color>
-
-    <color name="color_blue">#4c85f7</color>
-
-    <!--Main-->
-    <color name="mainNoticeBar">#4c85f7</color>
-    <color name="mainAnnounceText">#FFFFFF</color>
-    <color name="mainPossibleDayBg">#FFFFFF</color>
-    <color name="mainPossibleDayText">#000000</color>
-    <color name="mainPossibleYearText">#0d51d8</color>
-    <color name="mainStoreNameText">#000000</color>
-    <color name="mainStoreAddrText">#737373</color>
-    <color name="mainStockAt">#acacac</color>
-    <color name="mainStockAtTime">#000000</color>
-    <color name="mainSearchHint">#acacac</color>
-    <color name="mainSearchText">#000000</color>
-    <color name="mainSearchBg">#FFF</color>
-    <!--Announce-->
-
+    <color name="color_blue800">#0D51D8</color>
+    <color name="color_blue500">#4c85f7</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_black">#000000</color>
+    <color name="color_gray800">#737373</color>
+    <color name="color_gray500">#ACACAC</color>
 </resources>
