@@ -1,4 +1,4 @@
-# 마스크 알라미 - 마스크 재고 위치 알람 서비스
+# 마스크 알라미 - 마스크 재고 위치 알림 서비스
 <br/>
 
 ![logo_w](https://github.com/minuxx/mask-alarmi/assets/20331640/fc54febe-458f-47cb-aca8-097b72f62cbe)
