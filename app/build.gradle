@@ -2,29 +2,38 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 //    id 'dagger.hilt.android.plugin'
 }
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
-def naver_map_sdk_client_id = properties.getProperty("NAVER_MAP_SDK_CLIENT_ID")
+def naver_client_id = properties.getProperty("NAVER_CLIENT_ID")
+def naver_client_secret = properties.getProperty("NAVER_CLIENT_SECRET")
 
 android {
     compileSdk 33
 
     defaultConfig {
         applicationId "com.minux.mask_alarmi"
-        minSdk 21
+        minSdk 23
         targetSdk 33
         versionCode 7
         versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [NAVER_MAP_SDK_CLIENT_ID: naver_map_sdk_client_id]
+        manifestPlaceholders = [NAVER_CLIENT_ID: naver_client_id]
     }
 
     buildTypes {
+        debug {
+            resValue "string", "naver_client_id", naver_client_id
+            resValue "string", "naver_client_secret", naver_client_secret
+        }
         release {
+            resValue "string", "naver_client_id", naver_client_id
+            resValue "string", "naver_client_secret", naver_client_secret
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,6 +62,10 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    implementation platform('com.google.firebase:firebase-bom:32.2.3')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     def navigation_version = '2.6.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"

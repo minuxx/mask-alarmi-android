@@ -5,6 +5,7 @@
     android:id="@+id/map_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".ui.main.map.MapFragment">
 
     <androidx.fragment.app.FragmentContainerView
@@ -16,4 +17,86 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/map_iv_mask_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/cd_img_mask_amount"
+        android:src="@drawable/img_mask_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="25dp">
+
+        <EditText
+            android:id="@+id/map_et_search_address"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_gravity="center_vertical"
+            android:autofillHints="@string/map_search_address_hint"
+            android:background="@drawable/search_bar_white_round_box"
+            android:drawableEnd="@drawable/ic_search_clicked"
+            android:drawableTint="@color/color_gray500"
+            android:elevation="1dp"
+            android:fontFamily="@font/notosanskr_medium"
+            android:imeOptions="actionSearch"
+            android:inputType="textVisiblePassword|textNoSuggestions"
+            android:maxLines="1"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/color_black"
+            android:textColorHint="@color/color_gray500"
+            android:textCursorDrawable="@drawable/search_bar_cursor"
+            android:textSize="14sp"
+            android:visibility="visible"
+            tools:text="@string/map_search_address_hint"
+            tools:ignore="LabelFor" />
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/map_ibtn_search_address"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cd_ic_search"
+        android:src="@drawable/img_search"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/map_ibtn_my_location"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cd_ic_my_location"
+        android:src="@drawable/img_my_location"
+        app:layout_constraintBottom_toTopOf="@+id/map_ibtn_refresh"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/map_ibtn_refresh"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cd_ic_refresh"
+        android:src="@drawable/img_refresh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

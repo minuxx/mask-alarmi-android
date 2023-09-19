@@ -1,15 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="colorPrimary">@color/color_blue500</item>
+        <item name="colorPrimaryDark">@color/color_blue500</item>
+        <item name="colorAccent">@color/color_blue500</item>
+        <item name="android:statusBarColor">@color/color_white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="Container.BottomSheet" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.BottomSheet</item>
-        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardBackgroundColor">@color/color_white</item>
         <item name="rippleColor">@android:color/transparent</item>
     </style>
 

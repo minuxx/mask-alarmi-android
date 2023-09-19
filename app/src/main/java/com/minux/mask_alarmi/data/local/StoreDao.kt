@@ -13,7 +13,7 @@ import com.minux.mask_alarmi.data.entity.StoreEntity
 @Dao
 interface StoreDao {
     @Query("SELECT * FROM stores")
-    fun getStoresByGeo(): LiveData<List<StoreEntity>>
+    fun getStoresByGeo(): List<StoreEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertStores(storeEntities: List<StoreEntity>)
