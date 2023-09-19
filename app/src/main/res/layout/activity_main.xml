@@ -7,7 +7,7 @@
     tools:context="ui.main.MainActivity">
 
     <LinearLayout
-        android:id="@+id/main_notice_bar"
+        android:id="@+id/main_bar_notice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/mainNoticeBar"
@@ -52,14 +52,14 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:drawableEndCompat="@drawable/ic_etc"
-        app:layout_constraintBottom_toTopOf="@+id/main_fragment_container"
+        app:layout_constraintBottom_toTopOf="@+id/main_container_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_notice_bar"
+        app:layout_constraintTop_toBottomOf="@+id/main_bar_notice"
         tools:text="오늘은 출생연도 끝자리 3 ・8년생이 살 수 있어요!" />
 
     <FrameLayout
-        android:id="@+id/main_fragment_container"
+        android:id="@+id/main_container_fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

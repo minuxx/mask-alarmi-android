@@ -14,7 +14,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat.animate
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.core.view.marginTop
@@ -53,11 +52,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var locationUtil: LocationUtil? = null
     private var inputUtil: InputUtil? = null
 
-    private lateinit var ivMaskAmount: ImageView
-    private lateinit var ibtnMyLocation: ImageButton
-    private lateinit var ibtnRefresh: ImageButton
-    private lateinit var ibtnSearch: ImageButton
-    private lateinit var etSearch: EditText
+    private lateinit var maskAmountIv: ImageView
+    private lateinit var myLocationIbtn: ImageButton
+    private lateinit var refreshIbtn: ImageButton
+    private lateinit var searchAddressIbtn: ImageButton
+    private lateinit var searchAddressEt: EditText
 
     companion object {
         fun newInstance() = MapFragment()
@@ -88,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        etSearch.setOnEditorActionListener { v, actionId, event ->
+        searchAddressEt.setOnEditorActionListener { v, actionId, event ->
             when (actionId ) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     val address = v.text.toString()
@@ -125,18 +124,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initViews(view: View) {
-        ivMaskAmount = view.findViewById(R.id.main_iv_mask_amount)
-        ibtnMyLocation = view.findViewById(R.id.main_ibtn_my_location)
-        ibtnMyLocation.setOnClickListener {
+        maskAmountIv = view.findViewById(R.id.map_iv_mask_amount)
+        myLocationIbtn = view.findViewById(R.id.map_ibtn_my_location)
+        myLocationIbtn.setOnClickListener {
             removeCurStoreMarkers()
             locationUtil?.getLastLocation { latlng ->
                 latlng?.let { getStoresAndMoveCamera(it) }
             }
         }
-        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
-        ibtnSearch = view.findViewById(R.id.main_ibtn_search)
-        etSearch = view.findViewById(R.id.main_et_search)
-        etSearch.setOnClickListener {
+        refreshIbtn = view.findViewById(R.id.map_ibtn_refresh)
+        searchAddressIbtn = view.findViewById(R.id.map_ibtn_search_address)
+        searchAddressEt = view.findViewById(R.id.map_et_search_address)
+        searchAddressEt.setOnClickListener {
             expandSearchBar()
         }
         setFocusSearchBar(false)
@@ -194,7 +193,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             latlng?.let { getStoresAndMoveCamera(it) }
         }
         naverMap.setOnMapClickListener { _, _ ->
-            if (etSearch.isFocusable) {
+            if (searchAddressEt.isFocusable) {
                 collapseSearchBar()
             }
         }
@@ -253,73 +252,73 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun slideOutViews(isOpenStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideOutAnim(
-            ivMaskAmount,
-            -(ivMaskAmount.height.toFloat() + ivMaskAmount.marginTop.toFloat()),
+            maskAmountIv,
+            -(maskAmountIv.height.toFloat() + maskAmountIv.marginTop.toFloat()),
             false
         )
         AnimUtil.startSlideOutAnim(
-            ibtnMyLocation,
-            ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat()
+            myLocationIbtn,
+            myLocationIbtn.width.toFloat() + myLocationIbtn.marginEnd.toFloat()
         )
         AnimUtil.startSlideOutAnim(
-            ibtnRefresh,
-            ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
+            refreshIbtn,
+            refreshIbtn.width.toFloat() + refreshIbtn.marginEnd.toFloat()
         )
         if (isOpenStoreBottomDialog) {
             AnimUtil.startSlideOutAnim(
-                etSearch,
-                -(etSearch.width.toFloat() + etSearch.marginStart.toFloat())
+                searchAddressEt,
+                -(searchAddressEt.width.toFloat() + searchAddressEt.marginStart.toFloat())
             )
         }
     }
 
     private fun slideInViews(isCloseStoreBottomDialog: Boolean = false) {
-        AnimUtil.startSlideInAnim(ivMaskAmount, 0f, false)
-        AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
-        AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
+        AnimUtil.startSlideInAnim(maskAmountIv, 0f, false)
+        AnimUtil.startSlideInAnim(myLocationIbtn, 0f)
+        AnimUtil.startSlideInAnim(refreshIbtn, 0f)
         if (isCloseStoreBottomDialog) {
-            AnimUtil.startSlideInAnim(etSearch, 0f)
+            AnimUtil.startSlideInAnim(searchAddressEt, 0f)
         }
     }
 
     private fun setFocusSearchBar(isFocusable: Boolean) {
-        etSearch.isFocusable = isFocusable
-        etSearch.isFocusableInTouchMode = isFocusable
+        searchAddressEt.isFocusable = isFocusable
+        searchAddressEt.isFocusableInTouchMode = isFocusable
     }
 
     private fun expandSearchBar() {
-        val targetWidth = etSearch.resources.displayMetrics.widthPixels - etSearch.marginStart * 2
-        val animator = ValueAnimator.ofInt(etSearch.width, targetWidth)
-        Log.d(TAG, "${etSearch.width} -> $targetWidth")
+        val targetWidth = searchAddressEt.resources.displayMetrics.widthPixels - searchAddressEt.marginStart * 2
+        val animator = ValueAnimator.ofInt(searchAddressEt.width, targetWidth)
+        Log.d(TAG, "${searchAddressEt.width} -> $targetWidth")
         animator.duration = 1000
 
         animator.addUpdateListener { animation ->
-            val layoutParams = etSearch.layoutParams
+            val layoutParams = searchAddressEt.layoutParams
             layoutParams.width = animation.animatedValue as Int
-            etSearch.layoutParams = layoutParams
+            searchAddressEt.layoutParams = layoutParams
         }
 
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {
                 slideOutViews()
-                etSearch.hint = getString(R.string.map_search_address_hint)
+                searchAddressEt.hint = getString(R.string.map_search_address_hint)
             }
             override fun onAnimationEnd(animation: Animator) {
                 setFocusSearchBar(true)
-                inputUtil?.showSoftInput(etSearch)
+                inputUtil?.showSoftInput(searchAddressEt)
             }
         })
         animator.start()
     }
 
     private fun collapseSearchBar() {
-        val animator = ObjectAnimator.ofInt(etSearch.width, ibtnMyLocation.width)
+        val animator = ObjectAnimator.ofInt(searchAddressEt.width, myLocationIbtn.width)
         animator.duration = 1000
 
         animator.addUpdateListener { animation ->
-            val layoutParams = etSearch.layoutParams
+            val layoutParams = searchAddressEt.layoutParams
             layoutParams.width = animation.animatedValue as Int
-            etSearch.layoutParams = layoutParams
+            searchAddressEt.layoutParams = layoutParams
         }
 
         animator.addListener(object : AnimatorListenerAdapter() {
@@ -331,8 +330,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 slideInViews()
-                etSearch.hint = null
-                etSearch.text = null
+                searchAddressEt.hint = null
+                searchAddressEt.text = null
             }
         })
         animator.start()
