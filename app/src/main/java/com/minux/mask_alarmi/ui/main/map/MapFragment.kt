@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat.animate
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
 import androidx.core.view.marginTop
@@ -54,7 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var ivMaskAmount: ImageView
     private lateinit var ibtnMyLocation: ImageButton
-//    private lateinit var ibtnRefresh: ImageButton
+    private lateinit var ibtnRefresh: ImageButton
     private lateinit var ibtnSearch: ImageButton
     private lateinit var etSearch: EditText
 
@@ -132,7 +133,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 latlng?.let { getStoresAndMoveCamera(it) }
             }
         }
-//        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
+        ibtnRefresh = view.findViewById(R.id.main_ibtn_refresh)
         ibtnSearch = view.findViewById(R.id.main_ibtn_search)
         etSearch = view.findViewById(R.id.main_et_search)
         etSearch.setOnClickListener {
@@ -176,6 +177,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
         mapFragment.getMapAsync(this@MapFragment)
     }
+
     override fun onMapReady(map: NaverMap) {
         naverMap = map.apply {
             minZoom = CAMERA_MIN_ZOOM
@@ -259,10 +261,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ibtnMyLocation,
             ibtnMyLocation.width.toFloat() + ibtnMyLocation.marginEnd.toFloat()
         )
-//        AnimUtil.startSlideOutAnim(
-//            ibtnRefresh,
-//            ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
-//        )
+        AnimUtil.startSlideOutAnim(
+            ibtnRefresh,
+            ibtnRefresh.width.toFloat() + ibtnRefresh.marginEnd.toFloat()
+        )
         if (isOpenStoreBottomDialog) {
             AnimUtil.startSlideOutAnim(
                 etSearch,
@@ -274,7 +276,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun slideInViews(isCloseStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideInAnim(ivMaskAmount, 0f, false)
         AnimUtil.startSlideInAnim(ibtnMyLocation, 0f)
-//        AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
+        AnimUtil.startSlideInAnim(ibtnRefresh, 0f)
         if (isCloseStoreBottomDialog) {
             AnimUtil.startSlideInAnim(etSearch, 0f)
         }

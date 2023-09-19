@@ -26,7 +26,7 @@ class LocationUtil(private val activity: AppCompatActivity) {
     private var fusedLocationClient: FusedLocationProviderClient
     private var fusedLocationSource: FusedLocationSource
     private var locationRequest: LocationRequest
-    private var locationCallback: LocationCallback
+    private var locationCallback:LocationCallback
 
     init {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
@@ -44,18 +44,18 @@ class LocationUtil(private val activity: AppCompatActivity) {
             }
         }
 
-        fusedLocationSource = FusedLocationSource(activity, LOCATION_PERMISSION_REQUEST_CODE)
+        fusedLocationSource= FusedLocationSource(activity, LOCATION_PERMISSION_REQUEST_CODE)
     }
 
     private fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED ||
+            ) ==PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            ) ==PackageManager.PERMISSION_GRANTED
         ) {
             Log.i(TAG, "Location Permission Granted")
             return true
