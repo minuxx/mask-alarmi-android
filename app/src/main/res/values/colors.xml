@@ -13,18 +13,13 @@
     <color name="mainPossibleDayBg">#FFFFFF</color>
     <color name="mainPossibleDayText">#000000</color>
     <color name="mainPossibleYearText">#0d51d8</color>
-    <color name="mainUpdateAt">#acacac</color>
     <color name="mainStoreNameText">#000000</color>
     <color name="mainStoreAddrText">#737373</color>
-    <color name="mainTimeText">#000000</color>
     <color name="mainStockAt">#acacac</color>
     <color name="mainStockAtTime">#000000</color>
     <color name="mainSearchHint">#acacac</color>
     <color name="mainSearchText">#000000</color>
     <color name="mainSearchBg">#FFF</color>
     <!--Announce-->
-    <color name="announceText">#000000</color>
-    <color name="announceBackBg">#f0f0f0</color>
-    <color name="announceBg">#fff</color>
 
 </resources>

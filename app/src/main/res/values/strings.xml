@@ -1,12 +1,7 @@
 <resources>
     <!-- common  -->
     <string name="app_name">마스크 알라미</string>
-    <string name="loading">로딩중입니다.</string>
-    <string name="network_error">네트워크 연결이 원활하지 않습니다.</string>
-    <string name="permission_denied">퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.</string>
-    <string name="permission_request_at_setting">퍼미션이 거부되었습니다. 앱 설정에서 퍼미션을 허용해야 합니다.</string>
-    <string name="permission_request_location">이 앱을 실행하려면 위치 접근 권한이 필요합니다.</string>
-경
+    경
     <!--  content description  -->
     <string name="cd_logo_white">white logo</string>
     <string name="cd_ic_announce">announce icon</string>
@@ -20,7 +15,6 @@
     <string name="main_announce_mention">3월 14일까지는 서비스의 안정적 운영을 지켜보기 위한 베타서비스 기간입니다.</string>
     <string name="main_possible_weekend">주중에 구매하지 못했다면 오늘 구매하세요!</string>
     <string name="main_possible_day">출생연도 끝자리 %1$d・%2$d년생이 살 수 있는 날</string>
-    <string name="main_ready_feature">기능 준비중입니다.</string>
 
     <!-- store bottom dialog   -->
     <string name="store_bt_dialog_ready_stock">입고 준비중이에요</string>
@@ -28,5 +22,4 @@
 
     <!-- map -->
     <string name="map_search_address_hint">지역(동 또는 주소)을 입력해주세요</string>
-    <string name="map_search_address_fail">검색결과가 존재하지 않습니다</string>
 </resources>

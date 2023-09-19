@@ -30,7 +30,7 @@
                 android:textColor="@color/mainStoreNameText"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:drawableEndCompat="@drawable/ic_bookmark_def"
+                app:drawableEndCompat="@drawable/ic_bookmark"
                 tools:text="싱싱약국" />
 
             <TextView

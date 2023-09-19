@@ -44,7 +44,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_gravity="center_vertical"
             android:autofillHints="@string/map_search_address_hint"
-            android:background="@drawable/search_white_round_box"
+            android:background="@drawable/search_bar_white_round_box"
             android:drawableEnd="@drawable/ic_search_clicked"
             android:drawableTint="@color/mainSearchHint"
             android:elevation="1dp"
@@ -56,7 +56,7 @@
             android:paddingEnd="12dp"
             android:textColor="@color/mainSearchText"
             android:textColorHint="@color/mainSearchHint"
-            android:textCursorDrawable="@drawable/search_cursor"
+            android:textCursorDrawable="@drawable/search_bar_cursor"
             android:textSize="14sp"
             android:visibility="visible"
             tools:text="@string/map_search_address_hint"
@@ -71,7 +71,7 @@
         android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/cd_ic_search"
-        android:src="@drawable/ic_search"
+        android:src="@drawable/img_search"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -84,7 +84,7 @@
         android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/cd_ic_my_location"
-        android:src="@drawable/ic_mylocation"
+        android:src="@drawable/img_my_location"
         app:layout_constraintBottom_toTopOf="@+id/map_ibtn_refresh"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -96,7 +96,7 @@
         android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/cd_ic_refresh"
-        android:src="@drawable/ic_refresh"
+        android:src="@drawable/img_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

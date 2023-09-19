@@ -24,7 +24,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="15dp"
             android:contentDescription="@string/cd_ic_announce"
-            android:src="@drawable/ic_announcement" />
+            android:src="@drawable/ic_announce" />
 
         <TextView
             android:id="@+id/main_tv_announce"
