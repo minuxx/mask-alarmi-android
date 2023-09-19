@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.util.FusedLocationSource
 
 private const val TAG = "LocationUtil"
 private const val INTERVAL_MILLIS = 5000L
@@ -22,12 +23,28 @@ private const val MIN_DISTANCE_METER = 10.0F
 private const val LOCATION_PERMISSION_REQUEST_CODE = 123
 
 class LocationUtil(private val activity: AppCompatActivity) {
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+    private var fusedLocationClient: FusedLocationProviderClient
+    private var fusedLocationSource: FusedLocationSource
+    private var locationRequest: LocationRequest
+    private var locationCallback: LocationCallback
 
     init {
-        initLocationSettings()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS).apply {
+            setMinUpdateDistanceMeters(MIN_DISTANCE_METER)
+            setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            setWaitForAccurateLocation(true)
+        }.build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations){
+                    Log.i(TAG, "latitude: ${location.latitude}, longitude: ${location.longitude}")
+                }
+            }
+        }
+
+        fusedLocationSource = FusedLocationSource(activity, LOCATION_PERMISSION_REQUEST_CODE)
     }
 
     private fun checkLocationPermission(): Boolean {
@@ -56,23 +73,6 @@ class LocationUtil(private val activity: AppCompatActivity) {
         }
     }
 
-    private fun initLocationSettings() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
-        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, INTERVAL_MILLIS).apply {
-            setMinUpdateDistanceMeters(MIN_DISTANCE_METER)
-            setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
-            setWaitForAccurateLocation(true)
-        }.build()
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                for (location in locationResult.locations){
-                    Log.i(TAG, "latitude: ${location.latitude}, longitude: ${location.longitude}")
-                }
-            }
-        }
-    }
-
     fun startLocationUpdates() {
         Log.d(TAG, "startLocationUpdates")
         if (checkLocationPermission()) {
@@ -97,6 +97,14 @@ class LocationUtil(private val activity: AppCompatActivity) {
             }
         } else {
             lastLocationCallback(null)
+        }
+    }
+
+    fun getLocationSource(): FusedLocationSource? {
+        return if (checkLocationPermission()) {
+            fusedLocationSource
+        } else {
+            null
         }
     }
 }
