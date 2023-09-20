@@ -12,7 +12,7 @@
 
 <br/>
 
-## 스크린샷
+## Preview
 <img src="https://github.com/minuxx/mask-alarmi/assets/20331640/5969583f-1ca4-4092-b196-5ab65ce74d23" width="25%"/>
 
 <br/>
@@ -27,19 +27,21 @@
 <br/>
 
 ## 개발 환경
-### 언어 & SDK 버전
-kotlin
-minSDK 23
-targetSDK 33
+- Kotlin based
+- Minimum SDK level 23
 
-### 라이브러리
+### Jetpack
+- Lifecycle
+- ViewModel
+- Room
 
+### Library
+- Retrofit2 & OkHttp3
+- Naver Map SDK for Android
+- Gson
 
-### 아키텍쳐
+### Architecture
+- MVVM Architecture (View - ViewModel - Model)
+- Repository Pattern
 
-## 출시
-
-## 리팩토링
-### 성능 개선
-
-## 아티클
+<br/>
