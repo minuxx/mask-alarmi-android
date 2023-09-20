@@ -31,6 +31,7 @@
 - Minimum SDK level 23
 
 ### Jetpack
+- LiveData
 - Lifecycle
 - ViewModel
 - Room
