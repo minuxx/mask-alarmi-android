@@ -1,4 +1,4 @@
-package com.minux.mask_alarmi.data.entity
+package com.minux.mask_alarmi.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

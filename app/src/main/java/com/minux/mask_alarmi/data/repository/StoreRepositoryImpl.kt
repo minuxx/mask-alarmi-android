@@ -5,11 +5,12 @@ import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.minux.mask_alarmi.data.entity.StoreEntity
 import com.minux.mask_alarmi.data.local.MASK_ALARMI_DB_NAME
 import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
+import com.minux.mask_alarmi.data.local.entity.StoreEntity
 import com.minux.mask_alarmi.data.remote.AddressRemoteDataSource
 import com.minux.mask_alarmi.domain.model.Address
+import com.minux.mask_alarmi.domain.model.ECode
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.domain.repository.StoreRepository
 import com.minux.mask_alarmi.util.GeoUtil
@@ -43,12 +44,23 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         searchAddr: String,
         lat: Double,
         lng: Double,
-        onResponse: (Address?) -> Unit
-    ){
-        addressRemoteDataSource.getAddresses(searchAddr, "$lng,$lat") { addrressItems ->
-            Log.i(TAG, "$addrressItems")
-            onResponse(addrressItems.minByOrNull { it.distance }?.toModel())
-        }
+        onSuccess: (Address?) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        addressRemoteDataSource.getAddresses(
+            searchAddr,
+            "$lng,$lat",
+            onSuccess = { addressDtos ->
+                onSuccess(addressDtos.minByOrNull { it.distance }?.toModel())
+            },
+            onFailure = { errorCode ->
+                val message = when (errorCode) {
+                    ECode.N0000 -> errorCode.message
+                    ECode.A0000 -> errorCode.message
+                    ECode.A0001 -> errorCode.message
+                }
+                onFailure(message)
+            })
     }
 
     suspend fun insertStoresFromJson() {

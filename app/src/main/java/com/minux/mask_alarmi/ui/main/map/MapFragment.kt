@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
@@ -84,6 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeIsLoading()
+        observeErrorMessage()
         observeStores()
         observeSearchedLatLng()
     }
@@ -143,6 +145,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             expandSearchBar()
         }
         setFocusSearchBar(false)
+    }
+
+    private fun observeErrorMessage() {
+        viewModel.errorMessage.observe(
+            viewLifecycleOwner
+        ) { errorMessage ->
+            if (errorMessage.isNotEmpty()) {
+                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun observeIsLoading() {

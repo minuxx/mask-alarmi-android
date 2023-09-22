@@ -1,7 +1,7 @@
 package com.minux.mask_alarmi.data.remote
 
+import com.minux.mask_alarmi.data.remote.dto.GetAddressesResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 

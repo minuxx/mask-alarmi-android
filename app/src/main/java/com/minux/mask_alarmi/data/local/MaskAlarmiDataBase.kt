@@ -2,7 +2,7 @@ package com.minux.mask_alarmi.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.minux.mask_alarmi.data.entity.StoreEntity
+import com.minux.mask_alarmi.data.local.entity.StoreEntity
 
 const val MASK_ALARMI_DB_NAME = "mask-alarmi-database"
 

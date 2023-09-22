@@ -26,9 +26,13 @@ class MapViewModel : ViewModel() {
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
+    val errorMessage: LiveData<String> get() = _errorMessage
+
 
     fun getStoresByGeo(latLng: LatLng) {
         viewModelScope.launch {
+
             val result = withContext(Dispatchers.IO) {
                 storeRepository.getStoresByGeo(latLng.latitude, latLng.longitude, RADIUS_METER)
             }
@@ -40,13 +44,21 @@ class MapViewModel : ViewModel() {
         return stores.value?.firstOrNull { it.code == storeCode }
     }
 
-    fun searchAddress(address: String, lat: Double, lng: Double) {
-        storeRepository.searchAddress(address, lat, lng) { address ->
-            Log.i(TAG, "$address")
-            address?.let {
-                _searchedLatLng.postValue(LatLng(it.latitude, it.longitude))
+    fun searchAddress(searchAddr: String, lat: Double, lng: Double) {
+        _isLoading.postValue(true)
+        storeRepository.searchAddress(searchAddr, lat, lng,
+            onSuccess = { searchedAddr ->
+                Log.i(TAG, "$searchedAddr")
+                searchedAddr?.let {
+                    _searchedLatLng.postValue(LatLng(it.latitude, it.longitude))
+                    _isLoading.postValue(false)
+                }
+            },
+            onFailure = { errorMessage ->
+                _errorMessage.postValue(errorMessage)
+                _isLoading.postValue(false)
             }
-        }
+        )
     }
 
     init {

@@ -1,6 +1,5 @@
 package com.minux.mask_alarmi.domain.repository
 
-import com.minux.mask_alarmi.data.remote.AddressItem
 import com.minux.mask_alarmi.domain.model.Address
 import com.minux.mask_alarmi.domain.model.Store
 
@@ -10,6 +9,7 @@ interface StoreRepository {
         searchAddr: String,
         lat: Double,
         lng: Double,
-        onResponse: (Address?) -> Unit
+        onSuccess: (Address?) -> Unit,
+        onFailure: (String) -> Unit
     )
 }

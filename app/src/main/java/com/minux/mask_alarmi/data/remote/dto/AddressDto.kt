@@ -1,10 +1,9 @@
-package com.minux.mask_alarmi.data.remote
+package com.minux.mask_alarmi.data.remote.dto
 
 import com.minux.mask_alarmi.domain.model.Address
-import com.minux.mask_alarmi.domain.model.Store
 
-data class AddressItem(
-    val addressElements: List<AddressElement>,
+data class AddressDto(
+    val addressElements: List<AddressElementDto>,
     val distance: Double,
     val englishAddress: String,
     val jibunAddress: String,
@@ -18,7 +17,7 @@ data class AddressItem(
     )
 }
 
-data class AddressElement(
+data class AddressElementDto(
     val code: String,
     val longName: String,
     val shortName: String,

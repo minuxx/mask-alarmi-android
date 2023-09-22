@@ -3,6 +3,9 @@ package com.minux.mask_alarmi.data.remote
 import android.content.Context
 import android.util.Log
 import com.minux.mask_alarmi.R
+import com.minux.mask_alarmi.data.remote.dto.AddressDto
+import com.minux.mask_alarmi.data.remote.dto.GetAddressesResponse
+import com.minux.mask_alarmi.domain.model.ECode
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -53,7 +56,8 @@ class AddressRemoteDataSource(private val context: Context) {
     fun getAddresses(
         query: String,
         coordinate: String,
-        onResponse: (List<AddressItem>) -> Unit,
+        onSuccess: (List<AddressDto>) -> Unit,
+        onFailure: (ECode) -> Unit
     ) {
         val getAddressesRequest: Call<GetAddressesResponse> = addressApi.getAddresses(
             query,
@@ -61,19 +65,24 @@ class AddressRemoteDataSource(private val context: Context) {
         )
 
         getAddressesRequest.enqueue(object : Callback<GetAddressesResponse> {
-            override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch addresses", t)
-            }
-
             override fun onResponse(
                 call: Call<GetAddressesResponse>,
                 response: Response<GetAddressesResponse>
             ) {
-                Log.d(TAG, "Response received")
-                val getAddressesResponse: GetAddressesResponse? = response.body()
-                val addressItems: List<AddressItem> = getAddressesResponse?.addresses
-                    ?: mutableListOf()
-                onResponse(addressItems)
+                if (response.isSuccessful) {
+                    val data: GetAddressesResponse? = response.body()
+                    if (data?.addresses?.isNotEmpty() == true) {
+                        onSuccess(data.addresses)
+                    } else {
+                        onFailure(ECode.A0000)
+                    }
+                } else {
+                    onFailure(ECode.A0001)
+                }
+            }
+
+            override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
+                onFailure(ECode.N0000)
             }
         })
     }
