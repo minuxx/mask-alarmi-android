@@ -10,11 +10,12 @@ import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
 import com.minux.mask_alarmi.data.local.entity.StoreEntity
 import com.minux.mask_alarmi.data.remote.AddressRemoteDataSource
 import com.minux.mask_alarmi.domain.model.Address
-import com.minux.mask_alarmi.domain.model.ECode
 import com.minux.mask_alarmi.domain.model.Store
 import com.minux.mask_alarmi.domain.repository.StoreRepository
 import com.minux.mask_alarmi.util.GeoUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.io.InputStream
@@ -28,16 +29,27 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         MaskAlarmiDataBase::class.java,
         MASK_ALARMI_DB_NAME,
     ).build()
-    private val storeDao = maskAlarmiDB.storeDao()
+    private val storeLocalDataSource = maskAlarmiDB.storeDao()
     private val addressRemoteDataSource = AddressRemoteDataSource(context)
 
-    override fun getStoresByGeo(lat: Double, lng: Double, m: Int): List<Store> {
-        val stores = storeDao.getStoresByGeo()
-        val storesInRadius = stores.filter { store ->
-            GeoUtil.calculateHaversine(lat, lng, store.lat, store.lng) <= m.toDouble()
-        }.map { it.toModel() }
+    override fun getStoresByGeo(
+        lat: Double,
+        lng: Double, m: Int,
+        onSuccess: (List<Store>) -> Unit,
+        onFailure: (String) -> Unit
+    ) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val stores = storeLocalDataSource.getStoresByGeo()
+                val storesInRadius = stores.filter { store ->
+                    GeoUtil.calculateHaversine(lat, lng, store.lat, store.lng) <= m.toDouble()
+                }.map { it.toModel() }
 
-        return storesInRadius
+                onSuccess(storesInRadius)
+            } catch (e: Exception) {
+                onFailure("")
+            }
+        }
     }
 
     override fun searchAddress(
@@ -54,12 +66,7 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
                 onSuccess(addressDtos.minByOrNull { it.distance }?.toModel())
             },
             onFailure = { errorCode ->
-                val message = when (errorCode) {
-                    ECode.N0000 -> errorCode.message
-                    ECode.A0000 -> errorCode.message
-                    ECode.A0001 -> errorCode.message
-                }
-                onFailure(message)
+                onFailure(errorCode.message)
             })
     }
 
@@ -68,7 +75,7 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
             val json = loadJsonFromAsset()
             val listType = object : TypeToken<List<StoreEntity>>() {}.type
             val stores: List<StoreEntity> = Gson().fromJson(json, listType)
-            storeDao.insertStores(stores)
+            storeLocalDataSource.insertStores(stores)
         }
     }
 

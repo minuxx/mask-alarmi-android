@@ -4,7 +4,14 @@ import com.minux.mask_alarmi.domain.model.Address
 import com.minux.mask_alarmi.domain.model.Store
 
 interface StoreRepository {
-    fun getStoresByGeo(lat: Double, lng: Double, m: Int): List<Store>
+    fun getStoresByGeo(
+        lat: Double,
+        lng: Double,
+        m: Int,
+        onSuccess: (List<Store>) -> Unit,
+        onFailure: (String) -> Unit
+    )
+
     fun searchAddress(
         searchAddr: String,
         lat: Double,

@@ -31,13 +31,18 @@ class MapViewModel : ViewModel() {
 
 
     fun getStoresByGeo(latLng: LatLng) {
-        viewModelScope.launch {
-
-            val result = withContext(Dispatchers.IO) {
-                storeRepository.getStoresByGeo(latLng.latitude, latLng.longitude, RADIUS_METER)
+        _isLoading.postValue(true)
+        storeRepository.getStoresByGeo(
+            latLng.latitude,
+            latLng.longitude,
+            RADIUS_METER,
+            onSuccess = { stores ->
+                _stores.postValue(stores)
+                _isLoading.postValue(false)
+            }, onFailure = { _ ->
+                _isLoading.postValue(false)
             }
-            _stores.postValue(result)
-        }
+        )
     }
 
     fun getStoreByCode(storeCode: Long): Store? {
