@@ -18,6 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/map_pb_loading"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:indeterminateOnly="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <ImageView
         android:id="@+id/map_iv_mask_amount"
         android:layout_width="wrap_content"

@@ -28,13 +28,8 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
         MASK_ALARMI_DB_NAME,
     ).build()
     private val storeDao = maskAlarmiDB.storeDao()
-
     private val addressRemoteDataSource = AddressRemoteDataSource(context)
 
-    /*
-    * 1. 반경 1km 이내의 stores
-    * 2. 필요한 데이터만을, 그리고 변수명 변경
-    */
     override fun getStoresByGeo(lat: Double, lng: Double, m: Int): List<Store> {
         val stores = storeDao.getStoresByGeo()
         val storesInRadius = stores.filter { store ->

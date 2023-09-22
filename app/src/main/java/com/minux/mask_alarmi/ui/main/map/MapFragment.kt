@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginEnd
 import androidx.core.view.marginStart
@@ -52,6 +53,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var locationUtil: LocationUtil? = null
     private var inputUtil: InputUtil? = null
 
+    private lateinit var loadingPb: ProgressBar
     private lateinit var maskAmountIv: ImageView
     private lateinit var myLocationIbtn: ImageButton
     private lateinit var refreshIbtn: ImageButton
@@ -81,14 +83,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        observeIsLoading()
         observeStores()
         observeSearchedLatLng()
     }
 
     override fun onStart() {
         super.onStart()
-        searchAddressEt.setOnEditorActionListener { v, actionId, event ->
-            when (actionId ) {
+        searchAddressEt.setOnEditorActionListener { v, actionId, _ ->
+            when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     val address = v.text.toString()
                     if (address.isNotEmpty()) {
@@ -124,6 +127,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun initViews(view: View) {
+        loadingPb = view.findViewById(R.id.map_pb_loading)
         maskAmountIv = view.findViewById(R.id.map_iv_mask_amount)
         myLocationIbtn = view.findViewById(R.id.map_ibtn_my_location)
         myLocationIbtn.setOnClickListener {
@@ -139,6 +143,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             expandSearchBar()
         }
         setFocusSearchBar(false)
+    }
+
+    private fun observeIsLoading() {
+        viewModel.isLoading.observe(
+            viewLifecycleOwner
+        ) { isLoading ->
+            loadingPb.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     private fun observeStores() {

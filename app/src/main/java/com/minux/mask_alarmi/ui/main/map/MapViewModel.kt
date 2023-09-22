@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
 import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
-import com.minux.mask_alarmi.domain.model.Address
 import com.minux.mask_alarmi.domain.model.Store
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +22,9 @@ class MapViewModel : ViewModel() {
 
     private val _searchedLatLng: MutableLiveData<LatLng> = MutableLiveData()
     val searchedLatLng: LiveData<LatLng> get() = _searchedLatLng
+
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
 
     fun getStoresByGeo(latLng: LatLng) {
