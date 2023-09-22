@@ -57,7 +57,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var loadingPb: ProgressBar
     private lateinit var maskAmountIv: ImageView
     private lateinit var myLocationIbtn: ImageButton
-    private lateinit var refreshIbtn: ImageButton
+//    private lateinit var refreshIbtn: ImageButton
     private lateinit var searchAddressIbtn: ImageButton
     private lateinit var searchAddressEt: EditText
 
@@ -138,7 +138,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 latlng?.let { getStoresAndMoveCamera(it) }
             }
         }
-        refreshIbtn = view.findViewById(R.id.map_ibtn_refresh)
+//        refreshIbtn = view.findViewById(R.id.map_ibtn_refresh)
         searchAddressIbtn = view.findViewById(R.id.map_ibtn_search_address)
         searchAddressEt = view.findViewById(R.id.map_et_search_address)
         searchAddressEt.setOnClickListener {
@@ -284,10 +284,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             myLocationIbtn,
             myLocationIbtn.width.toFloat() + myLocationIbtn.marginEnd.toFloat()
         )
-        AnimUtil.startSlideOutAnim(
-            refreshIbtn,
-            refreshIbtn.width.toFloat() + refreshIbtn.marginEnd.toFloat()
-        )
+//        AnimUtil.startSlideOutAnim(
+//            refreshIbtn,
+//            refreshIbtn.width.toFloat() + refreshIbtn.marginEnd.toFloat()
+//        )
         if (isOpenStoreBottomDialog) {
             AnimUtil.startSlideOutAnim(
                 searchAddressEt,
@@ -299,7 +299,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun slideInViews(isCloseStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideInAnim(maskAmountIv, 0f, false)
         AnimUtil.startSlideInAnim(myLocationIbtn, 0f)
-        AnimUtil.startSlideInAnim(refreshIbtn, 0f)
+//        AnimUtil.startSlideInAnim(refreshIbtn, 0f)
         if (isCloseStoreBottomDialog) {
             AnimUtil.startSlideInAnim(searchAddressEt, 0f)
         }

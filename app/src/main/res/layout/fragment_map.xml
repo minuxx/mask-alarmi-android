@@ -96,18 +96,18 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/cd_ic_my_location"
         android:src="@drawable/img_my_location"
-        app:layout_constraintBottom_toTopOf="@+id/map_ibtn_refresh"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageButton
-        android:id="@+id/map_ibtn_refresh"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="25dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/cd_ic_refresh"
-        android:src="@drawable/img_refresh"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/map_ibtn_refresh"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:layout_marginBottom="25dp"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:contentDescription="@string/cd_ic_refresh"-->
+<!--        android:src="@drawable/img_refresh"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
