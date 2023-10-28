@@ -1,9 +1,9 @@
-package com.minux.mask_alarmi.domain.repository
+package com.minux.mask_alarmi.data.repository
 
-import com.minux.mask_alarmi.domain.model.Address
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.models.Address
+import com.minux.mask_alarmi.data.models.Store
 
-interface StoreRepository {
+interface MaskAlarmiRepository {
     fun getStoresByGeo(
         lat: Double,
         lng: Double,

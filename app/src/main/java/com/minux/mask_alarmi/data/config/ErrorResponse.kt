@@ -1,12 +1,12 @@
-package com.minux.mask_alarmi.domain.model
+package com.minux.mask_alarmi.data.config
 
 
-data class MAError(
-    val code: ECode,
+data class ErrorResponse(
+    val code: ErrorCode,
     val message: String
 )
 
-enum class ECode(val message: String) {
+enum class ErrorCode(val message: String) {
     N0000("네트워크 오류가 발생했어요"),
 
     S0000("상점이 존재하지 않아요"),

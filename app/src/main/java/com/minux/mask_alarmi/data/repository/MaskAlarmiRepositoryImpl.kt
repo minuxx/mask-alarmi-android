@@ -1,17 +1,15 @@
 package com.minux.mask_alarmi.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.minux.mask_alarmi.data.local.MASK_ALARMI_DB_NAME
-import com.minux.mask_alarmi.data.local.MaskAlarmiDataBase
-import com.minux.mask_alarmi.data.local.entity.StoreEntity
+import com.minux.mask_alarmi.data.local.StoreLocalDataSource
+import com.minux.mask_alarmi.data.local.entities.StoreEntity
 import com.minux.mask_alarmi.data.remote.AddressRemoteDataSource
-import com.minux.mask_alarmi.domain.model.Address
-import com.minux.mask_alarmi.domain.model.Store
-import com.minux.mask_alarmi.domain.repository.StoreRepository
+import com.minux.mask_alarmi.data.models.Address
+import com.minux.mask_alarmi.data.models.Store
 import com.minux.mask_alarmi.util.GeoUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,10 +21,10 @@ import java.nio.charset.Charset
 
 private const val TAG = "StoreRepositoryImpl"
 
-class StoreRepositoryImpl private constructor(private val context: Context) : StoreRepository {
-    private val maskAlarmiDB: MaskAlarmiDataBase = Room.databaseBuilder(
+class MaskAlarmiRepositoryImpl private constructor(private val context: Context) : MaskAlarmiRepository {
+    private val maskAlarmiDB: StoreLocalDataSource = Room.databaseBuilder(
         context.applicationContext,
-        MaskAlarmiDataBase::class.java,
+        StoreLocalDataSource::class.java,
         MASK_ALARMI_DB_NAME,
     ).build()
     private val storeLocalDataSource = maskAlarmiDB.storeDao()
@@ -95,15 +93,15 @@ class StoreRepositoryImpl private constructor(private val context: Context) : St
     }
 
     companion object {
-        private var INSTANCE: StoreRepositoryImpl? = null
+        private var INSTANCE: MaskAlarmiRepositoryImpl? = null
 
         fun initialize(context: Context) {
             if (INSTANCE == null) {
-                INSTANCE = StoreRepositoryImpl(context)
+                INSTANCE = MaskAlarmiRepositoryImpl(context)
             }
         }
 
-        fun get(): StoreRepositoryImpl {
+        fun get(): MaskAlarmiRepositoryImpl {
             return INSTANCE ?: throw IllegalStateException("StoreRepository must be initialized")
         }
     }

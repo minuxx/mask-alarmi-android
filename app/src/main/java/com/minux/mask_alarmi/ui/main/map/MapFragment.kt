@@ -22,7 +22,7 @@ import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.models.Store
 import com.minux.mask_alarmi.util.AnimUtil
 import com.minux.mask_alarmi.util.InputUtil
 import com.minux.mask_alarmi.util.LocationUtil
@@ -57,7 +57,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var loadingPb: ProgressBar
     private lateinit var maskAmountIv: ImageView
     private lateinit var myLocationIbtn: ImageButton
-//    private lateinit var refreshIbtn: ImageButton
+
     private lateinit var searchAddressIbtn: ImageButton
     private lateinit var searchAddressEt: EditText
 
@@ -284,10 +284,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             myLocationIbtn,
             myLocationIbtn.width.toFloat() + myLocationIbtn.marginEnd.toFloat()
         )
-//        AnimUtil.startSlideOutAnim(
-//            refreshIbtn,
-//            refreshIbtn.width.toFloat() + refreshIbtn.marginEnd.toFloat()
-//        )
         if (isOpenStoreBottomDialog) {
             AnimUtil.startSlideOutAnim(
                 searchAddressEt,
@@ -299,7 +295,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun slideInViews(isCloseStoreBottomDialog: Boolean = false) {
         AnimUtil.startSlideInAnim(maskAmountIv, 0f, false)
         AnimUtil.startSlideInAnim(myLocationIbtn, 0f)
-//        AnimUtil.startSlideInAnim(refreshIbtn, 0f)
         if (isCloseStoreBottomDialog) {
             AnimUtil.startSlideInAnim(searchAddressEt, 0f)
         }

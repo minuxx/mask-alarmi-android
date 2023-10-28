@@ -1,11 +1,10 @@
 package com.minux.mask_alarmi.data.remote
 
 import android.content.Context
-import android.util.Log
 import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.data.remote.dto.AddressDto
-import com.minux.mask_alarmi.data.remote.dto.GetAddressesResponse
-import com.minux.mask_alarmi.domain.model.ECode
+import com.minux.mask_alarmi.data.remote.dtos.AddressDto
+import com.minux.mask_alarmi.data.remote.dtos.GetAddressesResponse
+import com.minux.mask_alarmi.data.config.ErrorCode
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,7 +20,7 @@ private const val NAVER_API_KEY_ID = "X-NCP-APIGW-API-KEY-ID"
 private const val NAVER_API_KEY = "X-NCP-APIGW-API-KEY"
 
 class AddressRemoteDataSource(private val context: Context) {
-    private val addressApi: AddressApi
+    private val addressApi: AddressAPI
 
     init {
         val retrofit: Retrofit = Retrofit.Builder()
@@ -29,7 +28,7 @@ class AddressRemoteDataSource(private val context: Context) {
             .client(provideOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        addressApi = retrofit.create(AddressApi::class.java)
+        addressApi = retrofit.create(AddressAPI::class.java)
     }
 
     private fun provideOkHttpClient(): OkHttpClient {
@@ -57,7 +56,7 @@ class AddressRemoteDataSource(private val context: Context) {
         query: String,
         coordinate: String,
         onSuccess: (List<AddressDto>) -> Unit,
-        onFailure: (ECode) -> Unit
+        onFailure: (ErrorCode) -> Unit
     ) {
         val getAddressesRequest: Call<GetAddressesResponse> = addressApi.getAddresses(
             query,
@@ -74,15 +73,15 @@ class AddressRemoteDataSource(private val context: Context) {
                     if (data?.addresses?.isNotEmpty() == true) {
                         onSuccess(data.addresses)
                     } else {
-                        onFailure(ECode.A0000)
+                        onFailure(ErrorCode.A0000)
                     }
                 } else {
-                    onFailure(ECode.A0001)
+                    onFailure(ErrorCode.A0001)
                 }
             }
 
             override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
-                onFailure(ECode.N0000)
+                onFailure(ErrorCode.N0000)
             }
         })
     }

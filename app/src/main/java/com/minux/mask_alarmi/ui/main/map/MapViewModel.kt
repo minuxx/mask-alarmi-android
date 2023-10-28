@@ -5,18 +5,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.repository.MaskAlarmiRepositoryImpl
+import com.minux.mask_alarmi.data.models.Store
 import com.naver.maps.geometry.LatLng
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "MapViewModel"
 private const val RADIUS_METER = 1000
 
 class MapViewModel : ViewModel() {
-    private val storeRepository = StoreRepositoryImpl.get()
+    private val storeRepository = MaskAlarmiRepositoryImpl.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
     val stores: LiveData<List<Store>> get() = _stores
 

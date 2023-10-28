@@ -1,5 +1,14 @@
-package com.minux.mask_alarmi.domain.model
+package com.minux.mask_alarmi.data.models
 
+data class Store(
+    val code: Long,
+    val lat: Double,
+    val lng: Double,
+    val address: String,
+    val name: String,
+    val remainState: RemainState,
+    val stockAt: String?,
+)
 
 enum class RemainState(val value: String) {
     EMPTY("empty"),
@@ -11,13 +20,3 @@ enum class RemainState(val value: String) {
         fun fromValue(value: String?): RemainState = values().firstOrNull { it.value == value } ?: EMPTY
     }
 }
-
-data class Store(
-    val code: Long,
-    val lat: Double,
-    val lng: Double,
-    val address: String,
-    val name: String,
-    val remainState: RemainState,
-    val stockAt: String?,
-)

@@ -1,9 +1,9 @@
-package com.minux.mask_alarmi.data.local.entity
+package com.minux.mask_alarmi.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.minux.mask_alarmi.domain.model.RemainState
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.models.RemainState
+import com.minux.mask_alarmi.data.models.Store
 
 @Entity(tableName = "stores")
 data class StoreEntity (

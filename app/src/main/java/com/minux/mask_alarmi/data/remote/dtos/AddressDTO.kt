@@ -1,6 +1,6 @@
-package com.minux.mask_alarmi.data.remote.dto
+package com.minux.mask_alarmi.data.remote.dtos
 
-import com.minux.mask_alarmi.domain.model.Address
+import com.minux.mask_alarmi.data.models.Address
 
 data class AddressDto(
     val addressElements: List<AddressElementDto>,

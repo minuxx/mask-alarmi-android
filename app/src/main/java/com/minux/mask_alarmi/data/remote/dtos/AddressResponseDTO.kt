@@ -1,4 +1,4 @@
-package com.minux.mask_alarmi.data.remote.dto
+package com.minux.mask_alarmi.data.remote.dtos
 
 data class GetAddressesResponse(
     val addresses: List<AddressDto>,
