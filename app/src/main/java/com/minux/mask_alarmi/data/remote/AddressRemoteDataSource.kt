@@ -1,8 +1,10 @@
 package com.minux.mask_alarmi.data.remote
 
 import android.content.Context
-import android.util.Log
 import com.minux.mask_alarmi.R
+import com.minux.mask_alarmi.data.remote.dtos.AddressDto
+import com.minux.mask_alarmi.data.remote.dtos.GetAddressesResponse
+import com.minux.mask_alarmi.data.config.ErrorCode
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,7 +20,7 @@ private const val NAVER_API_KEY_ID = "X-NCP-APIGW-API-KEY-ID"
 private const val NAVER_API_KEY = "X-NCP-APIGW-API-KEY"
 
 class AddressRemoteDataSource(private val context: Context) {
-    private val addressApi: AddressApi
+    private val addressApi: AddressAPI
 
     init {
         val retrofit: Retrofit = Retrofit.Builder()
@@ -26,7 +28,7 @@ class AddressRemoteDataSource(private val context: Context) {
             .client(provideOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        addressApi = retrofit.create(AddressApi::class.java)
+        addressApi = retrofit.create(AddressAPI::class.java)
     }
 
     private fun provideOkHttpClient(): OkHttpClient {
@@ -53,7 +55,8 @@ class AddressRemoteDataSource(private val context: Context) {
     fun getAddresses(
         query: String,
         coordinate: String,
-        onResponse: (List<AddressItem>) -> Unit,
+        onSuccess: (List<AddressDto>) -> Unit,
+        onFailure: (ErrorCode) -> Unit
     ) {
         val getAddressesRequest: Call<GetAddressesResponse> = addressApi.getAddresses(
             query,
@@ -61,19 +64,24 @@ class AddressRemoteDataSource(private val context: Context) {
         )
 
         getAddressesRequest.enqueue(object : Callback<GetAddressesResponse> {
-            override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
-                Log.e(TAG, "Failed to fetch addresses", t)
-            }
-
             override fun onResponse(
                 call: Call<GetAddressesResponse>,
                 response: Response<GetAddressesResponse>
             ) {
-                Log.d(TAG, "Response received")
-                val getAddressesResponse: GetAddressesResponse? = response.body()
-                val addressItems: List<AddressItem> = getAddressesResponse?.addresses
-                    ?: mutableListOf()
-                onResponse(addressItems)
+                if (response.isSuccessful) {
+                    val data: GetAddressesResponse? = response.body()
+                    if (data?.addresses?.isNotEmpty() == true) {
+                        onSuccess(data.addresses)
+                    } else {
+                        onFailure(ErrorCode.A0000)
+                    }
+                } else {
+                    onFailure(ErrorCode.A0001)
+                }
+            }
+
+            override fun onFailure(call: Call<GetAddressesResponse>, t: Throwable) {
+                onFailure(ErrorCode.N0000)
             }
         })
     }

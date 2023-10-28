@@ -5,47 +5,63 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
-import com.minux.mask_alarmi.data.repository.StoreRepositoryImpl
-import com.minux.mask_alarmi.domain.model.Address
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.repository.MaskAlarmiRepositoryImpl
+import com.minux.mask_alarmi.data.models.Store
 import com.naver.maps.geometry.LatLng
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "MapViewModel"
 private const val RADIUS_METER = 1000
 
 class MapViewModel : ViewModel() {
-    private val storeRepository = StoreRepositoryImpl.get()
+    private val storeRepository = MaskAlarmiRepositoryImpl.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
     val stores: LiveData<List<Store>> get() = _stores
 
     private val _searchedLatLng: MutableLiveData<LatLng> = MutableLiveData()
     val searchedLatLng: LiveData<LatLng> get() = _searchedLatLng
 
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
+    val errorMessage: LiveData<String> get() = _errorMessage
+
 
     fun getStoresByGeo(latLng: LatLng) {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                storeRepository.getStoresByGeo(latLng.latitude, latLng.longitude, RADIUS_METER)
+        _isLoading.postValue(true)
+        storeRepository.getStoresByGeo(
+            latLng.latitude,
+            latLng.longitude,
+            RADIUS_METER,
+            onSuccess = { stores ->
+                _stores.postValue(stores)
+                _isLoading.postValue(false)
+            }, onFailure = { _ ->
+                _isLoading.postValue(false)
             }
-            _stores.postValue(result)
-        }
+        )
     }
 
     fun getStoreByCode(storeCode: Long): Store? {
         return stores.value?.firstOrNull { it.code == storeCode }
     }
 
-    fun searchAddress(address: String, lat: Double, lng: Double) {
-        storeRepository.searchAddress(address, lat, lng) { address ->
-            Log.i(TAG, "$address")
-            address?.let {
-                _searchedLatLng.postValue(LatLng(it.latitude, it.longitude))
+    fun searchAddress(searchAddr: String, lat: Double, lng: Double) {
+        _isLoading.postValue(true)
+        storeRepository.searchAddress(searchAddr, lat, lng,
+            onSuccess = { searchedAddr ->
+                Log.i(TAG, "$searchedAddr")
+                searchedAddr?.let {
+                    _searchedLatLng.postValue(LatLng(it.latitude, it.longitude))
+                    _isLoading.postValue(false)
+                }
+            },
+            onFailure = { errorMessage ->
+                _errorMessage.postValue(errorMessage)
+                _isLoading.postValue(false)
             }
-        }
+        )
     }
 
     init {

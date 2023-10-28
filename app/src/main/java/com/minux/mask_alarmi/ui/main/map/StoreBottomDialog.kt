@@ -12,8 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.domain.model.RemainState
-import com.minux.mask_alarmi.domain.model.Store
+import com.minux.mask_alarmi.data.models.RemainState
+import com.minux.mask_alarmi.data.models.Store
 import com.google.android.material.R.id.design_bottom_sheet
 
 class StoreBottomDialog(

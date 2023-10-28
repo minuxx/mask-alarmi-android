@@ -1,13 +1,13 @@
-package com.minux.mask_alarmi.data.remote
+package com.minux.mask_alarmi.data.remote.dtos
 
 data class GetAddressesResponse(
-    val addresses: List<AddressItem>,
+    val addresses: List<AddressDto>,
     val errorMessage: String,
-    val meta: Meta,
+    val meta: MetaDto,
     val status: String
 )
 
-data class Meta(
+data class MetaDto(
     val count: Int,
     val page: Int,
     val totalCount: Int

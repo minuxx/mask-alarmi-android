@@ -1,7 +1,7 @@
 package com.minux.mask_alarmi.ui.main.map
 
 import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.domain.model.RemainState
+import com.minux.mask_alarmi.data.models.RemainState
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage

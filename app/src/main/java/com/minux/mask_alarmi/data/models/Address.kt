@@ -1,4 +1,4 @@
-package com.minux.mask_alarmi.domain.model
+package com.minux.mask_alarmi.data.models
 
 data class Address(
     val latitude: Double,
