@@ -13,8 +13,7 @@
 <br/>
 
 ## Preview
-<img src="https://github.com/minuxx/mask-alarmi/assets/20331640/5969583f-1ca4-4092-b196-5ab65ce74d23" width="25%"/>
-![Uploading Gif_9dd18fee-3cc0-44cf-b256-b301aab38136.gif…]()
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/f42f48f7-4044-4e16-a978-325f1bcec203" width="25%"/>
 
 <br/>
 <br/>
