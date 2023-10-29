@@ -14,7 +14,7 @@ private const val TAG = "MapViewModel"
 private const val RADIUS_METER = 1000
 
 class MapViewModel : ViewModel() {
-    private val storeRepository = MaskAlarmiRepositoryImpl.get()
+    private val repository = MaskAlarmiRepositoryImpl.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
     val stores: LiveData<List<Store>> get() = _stores
 
@@ -30,7 +30,7 @@ class MapViewModel : ViewModel() {
 
     fun getStoresByGeo(latLng: LatLng) {
         _isLoading.postValue(true)
-        storeRepository.getStoresByGeo(
+        repository.getStoresByGeo(
             latLng.latitude,
             latLng.longitude,
             RADIUS_METER,
@@ -49,7 +49,7 @@ class MapViewModel : ViewModel() {
 
     fun searchAddress(searchAddr: String, lat: Double, lng: Double) {
         _isLoading.postValue(true)
-        storeRepository.searchAddress(searchAddr, lat, lng,
+        repository.searchAddress(searchAddr, lat, lng,
             onSuccess = { searchedAddr ->
                 Log.i(TAG, "$searchedAddr")
                 searchedAddr?.let {
@@ -66,7 +66,7 @@ class MapViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            storeRepository.insertStoresFromJson()
+            repository.insertStoresFromJson()
         }
     }
 }
