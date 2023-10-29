@@ -56,5 +56,5 @@
 - <s>MVVM 패턴 적용</s>
 - <s>Repository 패턴 적용</s>
 - 의존성 주입 : Hilt 적용
-- 데이터 스트림 비동기 제어 : Lambda Function + LiveData -> Coroutines + Flow
-- DataBinding 적용 : [View - ViewModel - Model] -> [View - DataBinding - ViewModel - Model]
+- 데이터 스트림 비동기 제어 : Lambda Function + LiveData &rarr; Coroutines + Flow
+- DataBinding 적용 : [View - ViewModel - Model] &rarr; [View - DataBinding - ViewModel - Model]
