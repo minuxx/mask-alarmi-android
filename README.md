@@ -14,7 +14,7 @@
 
 ## Preview
 <img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/98208202-7def-4bf3-b18a-c3b61754f558" width="25%"/>
-<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/98208202-7def-4bf3-b18a-c3b61754f558" width="25%"/>
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/e61e4a48-5c51-472b-958f-38daf57e8b57" width="25%"/>
 
 <br/>
 <br/>
