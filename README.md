@@ -59,3 +59,11 @@
 - 의존성 주입 : Hilt 적용
 - 데이터 스트림 비동기 제어 : Lambda Function + LiveData &rarr; Coroutines + Flow
 - DataBinding 적용 : [View - ViewModel - Model] &rarr; [View - DataBinding - ViewModel - Model]
+
+<br/>
+
+## Articles
+- [4년 전 코드 리팩토링하기 (1)](https://minuxxx.tistory.com/37)
+- [4년 전 코드 리팩토링하기 (2) - 아키텍처 재설계](https://minuxxx.tistory.com/39)
+- [4년 전 코드 리팩토링하기 (3) - MVVM 패턴](https://minuxxx.tistory.com/42)
+- [4년 전 코드 리팩토링하기 (4) - Repository 패턴](https://minuxxx.tistory.com/43)
