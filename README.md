@@ -1,4 +1,4 @@
-# 마스크 알라미 - 마스크 재고 위치 알림 서비스
+# 마스크 알라미: 마스크 재고 위치 알림 서비스
 <br/>
 
 ![logo_w](https://github.com/minuxx/mask-alarmi/assets/20331640/fc54febe-458f-47cb-aca8-097b72f62cbe)
@@ -13,7 +13,8 @@
 <br/>
 
 ## Preview
-<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/f42f48f7-4044-4e16-a978-325f1bcec203" width="25%"/>
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/98208202-7def-4bf3-b18a-c3b61754f558" width="25%"/>
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/98208202-7def-4bf3-b18a-c3b61754f558" width="25%"/>
 
 <br/>
 <br/>
