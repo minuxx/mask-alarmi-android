@@ -29,7 +29,7 @@
 <br/>
 
 ## 개발 환경
-*Java 기반의 1.0.0 버전 -> 아래 기술 스택으로 1.1.0 리팩토링
+*Java based 1.0.0 버전 &rarr; 아래 기술 스택으로 1.1.0 리팩토링
 
 - Kotlin based, Lambda Functions for asynchronous.
 - Minimum SDK level 23
