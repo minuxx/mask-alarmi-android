@@ -2,6 +2,7 @@ package com.minux.mask_alarmi.ui.main.map
 
 import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.data.models.RemainState
+import com.minux.mask_alarmi.data.models.Store
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
@@ -9,24 +10,21 @@ import com.naver.maps.map.overlay.OverlayImage
 private const val TAG = "StoreMarker"
 
 class StoreMarker(
-    val storeCode: Long,
-    private val remainState: RemainState,
-    private val coordinate: LatLng,
-    val onMarkerClicked: (storeCode: Long, isClicked: Boolean) -> Unit
+    val store: Store,
+    private val onSelectStoreMarker: (store: Store) -> Unit
 ) {
     val marker = Marker()
-    var isClicked = false
+    var isSelected = false
         set(value) {
             field = value
-            marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState, field))
+            marker.icon = OverlayImage.fromResource(getMarkerIconRes(store.remainState, field))
         }
 
     fun newInstance(): StoreMarker {
-        marker.position = coordinate
-        marker.icon = OverlayImage.fromResource(getMarkerIconRes(remainState))
+        marker.position = LatLng(store.lat, store.lng)
+        marker.icon = OverlayImage.fromResource(getMarkerIconRes(store.remainState))
         marker.setOnClickListener {
-            isClicked = !isClicked
-            onMarkerClicked(storeCode, isClicked)
+            onSelectStoreMarker(store)
             true
         }
         return this

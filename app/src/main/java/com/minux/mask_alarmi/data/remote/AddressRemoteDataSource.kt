@@ -2,9 +2,9 @@ package com.minux.mask_alarmi.data.remote
 
 import android.content.Context
 import com.minux.mask_alarmi.R
-import com.minux.mask_alarmi.data.remote.dtos.AddressDto
-import com.minux.mask_alarmi.data.remote.dtos.GetAddressesResponse
 import com.minux.mask_alarmi.data.config.ErrorCode
+import com.minux.mask_alarmi.data.remote.dtos.AddressDTO
+import com.minux.mask_alarmi.data.remote.dtos.GetAddressesResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,7 +20,7 @@ private const val NAVER_API_KEY_ID = "X-NCP-APIGW-API-KEY-ID"
 private const val NAVER_API_KEY = "X-NCP-APIGW-API-KEY"
 
 class AddressRemoteDataSource(private val context: Context) {
-    private val addressApi: AddressAPI
+    private val addressAPI: AddressAPI
 
     init {
         val retrofit: Retrofit = Retrofit.Builder()
@@ -28,7 +28,7 @@ class AddressRemoteDataSource(private val context: Context) {
             .client(provideOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        addressApi = retrofit.create(AddressAPI::class.java)
+        addressAPI = retrofit.create(AddressAPI::class.java)
     }
 
     private fun provideOkHttpClient(): OkHttpClient {
@@ -55,10 +55,10 @@ class AddressRemoteDataSource(private val context: Context) {
     fun getAddresses(
         query: String,
         coordinate: String,
-        onSuccess: (List<AddressDto>) -> Unit,
+        onSuccess: (List<AddressDTO>) -> Unit,
         onFailure: (ErrorCode) -> Unit
     ) {
-        val getAddressesRequest: Call<GetAddressesResponse> = addressApi.getAddresses(
+        val getAddressesRequest: Call<GetAddressesResponse> = addressAPI.getAddresses(
             query,
             coordinate
         )

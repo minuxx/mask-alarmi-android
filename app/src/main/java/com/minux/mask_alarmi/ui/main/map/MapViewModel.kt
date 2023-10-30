@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minux.mask_alarmi.data.repository.MaskAlarmiRepositoryImpl
 import com.minux.mask_alarmi.data.models.Store
+import com.minux.mask_alarmi.data.repository.MaskAlarmiRepository
 import com.naver.maps.geometry.LatLng
 import kotlinx.coroutines.launch
 
@@ -14,7 +14,7 @@ private const val TAG = "MapViewModel"
 private const val RADIUS_METER = 1000
 
 class MapViewModel : ViewModel() {
-    private val repository = MaskAlarmiRepositoryImpl.get()
+    private val repository = MaskAlarmiRepository.get()
     private val _stores: MutableLiveData<List<Store>> = MutableLiveData()
     val stores: LiveData<List<Store>> get() = _stores
 
@@ -27,6 +27,12 @@ class MapViewModel : ViewModel() {
     private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
     val errorMessage: LiveData<String> get() = _errorMessage
 
+    init {
+        // 더미데이터 추가용 로직
+        viewModelScope.launch {
+            repository.insertStoresFromJson()
+        }
+    }
 
     fun getStoresByGeo(latLng: LatLng) {
         _isLoading.postValue(true)
@@ -41,10 +47,6 @@ class MapViewModel : ViewModel() {
                 _isLoading.postValue(false)
             }
         )
-    }
-
-    fun getStoreByCode(storeCode: Long): Store? {
-        return stores.value?.firstOrNull { it.code == storeCode }
     }
 
     fun searchAddress(searchAddr: String, lat: Double, lng: Double) {
@@ -62,11 +64,5 @@ class MapViewModel : ViewModel() {
                 _isLoading.postValue(false)
             }
         )
-    }
-
-    init {
-        viewModelScope.launch {
-            repository.insertStoresFromJson()
-        }
     }
 }

@@ -6,9 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.minux.mask_alarmi.data.local.entities.StoreEntity
 
-// 라디안 각도로 변환하는 함수
-
-
 @Dao
 interface StoreDao {
     @Query("SELECT * FROM stores")

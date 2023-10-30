@@ -11,7 +11,6 @@ import com.minux.mask_alarmi.R
 import com.minux.mask_alarmi.ui.main.map.MapFragment
 import java.util.Calendar
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var announceTv: TextView
     private lateinit var possibleDayTv: TextView
@@ -44,7 +43,12 @@ class MainActivity : AppCompatActivity() {
                 val possibleDayStr = getString(R.string.main_possible_day, first, second)
                 possibleDayTv.text = SpannableStringBuilder(possibleDayStr).apply {
                     setSpan(
-                        ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.color_blue800)),
+                        ForegroundColorSpan(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.color_blue800
+                            )
+                        ),
                         9,
                         14,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
