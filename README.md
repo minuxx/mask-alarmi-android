@@ -1,4 +1,4 @@
-# 마스크 알라미 - 마스크 재고 위치 알림 서비스
+# 마스크 알라미: 마스크 재고 위치 알림 서비스
 <br/>
 
 ![logo_w](https://github.com/minuxx/mask-alarmi/assets/20331640/fc54febe-458f-47cb-aca8-097b72f62cbe)
@@ -7,27 +7,31 @@
 
 
 ## 프로젝트 목표
-2020년 코로나 사태로, 대부분의 판매처에 마스크 재고가 없어 시민들이 불편을 겪고 있었으며, 이로 인해 정부는 마스크 판매처의 위치, 재고 정보 데이터를 제공하는 공적 마스크 API를 공개.
-공적 마스크 오픈 API를 활용해 마스크 재고량과 판매처를 알려주는 안드로이드 어플리케이션를 출시해 시민들의 불편함 해소
+2020년 코로나 사태로 사람들이 마스크를 구하지 못해 불편을 겪는 것을 해소하고자 진행했던 프로젝트이다.<br/>
+공적 마스크 오픈 API를 통해 마스크 재고량, 판매처를 알려주는 위치 기반의 안드로이드 어플리케이션 서비스 출시
 
 <br/>
 
 ## Preview
-<img src="https://github.com/minuxx/mask-alarmi/assets/20331640/5969583f-1ca4-4092-b196-5ab65ce74d23" width="25%"/>
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/98208202-7def-4bf3-b18a-c3b61754f558" width="25%"/>
+<img src="https://github.com/minuxx/mask-alarmi-android/assets/20331640/e61e4a48-5c51-472b-958f-38daf57e8b57" width="25%"/>
 
 <br/>
 <br/>
 
 ## 주요 기능
-1. 사용자는 지도 화면에서 중심 좌표 기준 반경 1km 내의 상점 마커들을 볼 수 있다.
-2. 사용자가 상점 마커를 클릭하면 상점 상세 정보 바텀 다이얼로그가 노출된다.
-4. 사용자가 주소를 검색하면 해당 주소의 중심 좌표 (검색한 주소의 목록 중 가장 가까운 주소)로 지도의 카메라 이동 & 줌인되며 1 기능이 실행된다.
-5. 사용자가 내 위치 버튼을 클릭하면 현재 기기의 위치로 중심 좌표가 설정되며 지도의 카메라 이동 & 줌인과 1 기능이 실행된다. 
+- 지도 화면에서 특정 좌표 중심 반경 1km 내 판매처 마커 렌더링
+  - 현재 기기 위치 좌표
+  - 검색한 주소 위치 좌표 
+- 판매처 마커 클릭 시 상세 정보 바텀 다이얼로그 노출
+- '내 위치' 버튼 클릭 시 기기 위치 좌표로 카메라 이동
 
 <br/>
 
 ## 개발 환경
-- Kotlin based
+*Java based 1.0.0 버전 &rarr; 아래 기술 스택으로 1.1.0 리팩토링
+
+- Kotlin based, Lambda Functions for asynchronous.
 - Minimum SDK level 23
 
 ### Jetpack
@@ -46,3 +50,20 @@
 - Repository Pattern
 
 <br/>
+
+## 리팩토링
+- <s>Java -> Kotlin</s>
+- <s>아키텍처 재설계 : UI 레이어, 데이터 레이어 나누기</s>
+- <s>MVVM 패턴 적용</s>
+- <s>Repository 패턴 적용</s>
+- 의존성 주입 : Hilt 적용
+- 데이터 스트림 비동기 제어 : Lambda Function + LiveData &rarr; Coroutines + Flow
+- DataBinding 적용 : [View - ViewModel - Model] &rarr; [View - DataBinding - ViewModel - Model]
+
+<br/>
+
+## Articles
+- [4년 전 코드 리팩토링하기 (1)](https://minuxxx.tistory.com/37)
+- [4년 전 코드 리팩토링하기 (2) - 아키텍처 재설계](https://minuxxx.tistory.com/39)
+- [4년 전 코드 리팩토링하기 (3) - MVVM 패턴](https://minuxxx.tistory.com/42)
+- [4년 전 코드 리팩토링하기 (4) - Repository 패턴](https://minuxxx.tistory.com/43)
